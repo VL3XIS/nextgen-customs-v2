@@ -1,8 +1,13 @@
 import { useState } from 'react';
 import api from '../services/api';
+import type { User } from '../types';
+
+interface UserWithShop extends User {
+    shopName?: string;
+}
 
 export default function SettingsPage() {
-    const [user, setUser] = useState<any>(JSON.parse(localStorage.getItem('user') || '{}'));
+    const [user] = useState<UserWithShop>(JSON.parse(localStorage.getItem('user') || '{}'));
     const [shopName, setShopName] = useState(user.shopName || '');
     const [passwords, setPasswords] = useState({ current: '', new: '', confirm: '' });
     const [toast, setToast] = useState('');
@@ -14,7 +19,8 @@ export default function SettingsPage() {
             localStorage.setItem('user', JSON.stringify(res.data.user));
             setToast('Profile updated!');
             setTimeout(() => setToast(''), 3000);
-        } catch (error) {
+        } catch (error: unknown) {
+            console.error('Update profile error:', error);
             alert('Failed to update profile');
         }
     };
@@ -27,7 +33,8 @@ export default function SettingsPage() {
             setToast('Password changed!');
             setPasswords({ current: '', new: '', confirm: '' });
             setTimeout(() => setToast(''), 3000);
-        } catch (error) {
+        } catch (error: unknown) {
+            console.error('Change password error:', error);
             alert('Failed to change password');
         }
     };

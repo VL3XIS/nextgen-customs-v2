@@ -10,10 +10,8 @@ import AnalyticsPage from './pages/AnalyticsPage';
 import SettingsPage from './pages/SettingsPage';
 import KanbanBoard from './pages/KanbanBoard';
 
-// Placeholder components (for those not implemented yet)
-const PostReview = () => <div className="p-4"><h1>Post Review</h1></div>;
-const Analytics = () => <div className="p-4"><h1>Analytics</h1></div>;
-const Settings = () => <div className="p-4"><h1>Settings</h1></div>;
+// Routes are managed using DashboardLayout for internal pages
+
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
   const token = localStorage.getItem('token');

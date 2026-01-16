@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
-import { Line, Pie, Bar } from 'react-chartjs-2';
+import { Line, Pie } from 'react-chartjs-2';
 import api from '../services/api';
+import type { AnalyticsStats } from '../types';
 
 export default function AnalyticsPage() {
-    const [stats, setStats] = useState<any>(null);
+    const [stats, setStats] = useState<AnalyticsStats | null>(null);
     const [range, setRange] = useState('30days');
 
     useEffect(() => {
@@ -51,10 +52,10 @@ export default function AnalyticsPage() {
                     <h3 className="text-lg font-bold mb-4">Post Generation Trend</h3>
                     <div className="h-64">
                         <Line data={{
-                            labels: charts.postsOverTime.map((d: any) => d.date),
+                            labels: charts.postsOverTime.map((d) => d.date),
                             datasets: [{
                                 label: 'Posts',
-                                data: charts.postsOverTime.map((d: any) => d.count),
+                                data: charts.postsOverTime.map((d) => d.count),
                                 borderColor: '#DC2626',
                                 backgroundColor: 'rgba(220, 38, 38, 0.1)',
                                 fill: true,
@@ -68,9 +69,9 @@ export default function AnalyticsPage() {
                     <h3 className="text-lg font-bold mb-4">Platform Mix</h3>
                     <div className="h-64 flex justify-center">
                         <Pie data={{
-                            labels: charts.byPlatform.map((d: any) => d.name),
+                            labels: charts.byPlatform.map((d) => d.name),
                             datasets: [{
-                                data: charts.byPlatform.map((d: any) => d.value),
+                                data: charts.byPlatform.map((d) => d.value),
                                 backgroundColor: ['#DC2626', '#1F2937', '#0077B5'],
                                 borderWidth: 0
                             }]

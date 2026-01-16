@@ -2,12 +2,13 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import { Copy, RefreshCw, CheckCircle, ArrowLeft, Loader2, Instagram, Facebook, Linkedin } from 'lucide-react';
+import type { Job, Post } from '../types';
 
 export default function PostReviewPage() {
     const { jobId } = useParams();
     const navigate = useNavigate();
-    const [job, setJob] = useState<any>(null);
-    const [posts, setPosts] = useState<any[]>([]);
+    const [job, setJob] = useState<Job | null>(null);
+    const [posts, setPosts] = useState<Post[]>([]);
     const [loading, setLoading] = useState(true);
     const [regenerating, setRegenerating] = useState(false);
 
@@ -29,7 +30,7 @@ export default function PostReviewPage() {
         if (jobId) fetchData();
     }, [jobId]);
 
-    const handleUpdatePost = async (postId: string, field: string, value: any) => {
+    const handleUpdatePost = async (postId: string, field: keyof Post, value: string | string[]) => {
         // Optimistic update
         const updatedPosts = posts.map(p => p.id === postId ? { ...p, [field]: value } : p);
         setPosts(updatedPosts);
@@ -37,11 +38,13 @@ export default function PostReviewPage() {
         // API update (debounced ideally, but simple for now)
         try {
             const post = updatedPosts.find(p => p.id === postId);
-            await api.put(`/posts/${postId}`, {
-                caption: post.caption,
-                hashtags: post.hashtags,
-                status: post.status
-            });
+            if (post) {
+                await api.put(`/posts/${postId}`, {
+                    caption: post.caption,
+                    hashtags: post.hashtags,
+                    status: post.status
+                });
+            }
         } catch (error) {
             console.error('Error saving post:', error);
         }

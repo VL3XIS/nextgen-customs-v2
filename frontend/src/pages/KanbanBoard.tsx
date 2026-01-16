@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { DndContext, useDroppable } from '@dnd-kit/core';
 import type { DragEndEvent } from '@dnd-kit/core';
 import api from '../services/api';
 import JobCard from '../components/JobCard';
 import AddJobModal from '../components/AddJobModal';
 import { Plus } from 'lucide-react';
+import type { Job } from '../types';
 
 const COLUMNS = [
     { id: 'ESTIMATE', title: 'Estimate' },
@@ -15,7 +16,7 @@ const COLUMNS = [
     { id: 'COMPLETE', title: 'Complete' },
 ];
 
-function Column({ id, title, jobs }: { id: string, title: string, jobs: any[] }) {
+function Column({ id, title, jobs }: { id: string, title: string, jobs: Job[] }) {
     const { setNodeRef } = useDroppable({ id });
 
     return (
@@ -34,27 +35,31 @@ function Column({ id, title, jobs }: { id: string, title: string, jobs: any[] })
 }
 
 export default function KanbanBoard() {
-    const [jobs, setJobs] = useState<any[]>([]);
+    const [jobs, setJobs] = useState<Job[]>([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [refreshKey, setRefreshKey] = useState(0);
 
-    const fetchJobs = async () => {
-        try {
-            const res = await api.get('/jobs?limit=100'); // Get more jobs for board
-            setJobs(res.data.jobs);
-        } catch (error) {
-            console.error('Error fetching jobs:', error);
-        }
-    };
+    const triggerRefresh = useCallback(() => {
+        setRefreshKey(prev => prev + 1);
+    }, []);
 
     useEffect(() => {
+        const fetchJobs = async () => {
+            try {
+                const res = await api.get('/jobs?limit=100');
+                setJobs(res.data.jobs);
+            } catch (error) {
+                console.error('Error fetching jobs:', error);
+            }
+        };
         fetchJobs();
-    }, []);
+    }, [refreshKey]);
 
     const handleDragEnd = async (event: DragEndEvent) => {
         const { active, over } = event;
 
         if (over && active.id) {
-            const newStatus = over.id as string;
+            const newStatus = over.id as Job['status'];
 
             // Optimistic update
             setJobs((prev) =>
@@ -65,7 +70,7 @@ export default function KanbanBoard() {
                 await api.put(`/jobs/${active.id}/status`, { status: newStatus });
             } catch (error) {
                 console.error('Failed to update status:', error);
-                fetchJobs(); // Revert on error
+                triggerRefresh(); // Revert on error
             }
         }
     };
@@ -101,7 +106,7 @@ export default function KanbanBoard() {
             <AddJobModal
                 isOpen={isModalOpen}
                 onClose={() => setIsModalOpen(false)}
-                onJobAdded={fetchJobs}
+                onJobAdded={triggerRefresh}
             />
         </div>
     );

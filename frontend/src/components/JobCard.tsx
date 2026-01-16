@@ -1,9 +1,10 @@
 import { useDraggable } from '@dnd-kit/core';
 import { Clock, User, Calendar } from 'lucide-react';
 import { CSS } from '@dnd-kit/utilities';
+import type { Job } from '../types';
 
 interface JobCardProps {
-    job: any;
+    job: Job;
 }
 
 export default function JobCard({ job }: JobCardProps) {

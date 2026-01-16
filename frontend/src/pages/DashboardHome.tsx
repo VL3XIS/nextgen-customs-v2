@@ -15,6 +15,7 @@ import { Line, Pie } from 'react-chartjs-2';
 import api from '../services/api';
 import { Briefcase, Zap, Clock, Users, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import type { AnalyticsStats } from '../types';
 
 ChartJS.register(
     CategoryScale,
@@ -29,7 +30,7 @@ ChartJS.register(
 );
 
 export default function DashboardHome() {
-    const [stats, setStats] = useState<any>(null);
+    const [stats, setStats] = useState<AnalyticsStats | null>(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -57,11 +58,11 @@ export default function DashboardHome() {
     };
 
     const lineChartData = {
-        labels: charts.postsOverTime.map((d: any) => d.date),
+        labels: charts.postsOverTime.map((d) => d.date),
         datasets: [
             {
                 label: 'Posts Generated',
-                data: charts.postsOverTime.map((d: any) => d.count),
+                data: charts.postsOverTime.map((d) => d.count),
                 borderColor: '#DC2626',
                 backgroundColor: 'rgba(220, 38, 38, 0.5)',
                 tension: 0.4,
@@ -70,10 +71,10 @@ export default function DashboardHome() {
     };
 
     const pieChartData = {
-        labels: charts.byPlatform.map((d: any) => d.name),
+        labels: charts.byPlatform.map((d) => d.name),
         datasets: [
             {
-                data: charts.byPlatform.map((d: any) => d.value),
+                data: charts.byPlatform.map((d) => d.value),
                 backgroundColor: ['#DC2626', '#111827', '#0077b5'],
                 borderColor: ['#ffffff', '#ffffff', '#ffffff'],
                 borderWidth: 2,

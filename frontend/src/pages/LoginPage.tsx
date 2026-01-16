@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import api from '../services/api';
 import { Lock, Mail } from 'lucide-react';
-import { cn } from '../utils/cn';
 
 export default function LoginPage() {
     const [email, setEmail] = useState('');
@@ -17,8 +16,9 @@ export default function LoginPage() {
             localStorage.setItem('token', response.data.token);
             localStorage.setItem('user', JSON.stringify(response.data.user));
             navigate('/dashboard');
-        } catch (err: any) {
-            setError(err.response?.data?.error || 'Login failed');
+        } catch (err: unknown) {
+            const error = err as { response?: { data?: { error?: string } } };
+            setError(error.response?.data?.error || 'Login failed');
         }
     };
 

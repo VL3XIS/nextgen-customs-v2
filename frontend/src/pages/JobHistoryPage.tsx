@@ -2,9 +2,10 @@ import { useEffect, useState } from 'react';
 import api from '../services/api';
 import { Link } from 'react-router-dom';
 import { Eye, Trash2, Calendar, Search } from 'lucide-react';
+import type { Job } from '../types';
 
 export default function JobHistoryPage() {
-    const [jobs, setJobs] = useState<any[]>([]);
+    const [jobs, setJobs] = useState<Job[]>([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
 

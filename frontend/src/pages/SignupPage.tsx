@@ -19,8 +19,9 @@ export default function SignupPage() {
             localStorage.setItem('token', response.data.token);
             localStorage.setItem('user', JSON.stringify(response.data.user));
             navigate('/dashboard');
-        } catch (err: any) {
-            setError(err.response?.data?.error || 'Signup failed');
+        } catch (err: unknown) {
+            const error = err as { response?: { data?: { error?: string } } };
+            setError(error.response?.data?.error || 'Signup failed');
         }
     };
 
