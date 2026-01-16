@@ -1,0 +1,75 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String   @id @default(uuid())
+  email         String   @unique
+  passwordHash  String
+  shopName      String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  jobs          Job[]
+  analytics     Analytics[]
+}
+
+enum JobStatus {
+  ESTIMATE
+  APPROVED
+  IN_PROGRESS
+  PAINT
+  QUALITY_CHECK
+  COMPLETE
+}
+
+model Job {
+  id           String    @id @default(uuid())
+  userId       String
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  vehicle      String
+  customerName String    @default("Customer")
+  status       JobStatus @default(ESTIMATE)
+  services     String
+  notes        String?
+  startedAt    DateTime  @default(now())
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  photos       Photo[]
+  posts        Post[]
+}
+
+model Photo {
+  id          String   @id @default(uuid())
+  jobId       String
+  job         Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  url         String
+  uploadedAt  DateTime @default(now())
+}
+
+model Post {
+  id          String   @id @default(uuid())
+  jobId       String
+  job         Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  platform    String   // 'instagram', 'facebook', 'linkedin'
+  caption     String   // Using String for simplicity, @db.Text not strictly needed if driver handles text
+  hashtags    String[] // Array of hashtags (Instagram only)
+  status      String   @default("draft") // 'draft', 'approved', 'published'
+  generatedAt DateTime @default(now())
+  publishedAt DateTime?
+  updatedAt   DateTime @updatedAt
+}
+
+model Analytics {
+  id                String   @id @default(uuid())
+  userId            String
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date              DateTime @default(now())
+  postsGenerated    Int      @default(0)
+  timeSavedMinutes  Int      @default(0)
+  jobsCompleted     Int      @default(0)
+}
