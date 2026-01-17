@@ -15,7 +15,7 @@ import { Line, Pie } from 'react-chartjs-2';
 import api from '../services/api';
 import { Briefcase, Zap, Clock, Users, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import type { AnalyticsStats } from '../types';
+import type { AnalyticsStats, Job } from '../types';
 
 ChartJS.register(
     CategoryScale,
@@ -31,21 +31,26 @@ ChartJS.register(
 
 export default function DashboardHome() {
     const [stats, setStats] = useState<AnalyticsStats | null>(null);
+    const [recentJobs, setRecentJobs] = useState<Job[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const fetchStats = async () => {
+        const fetchData = async () => {
             try {
-                const response = await api.get('/analytics/summary');
-                setStats(response.data);
+                const [statsRes, jobsRes] = await Promise.all([
+                    api.get('/analytics/summary'),
+                    api.get('/jobs?limit=5')
+                ]);
+                setStats(statsRes.data);
+                setRecentJobs(jobsRes.data.jobs);
             } catch (error) {
-                console.error('Error fetching dashboard stats:', error);
+                console.error('Error fetching dashboard data:', error);
             } finally {
                 setLoading(false);
             }
         };
 
-        fetchStats();
+        fetchData();
     }, []);
 
     if (loading) {
@@ -175,19 +180,25 @@ export default function DashboardHome() {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-50">
-                            {/* Could map real items here if we fetched them */}
-                            <tr>
-                                <td className="py-3 text-sm font-medium">2023 Honda Civic</td>
-                                <td className="py-3 text-sm text-gray-500">Bumper Repair</td>
-                                <td className="py-3 text-sm text-gray-500">Oct 24, 2023</td>
-                                <td className="py-3"><span className="bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs font-semibold">Published</span></td>
-                            </tr>
-                            <tr>
-                                <td className="py-3 text-sm font-medium">2019 Ford F-150</td>
-                                <td className="py-3 text-sm text-gray-500">Full Repaint</td>
-                                <td className="py-3 text-sm text-gray-500">Oct 22, 2023</td>
-                                <td className="py-3"><span className="bg-yellow-100 text-yellow-700 px-2 py-1 rounded-full text-xs font-semibold">Draft</span></td>
-                            </tr>
+                            {recentJobs.length > 0 ? (
+                                recentJobs.map((job) => (
+                                    <tr key={job.id}>
+                                        <td className="py-3 text-sm font-medium">{job.vehicle}</td>
+                                        <td className="py-3 text-sm text-gray-500 truncate max-w-[200px]">{job.services}</td>
+                                        <td className="py-3 text-sm text-gray-500">{new Date(job.createdAt).toLocaleDateString()}</td>
+                                        <td className="py-3">
+                                            <span className={`px-2 py-1 rounded-full text-xs font-semibold capitalize ${job.status === 'COMPLETE' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'
+                                                }`}>
+                                                {job.status.toLowerCase().replace('_', ' ')}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan={4} className="py-8 text-center text-gray-500">No jobs found</td>
+                                </tr>
+                            )}
                         </tbody>
                     </table>
                 </div>

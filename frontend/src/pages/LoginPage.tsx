@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import { Lock, Mail } from 'lucide-react';
 
@@ -73,12 +73,7 @@ export default function LoginPage() {
                     </button>
                 </form>
 
-                <div className="mt-6 text-center text-sm text-gray-500">
-                    Don't have an account?{' '}
-                    <Link to="/signup" className="text-brand-red hover:text-brand-darkRed font-medium">
-                        Sign up
-                    </Link>
-                </div>
+
             </div>
         </div>
     );

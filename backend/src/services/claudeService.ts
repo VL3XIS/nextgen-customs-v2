@@ -23,7 +23,8 @@ export const generatePosts = async (jobDetails: JobDetails): Promise<GeneratedPo
     const apiKey = process.env.ANTHROPIC_API_KEY;
 
     if (!apiKey) {
-        throw new Error('ANTHROPIC_API_KEY is not configured');
+        console.warn('ANTHROPIC_API_KEY is not configured. Falling back to mock data.');
+        return mockPosts(jobDetails);
     }
 
     const prompt = `
@@ -86,15 +87,36 @@ IMPORTANT: Respond ONLY with valid JSON in the following format, with no other t
     }
 };
 
-const mockPosts = (jobDetails: JobDetails): GeneratedPosts => ({
-    instagram: {
-        caption: `Check out this transformation on a ${jobDetails.vehicle}! Our team performed ${jobDetails.services} to bring this beauty back to life. At Next Gen Customs, we take pride in every detail. #NextGenCustoms #AutoBody`,
-        hashtags: ['#AutoBody', '#CollisionRepair', '#CarRestoration', '#NextGenCustoms', '#QualityWork']
-    },
-    facebook: {
-        caption: `Another successful job at Next Gen Customs! We just finished working on a ${jobDetails.vehicle}, performing ${jobDetails.services}. Our team is dedicated to providing top-notch quality and service. Stop by for an estimate!`
-    },
-    linkedin: {
-        caption: `Precision and expertise are at the core of our business at Next Gen Customs. We recently completed extensive work on a ${jobDetails.vehicle}, including ${jobDetails.services}. We're proud to serve our community with professional auto body repair services.`
-    }
-});
+const mockPosts = (jobDetails: JobDetails): GeneratedPosts => {
+    const variations = [
+        {
+            intro: "Incredible transformation alert! 🚗",
+            outro: "Quality you can trust, every single time. 🛠️",
+        },
+        {
+            intro: "Back on the road and looking better than ever!",
+            outro: "Another happy customer back in the driver's seat. ✅",
+        },
+        {
+            intro: "Check out the precision work on this beauty.",
+            outro: "Visit us for a free estimate today! 📍",
+        }
+    ];
+
+    const v = variations[Math.floor(Math.random() * variations.length)];
+
+    return {
+        instagram: {
+            caption: `${v.intro} Just finished up a ${jobDetails.vehicle}. We performed ${jobDetails.services} with full attention to detail. ${v.outro}`,
+            hashtags: ['#NextGenCustoms', '#AutoBodyRepair', '#CollisionRepair', '#CarRestoration', '#PaintJob', '#Craftsmanship']
+                .sort(() => 0.5 - Math.random()) // Shuffle hashtags
+                .slice(0, 5)
+        },
+        facebook: {
+            caption: `${v.intro} A fresh ${jobDetails.vehicle} just rolled out of the shop after receiving ${jobDetails.services}. Proud of the team's hard work on this one! ${v.outro}`
+        },
+        linkedin: {
+            caption: `Professionalism and quality craftsmanship. We've just completed a project involving a ${jobDetails.vehicle} where we specialized in ${jobDetails.services}. Building trust through excellence at Next Gen Customs. ${v.outro}`
+        }
+    };
+};

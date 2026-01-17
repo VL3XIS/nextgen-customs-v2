@@ -43,27 +43,40 @@ export const createJob = async (req: AuthRequest, res: Response) => {
             return res.status(401).json({ success: false, error: 'Unauthorized' });
         }
 
+        console.log('Received body:', req.body);
+        console.log('Received files:', req.files);
+
         const validation = jobCreateSchema.safeParse(req.body);
         if (!validation.success) {
+            console.error('Validation failed:', validation.error.format());
             return res.status(400).json({ success: false, error: validation.error.errors[0].message });
         }
 
-        const { vehicle, services, notes } = validation.data;
+        const { vehicle, services, notes, customerName } = validation.data;
+        const uploadedFiles = req.files as Express.Multer.File[];
 
         const job = await prisma.job.create({
             data: {
                 userId,
                 vehicle,
-                customerName: validation.data.customerName,
+                customerName,
                 services,
                 notes,
+                photos: {
+                    create: uploadedFiles?.map(file => ({
+                        url: `/uploads/${file.filename}`
+                    })) || []
+                }
             },
+            include: {
+                photos: true
+            }
         });
 
         res.status(201).json({ success: true, job });
-    } catch (error) {
-        console.error('Create job error:', error);
-        res.status(500).json({ success: false, error: 'Server error creating job' });
+    } catch (error: any) {
+        console.error('Create job error deep trace:', error);
+        res.status(500).json({ success: false, error: error.message || 'Server error creating job' });
     }
 };
 

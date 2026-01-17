@@ -23,7 +23,13 @@ export default function AddJobModal({ isOpen, onClose, onJobAdded }: AddJobModal
         e.preventDefault();
         setLoading(true);
         try {
-            await api.post('/jobs', formData);
+            const data = new FormData();
+            data.append('vehicle', formData.vehicle);
+            data.append('customerName', formData.customerName);
+            data.append('services', formData.services);
+            data.append('notes', formData.notes);
+
+            await api.post('/jobs', data);
             onJobAdded();
             onClose();
             setFormData({ vehicle: '', customerName: '', services: '', notes: '' });

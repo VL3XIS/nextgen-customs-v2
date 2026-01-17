@@ -53,9 +53,12 @@ export default function PostReviewPage() {
     const handleRegenerate = async () => {
         setRegenerating(true);
         try {
-            // In a real app we'd call regenerate endpoint, here we might just re-call generate
-            // ensuring backend handles cleanup. For now, let's just alert.
-            alert('Regeneration not fully implemented in demo backend, but would call AI service again.');
+            const response = await api.post('/posts/regenerate', { jobId });
+            setPosts(response.data.posts);
+            // Optional: show a success toast
+        } catch (error) {
+            console.error('Error regenerating posts:', error);
+            alert('Failed to regenerate posts. Please try again.');
         } finally {
             setRegenerating(false);
         }

@@ -7,6 +7,7 @@ export default function NewJobPage() {
     const [photos, setPhotos] = useState<File[]>([]);
     const [formData, setFormData] = useState({
         vehicle: '',
+        customerName: '',
         services: '',
         notes: ''
     });
@@ -27,8 +28,18 @@ export default function NewJobPage() {
         e.preventDefault();
         setLoading(true);
         try {
-            // 1. Create Job
-            const jobResponse = await api.post('/jobs', formData);
+            // 1. Create Job with FormData for photo support
+            const data = new FormData();
+            data.append('vehicle', formData.vehicle);
+            data.append('customerName', formData.customerName);
+            data.append('services', formData.services);
+            data.append('notes', formData.notes);
+
+            photos.forEach(photo => {
+                data.append('photos', photo);
+            });
+
+            const jobResponse = await api.post('/jobs', data);
             const jobId = jobResponse.data.job.id;
 
             // 2. Generate Posts immediately
@@ -82,6 +93,18 @@ export default function NewJobPage() {
                 {/* Form Section */}
                 <div className="md:col-span-2">
                     <form onSubmit={handleSubmit} className="bg-white p-8 rounded-xl shadow-sm border border-gray-100 space-y-6">
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Customer Name</label>
+                            <input
+                                type="text"
+                                value={formData.customerName}
+                                onChange={(e) => setFormData({ ...formData, customerName: e.target.value })}
+                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red focus:border-transparent outline-none"
+                                placeholder="e.g. John Doe"
+                                required
+                            />
+                        </div>
+
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">Vehicle Info</label>
                             <input

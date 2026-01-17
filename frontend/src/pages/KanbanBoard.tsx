@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
-import { DndContext, useDroppable } from '@dnd-kit/core';
-import type { DragEndEvent } from '@dnd-kit/core';
+import { DndContext, useDroppable, DragOverlay } from '@dnd-kit/core';
+import type { DragEndEvent, DragStartEvent } from '@dnd-kit/core';
 import api from '../services/api';
 import JobCard from '../components/JobCard';
 import AddJobModal from '../components/AddJobModal';
@@ -38,6 +38,7 @@ export default function KanbanBoard() {
     const [jobs, setJobs] = useState<Job[]>([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [refreshKey, setRefreshKey] = useState(0);
+    const [activeId, setActiveId] = useState<string | null>(null);
 
     const triggerRefresh = useCallback(() => {
         setRefreshKey(prev => prev + 1);
@@ -55,7 +56,12 @@ export default function KanbanBoard() {
         fetchJobs();
     }, [refreshKey]);
 
+    const handleDragStart = (event: DragStartEvent) => {
+        setActiveId(event.active.id as string);
+    };
+
     const handleDragEnd = async (event: DragEndEvent) => {
+        setActiveId(null);
         const { active, over } = event;
 
         if (over && active.id) {
@@ -89,7 +95,7 @@ export default function KanbanBoard() {
             </div>
 
             <div className="flex-1 overflow-x-auto pb-4">
-                <DndContext onDragEnd={handleDragEnd}>
+                <DndContext onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
                     <div className="flex space-x-4 h-full min-w-max px-1">
                         {COLUMNS.map((col) => (
                             <Column
@@ -100,6 +106,11 @@ export default function KanbanBoard() {
                             />
                         ))}
                     </div>
+                    <DragOverlay>
+                        {activeId ? (
+                            <JobCard job={jobs.find(j => j.id === activeId)!} />
+                        ) : null}
+                    </DragOverlay>
                 </DndContext>
             </div>
 

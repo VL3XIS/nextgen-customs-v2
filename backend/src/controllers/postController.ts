@@ -77,6 +77,60 @@ export const getJobPosts = async (req: AuthRequest, res: Response) => {
     }
 };
 
+export const regenerateJobPosts = async (req: AuthRequest, res: Response) => {
+    try {
+        const userId = req.user?.userId;
+        const { jobId } = req.body;
+
+        const job = await prisma.job.findUnique({ where: { id: jobId } });
+
+        if (!job) return res.status(404).json({ success: false, error: 'Job not found' });
+        if (job.userId !== userId) return res.status(403).json({ success: false, error: 'Access denied' });
+
+        // Delete existing posts first
+        await prisma.post.deleteMany({ where: { jobId } });
+
+        // Generate new posts
+        const generatedContent = await generatePosts({
+            vehicle: job.vehicle,
+            services: job.services,
+            notes: job.notes || undefined,
+        });
+
+        const posts = await prisma.$transaction([
+            prisma.post.create({
+                data: {
+                    jobId,
+                    platform: 'instagram',
+                    caption: generatedContent.instagram.caption,
+                    hashtags: generatedContent.instagram.hashtags,
+                },
+            }),
+            prisma.post.create({
+                data: {
+                    jobId,
+                    platform: 'facebook',
+                    caption: generatedContent.facebook.caption,
+                    hashtags: [],
+                },
+            }),
+            prisma.post.create({
+                data: {
+                    jobId,
+                    platform: 'linkedin',
+                    caption: generatedContent.linkedin.caption,
+                    hashtags: [],
+                },
+            }),
+        ]);
+
+        res.json({ success: true, posts });
+    } catch (error) {
+        console.error('Regenerate posts error:', error);
+        res.status(500).json({ success: false, error: 'Failed to regenerate posts' });
+    }
+};
+
 export const updatePost = async (req: AuthRequest, res: Response) => {
     try {
         const { id } = req.params;

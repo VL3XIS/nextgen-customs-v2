@@ -14,6 +14,7 @@ export default function JobCard({ job }: JobCardProps) {
 
     const style = transform ? {
         transform: CSS.Translate.toString(transform),
+        zIndex: 1000,
     } : undefined;
 
     const daysActive = Math.floor((new Date().getTime() - new Date(job.startedAt).getTime()) / (1000 * 3600 * 24));
