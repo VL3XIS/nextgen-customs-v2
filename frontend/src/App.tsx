@@ -9,6 +9,7 @@ import PostReviewPage from './pages/PostReviewPage';
 import AnalyticsPage from './pages/AnalyticsPage';
 import SettingsPage from './pages/SettingsPage';
 import KanbanBoard from './pages/KanbanBoard';
+import StatusPage from './pages/StatusPage';
 
 // Routes are managed using DashboardLayout for internal pages
 
@@ -44,6 +45,7 @@ export default function App() {
           <Route path="settings" element={<SettingsPage />} />
         </Route>
 
+        <Route path="/status/:jobId" element={<StatusPage />} />
         <Route path="/" element={<Navigate to="/dashboard" replace />} />
       </Routes>
     </BrowserRouter>

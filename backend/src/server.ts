@@ -30,12 +30,14 @@ import jobRoutes from './routes/jobs';
 import postRoutes from './routes/posts';
 import analyticsRoutes from './routes/analytics';
 import userRoutes from './routes/user';
+import publicRoutes from './routes/public';
 
 app.use('/api/auth', authRoutes);
 app.use('/api/jobs', jobRoutes);
 app.use('/api/posts', postRoutes);
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/user', userRoutes);
+app.use('/api/public', publicRoutes);
 
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
