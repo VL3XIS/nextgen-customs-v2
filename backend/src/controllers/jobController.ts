@@ -35,9 +35,8 @@ export const updateJobStatus = async (req: AuthRequest, res: Response) => {
         });
 
         // Trigger Notification
-        // Prefer DEMO_EMAIL_RECIPIENT for demos, otherwise use the shop owner's email
-        // In a real app, this would be job.customerEmail
-        const recipientEmail = process.env.DEMO_EMAIL_RECIPIENT || job.user.email;
+        // Prefer explicit customer email, then DEMO recipient, then shop owner fallback
+        const recipientEmail = job.customerEmail || process.env.DEMO_EMAIL_RECIPIENT || job.user.email;
 
         // Don't await this, let it run in background so UI is snappy
         sendJobStatusEmail({
@@ -71,7 +70,7 @@ export const createJob = async (req: AuthRequest, res: Response) => {
             return res.status(400).json({ success: false, error: validation.error.errors[0].message });
         }
 
-        const { vehicle, services, notes, customerName } = validation.data;
+        const { vehicle, services, notes, customerName, customerEmail } = validation.data;
         const uploadedFiles = req.files as Express.Multer.File[];
 
         const job = await prisma.job.create({
@@ -79,6 +78,7 @@ export const createJob = async (req: AuthRequest, res: Response) => {
                 userId,
                 vehicle,
                 customerName,
+                customerEmail: customerEmail || null,
                 services,
                 notes,
                 photos: {

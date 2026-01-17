@@ -14,6 +14,7 @@ export const loginSchema = z.object({
 export const jobCreateSchema = z.object({
     vehicle: z.string().min(1, 'Vehicle information is required'),
     customerName: z.string().min(1, 'Customer name is required'),
+    customerEmail: z.string().email('Invalid email').optional().or(z.literal('')),
     services: z.string().min(1, 'Services description is required'),
     notes: z.string().optional(),
 });

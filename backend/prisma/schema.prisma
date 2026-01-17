@@ -23,6 +23,7 @@ model Job {
   userId       String
   vehicle      String
   customerName String    @default("Customer")
+  customerEmail String?  // Added for notifications
   status       JobStatus @default(ESTIMATE)
   services     String
   notes        String?

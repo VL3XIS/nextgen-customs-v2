@@ -6,6 +6,7 @@ import { toast } from 'sonner';
 
 const jobSchema = z.object({
     customerName: z.string().min(2, "Name must be at least 2 characters"),
+    customerEmail: z.string().email("Invalid email address").optional().or(z.literal('')),
     vehicle: z.string().min(3, "Vehicle details too short"),
     services: z.string().min(5, "Please detail the services"),
     notes: z.string().optional()
@@ -18,6 +19,7 @@ interface AddJobModalProps {
     initialData?: {
         vehicle?: string;
         customerName?: string;
+        customerEmail?: string;
         services?: string;
         notes?: string;
     };
@@ -28,6 +30,7 @@ export default function AddJobModal({ isOpen, onClose, onJobAdded, initialData }
     const [formData, setFormData] = useState({
         vehicle: initialData?.vehicle || '',
         customerName: initialData?.customerName || '',
+        customerEmail: initialData?.customerEmail || '',
         services: initialData?.services || '',
         notes: initialData?.notes || ''
     });
@@ -38,6 +41,7 @@ export default function AddJobModal({ isOpen, onClose, onJobAdded, initialData }
             setFormData({
                 vehicle: initialData.vehicle || '',
                 customerName: initialData.customerName || '',
+                customerEmail: initialData.customerEmail || '',
                 services: initialData.services || '',
                 notes: initialData.notes || ''
             });
@@ -59,17 +63,22 @@ export default function AddJobModal({ isOpen, onClose, onJobAdded, initialData }
 
         setLoading(true);
         try {
-            const data = new FormData();
-            data.append('vehicle', formData.vehicle);
-            data.append('customerName', formData.customerName);
-            data.append('services', formData.services);
-            data.append('notes', formData.notes || '');
+            const data = {
+                vehicle: formData.vehicle,
+                customerName: formData.customerName,
+                customerEmail: formData.customerEmail,
+                services: formData.services,
+                notes: formData.notes || ''
+            };
 
+            // Using JSON instead of FormData unless we are actively uploading files in this modal
+            // If file upload is needed, we revert to FormData but for now generic JSON is cleaner for text
             await api.post('/jobs', data);
+
             toast.success('Job created successfully');
             onJobAdded();
             onClose();
-            setFormData({ vehicle: '', customerName: '', services: '', notes: '' });
+            setFormData({ vehicle: '', customerName: '', customerEmail: '', services: '', notes: '' });
         } catch (error) {
             console.error('Error adding job:', error);
             toast.error('Failed to create job. Please try again.');
@@ -79,75 +88,86 @@ export default function AddJobModal({ isOpen, onClose, onJobAdded, initialData }
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-            <div className="bg-white rounded-xl shadow-xl w-full max-w-md p-6 relative animate-fade-in">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md">
+            <div className="glass-panel-neon w-full max-w-md p-6 relative animate-fade-in border border-white/10">
                 <button
                     onClick={onClose}
-                    className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
+                    className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors"
                 >
                     <X className="h-5 w-5" />
                 </button>
 
-                <h2 className="text-xl font-bold text-gray-900 mb-6">Add New Job</h2>
+                <h2 className="text-xl font-bold font-display text-white mb-6 uppercase tracking-wider">Add New Job</h2>
 
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Customer Name</label>
+                        <label className="block text-xs font-bold text-brand-red uppercase tracking-wider mb-1">Customer Name</label>
                         <input
                             required
                             type="text"
                             value={formData.customerName}
                             onChange={(e) => setFormData({ ...formData, customerName: e.target.value })}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red outline-none"
+                            className="input-neon w-full px-4 py-2"
                             placeholder="John Doe"
                         />
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Vehicle</label>
+                        <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Customer Email (Optional)</label>
+                        <input
+                            type="email"
+                            value={formData.customerEmail}
+                            onChange={(e) => setFormData({ ...formData, customerEmail: e.target.value })}
+                            className="input-neon w-full px-4 py-2"
+                            placeholder="john@example.com"
+                        />
+                    </div>
+
+                    <div>
+                        <label className="block text-xs font-bold text-brand-red uppercase tracking-wider mb-1">Vehicle</label>
                         <input
                             required
                             type="text"
                             value={formData.vehicle}
                             onChange={(e) => setFormData({ ...formData, vehicle: e.target.value })}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red outline-none"
+                            className="input-neon w-full px-4 py-2"
                             placeholder="2024 Toyota Camry"
                         />
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Services</label>
+                        <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Services</label>
                         <textarea
                             required
                             value={formData.services}
                             onChange={(e) => setFormData({ ...formData, services: e.target.value })}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red outline-none h-20 resize-none"
-                            placeholder="Bumper repair..."
+                            className="input-neon w-full px-4 py-2 h-24 resize-none"
+                            placeholder="Bumper repair, full detail..."
                         />
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Notes</label>
+                        <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Notes</label>
                         <textarea
                             value={formData.notes}
                             onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red outline-none h-20 resize-none"
-                            placeholder="Optional notes..."
+                            className="input-neon w-full px-4 py-2 h-20 resize-none"
+                            placeholder="Insurance claim #..."
                         />
                     </div>
 
-                    <div className="pt-2 flex justify-end space-x-3">
+                    <div className="pt-4 flex justify-end space-x-3">
                         <button
                             type="button"
                             onClick={onClose}
-                            className="px-4 py-2 text-gray-600 hover:text-gray-800 font-medium"
+                            className="px-4 py-2 text-gray-400 hover:text-white font-medium transition-colors"
                         >
                             Cancel
                         </button>
                         <button
                             type="submit"
                             disabled={loading}
-                            className="px-6 py-2 bg-brand-red text-white rounded-lg hover:bg-brand-darkRed font-medium flex items-center"
+                            className="btn-primary flex items-center"
                         >
                             {loading && <Loader2 className="animate-spin h-4 w-4 mr-2" />}
                             Create Job
