@@ -41,29 +41,31 @@ export default function SettingsPage() {
 
     return (
         <div className="max-w-2xl">
-            <h1 className="text-2xl font-bold text-gray-900 mb-8">Settings</h1>
+            <h1 className="text-3xl font-bold text-white mb-8 font-rajdhani uppercase tracking-wide">
+                Settings <span className="text-brand-red">.</span>
+            </h1>
 
             {toast && (
-                <div className="fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded shadow-lg animate-fade-in">
+                <div className="fixed top-4 right-4 bg-green-500/10 border border-green-500/50 text-green-400 px-4 py-2 rounded-lg shadow-lg animate-fade-in backdrop-blur-md">
                     {toast}
                 </div>
             )}
 
-            <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-100 space-y-8">
+            <div className="glass-panel p-8 rounded-2xl border border-white/10 space-y-8">
                 <section>
-                    <h2 className="text-lg font-bold text-gray-900 mb-4 border-b pb-2">Shop Profile</h2>
-                    <form onSubmit={handleUpdateProfile} className="space-y-4">
+                    <h2 className="text-lg font-bold text-white mb-6 border-b border-white/10 pb-2 font-rajdhani uppercase tracking-wide">Shop Profile</h2>
+                    <form onSubmit={handleUpdateProfile} className="space-y-6">
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Shop Name</label>
+                            <label className="block text-xs font-medium text-gray-400 mb-2 uppercase tracking-wider">Shop Name</label>
                             <input
                                 type="text"
                                 value={shopName}
                                 onChange={(e) => setShopName(e.target.value)}
-                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red outline-none"
+                                className="w-full px-4 py-3 bg-black/30 border border-white/10 rounded-xl text-white placeholder-gray-600 focus:ring-1 focus:ring-brand-red focus:border-brand-red/50 outline-none transition-all"
                             />
                         </div>
                         <div className="flex justify-end">
-                            <button type="submit" className="bg-brand-black text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition-colors">
+                            <button type="submit" className="bg-white/5 hover:bg-white/10 text-white px-6 py-2 rounded-lg border border-white/10 transition-colors font-medium">
                                 Save Changes
                             </button>
                         </div>
@@ -71,39 +73,39 @@ export default function SettingsPage() {
                 </section>
 
                 <section>
-                    <h2 className="text-lg font-bold text-gray-900 mb-4 border-b pb-2">Security</h2>
-                    <form onSubmit={handleChangePassword} className="space-y-4">
+                    <h2 className="text-lg font-bold text-white mb-6 border-b border-white/10 pb-2 font-rajdhani uppercase tracking-wide">Security</h2>
+                    <form onSubmit={handleChangePassword} className="space-y-6">
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Current Password</label>
+                            <label className="block text-xs font-medium text-gray-400 mb-2 uppercase tracking-wider">Current Password</label>
                             <input
                                 type="password"
                                 value={passwords.current}
                                 onChange={(e) => setPasswords({ ...passwords, current: e.target.value })}
-                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red outline-none"
+                                className="w-full px-4 py-3 bg-black/30 border border-white/10 rounded-xl text-white placeholder-gray-600 focus:ring-1 focus:ring-brand-red focus:border-brand-red/50 outline-none transition-all"
                             />
                         </div>
                         <div className="grid grid-cols-2 gap-4">
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">New Password</label>
+                                <label className="block text-xs font-medium text-gray-400 mb-2 uppercase tracking-wider">New Password</label>
                                 <input
                                     type="password"
                                     value={passwords.new}
                                     onChange={(e) => setPasswords({ ...passwords, new: e.target.value })}
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red outline-none"
+                                    className="w-full px-4 py-3 bg-black/30 border border-white/10 rounded-xl text-white placeholder-gray-600 focus:ring-1 focus:ring-brand-red focus:border-brand-red/50 outline-none transition-all"
                                 />
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Confirm New Password</label>
+                                <label className="block text-xs font-medium text-gray-400 mb-2 uppercase tracking-wider">Confirm New Password</label>
                                 <input
                                     type="password"
                                     value={passwords.confirm}
                                     onChange={(e) => setPasswords({ ...passwords, confirm: e.target.value })}
-                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red outline-none"
+                                    className="w-full px-4 py-3 bg-black/30 border border-white/10 rounded-xl text-white placeholder-gray-600 focus:ring-1 focus:ring-brand-red focus:border-brand-red/50 outline-none transition-all"
                                 />
                             </div>
                         </div>
                         <div className="flex justify-end">
-                            <button type="submit" className="bg-brand-red text-white px-4 py-2 rounded-lg hover:bg-brand-darkRed transition-colors shadow-md">
+                            <button type="submit" className="bg-brand-red hover:bg-brand-neon text-white px-6 py-2 rounded-lg shadow-[0_0_15px_rgba(255,42,60,0.3)] hover:shadow-[0_0_25px_rgba(255,42,60,0.5)] transition-all font-bold tracking-wide">
                                 Change Password
                             </button>
                         </div>
