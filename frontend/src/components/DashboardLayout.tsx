@@ -39,26 +39,22 @@ export default function DashboardLayout() {
                 "fixed lg:static inset-y-0 left-0 z-50 w-72 bg-brand-obsidian/90 backdrop-blur-xl border-r border-white/5 text-white transform transition-transform duration-300 ease-in-out lg:transform-none flex flex-col",
                 sidebarOpen ? "translate-x-0" : "-translate-x-full"
             )}>
-                <div className="p-8 border-b border-white/5 flex justify-between items-center relative overflow-hidden">
-                    {/* Glowing Accent */}
-                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-brand-neon to-transparent opacity-50" />
-
-                    <div className="flex items-center space-x-3 z-10">
-                        {/* Simple Logo Placeholder until image load */}
-                        <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-brand-red to-brand-black flex items-center justify-center border border-white/10 shadow-lg shadow-brand-red/20">
-                            <span className="font-display font-bold text-xl italic text-white">N</span>
+                <div className="p-8 border-b border-white/5 flex flex-col items-center justify-center relative overflow-hidden h-32">
+                    <div className="flex flex-col items-center z-10">
+                        {/* Shield Logo Approximation */}
+                        <div className="relative mb-2">
+                            <div className="w-12 h-14 bg-gradient-to-br from-red-600 to-black rounded-b-full border-2 border-red-500 flex items-center justify-center shadow-[0_0_20px_rgba(220,38,38,0.4)]">
+                                <span className="font-display font-bold text-2xl text-white italic">NC</span>
+                            </div>
                         </div>
-                        <div>
-                            <span className="block font-display font-bold text-xl tracking-wider text-white">NEXTGEN</span>
-                            <span className="block text-xs text-brand-red tracking-[0.2em] font-medium scale-90 origin-left">CUSTOMS</span>
+                        <div className="text-center leading-none">
+                            <span className="block font-display font-bold text-2xl tracking-widest text-white neon-text">NEXTGEN</span>
+                            <span className="block font-sans text-[10px] text-red-500 tracking-[0.4em] font-bold mt-1">CUSTOMS</span>
                         </div>
                     </div>
-                    <button onClick={() => setSidebarOpen(false)} className="lg:hidden text-gray-400 hover:text-white transition-colors">
-                        <X className="h-6 w-6" />
-                    </button>
                 </div>
 
-                <nav className="flex-1 p-6 space-y-2">
+                <nav className="flex-1 px-4 py-6 space-y-2">
                     {navItems.map((item) => {
                         const Icon = item.icon;
                         const isActive = location.pathname === item.path;
@@ -68,23 +64,20 @@ export default function DashboardLayout() {
                                 key={item.path}
                                 to={item.path}
                                 className={cn(
-                                    "flex items-center space-x-3 px-4 py-3.5 rounded-xl transition-all duration-300 group relative overflow-hidden",
+                                    "flex items-center space-x-4 px-4 py-4 rounded-xl transition-all duration-300 group relative overflow-hidden",
                                     isActive
-                                        ? "bg-brand-red/10 text-white border-l-2 border-brand-neon"
+                                        ? "bg-gradient-to-r from-red-900/80 to-red-600/20 text-white border-l-4 border-red-500 shadow-[0_0_15px_rgba(220,38,38,0.2)]"
                                         : "text-gray-400 hover:text-white hover:bg-white/5"
                                 )}
                                 onClick={() => setSidebarOpen(false)}
                             >
-                                {isActive && (
-                                    <div className="absolute inset-0 bg-gradient-to-r from-brand-red/10 to-transparent opacity-100" />
-                                )}
                                 <Icon className={cn(
-                                    "h-5 w-5 relative z-10 transition-transform duration-300 group-hover:scale-110",
-                                    isActive ? "text-brand-neon drop-shadow-[0_0_8px_rgba(255,42,60,0.5)]" : "text-gray-400 group-hover:text-white"
+                                    "h-5 w-5 relative z-10 transition-transform duration-300",
+                                    isActive ? "text-white" : "text-gray-500 group-hover:text-white"
                                 )} />
                                 <span className={cn(
-                                    "font-medium tracking-wide relative z-10",
-                                    isActive && "text-shadow-sm"
+                                    "font-medium tracking-wide relative z-10 text-sm",
+                                    isActive && "font-bold"
                                 )}>{item.label}</span>
                             </Link>
                         );
@@ -102,8 +95,8 @@ export default function DashboardLayout() {
                 </div>
             </aside>
 
-            {/* Main Content Area - Transparent to show Carbon Fiber */}
-            <div className="flex-1 flex flex-col min-h-screen transition-all duration-300">
+            {/* Main Content Area - Carbon Fiber BG */}
+            <div className="flex-1 flex flex-col min-h-screen transition-all duration-300 carbon-bg">
                 {/* Glass Header */}
                 <header className="h-20 px-8 flex items-center justify-between sticky top-0 z-40 bg-brand-black/50 backdrop-blur-md border-b border-white/5">
                     <button
