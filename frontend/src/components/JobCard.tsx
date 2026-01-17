@@ -25,21 +25,21 @@ export default function JobCard({ job }: JobCardProps) {
             style={style}
             {...listeners}
             {...attributes}
-            className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 cursor-grab active:cursor-grabbing hover:shadow-md transition-shadow mb-3"
+            className="bg-brand-black/80 backdrop-blur-sm p-4 rounded-lg shadow-lg border border-white/5 cursor-grab active:cursor-grabbing hover:border-brand-red/50 hover:shadow-[0_0_15px_rgba(255,42,60,0.15)] transition-all duration-300 mb-3 group"
         >
-            <h4 className="font-bold text-gray-900 mb-1">{job.vehicle}</h4>
+            <h4 className="font-bold text-white mb-2 font-rajdhani tracking-wide text-lg group-hover:text-brand-red transition-colors">{job.vehicle}</h4>
 
-            <div className="space-y-2 text-xs text-gray-500">
+            <div className="space-y-2 text-xs text-gray-400">
                 <div className="flex items-center">
-                    <User className="h-3 w-3 mr-1.5" />
+                    <User className="h-3 w-3 mr-2 text-brand-red" />
                     {job.customerName}
                 </div>
                 <div className="flex items-center">
-                    <Calendar className="h-3 w-3 mr-1.5" />
+                    <Calendar className="h-3 w-3 mr-2 text-brand-red" />
                     Started: {new Date(job.startedAt).toLocaleDateString()}
                 </div>
-                <div className="flex items-center text-brand-red font-medium">
-                    <Clock className="h-3 w-3 mr-1.5" />
+                <div className="flex items-center text-gray-300 font-medium bg-white/5 p-1.5 rounded border border-white/5 mt-2">
+                    <Clock className="h-3 w-3 mr-2 text-brand-red" />
                     {daysActive} days in stage
                 </div>
             </div>
