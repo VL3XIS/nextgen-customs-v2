@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { X, Upload, FileText, CheckCircle, AlertCircle } from 'lucide-react';
+import { X, Upload, FileText, AlertCircle } from 'lucide-react';
 
 interface ImportJobModalProps {
     isOpen: boolean;

@@ -1,5 +1,6 @@
 // ... imports ...
 import { Link, useLocation, Outlet, useNavigate } from 'react-router-dom';
+import { Toaster } from 'sonner';
 import { LayoutDashboard, PlusCircle, History, BarChart2, Settings, LogOut, Menu, Briefcase, User as UserIcon } from 'lucide-react';
 import { useState } from 'react';
 import { cn } from '../utils/cn';
@@ -26,6 +27,7 @@ export default function DashboardLayout() {
 
     return (
         <div className="min-h-screen flex relative">
+            <Toaster position="top-right" theme="dark" closeButton richColors />
             {/* Mobile Sidebar Overlay */}
             {sidebarOpen && (
                 <div

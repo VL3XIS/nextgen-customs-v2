@@ -1,6 +1,15 @@
 import { useState, useEffect } from 'react';
 import { X, Loader2 } from 'lucide-react';
 import api from '../services/api';
+import { z } from 'zod';
+import { toast } from 'sonner';
+
+const jobSchema = z.object({
+    customerName: z.string().min(2, "Name must be at least 2 characters"),
+    vehicle: z.string().min(3, "Vehicle details too short"),
+    services: z.string().min(5, "Please detail the services"),
+    notes: z.string().optional()
+});
 
 interface AddJobModalProps {
     isOpen: boolean;
@@ -39,21 +48,31 @@ export default function AddJobModal({ isOpen, onClose, onJobAdded, initialData }
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        // Zod Validation
+        const result = jobSchema.safeParse(formData);
+        if (!result.success) {
+            const errorMsg = result.error.issues[0].message;
+            toast.error(errorMsg);
+            return;
+        }
+
         setLoading(true);
         try {
             const data = new FormData();
             data.append('vehicle', formData.vehicle);
             data.append('customerName', formData.customerName);
             data.append('services', formData.services);
-            data.append('notes', formData.notes);
+            data.append('notes', formData.notes || '');
 
             await api.post('/jobs', data);
+            toast.success('Job created successfully');
             onJobAdded();
             onClose();
             setFormData({ vehicle: '', customerName: '', services: '', notes: '' });
         } catch (error) {
             console.error('Error adding job:', error);
-            alert('Failed to add job');
+            toast.error('Failed to create job. Please try again.');
         } finally {
             setLoading(false);
         }

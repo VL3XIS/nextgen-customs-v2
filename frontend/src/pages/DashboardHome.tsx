@@ -14,6 +14,7 @@ import {
 } from 'chart.js';
 import { Line, Pie } from 'react-chartjs-2';
 import api from '../services/api';
+import { DashboardSkeleton } from '../components/GlassSkeleton';
 import { Zap } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import type { AnalyticsStats } from '../types';
@@ -54,11 +55,7 @@ export default function DashboardHome() {
     }, []);
 
     if (loading) {
-        return (
-            <div className="flex items-center justify-center h-64">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-red"></div>
-            </div>
-        );
+        return <DashboardSkeleton />;
     }
 
     const { summary, charts } = stats || {
