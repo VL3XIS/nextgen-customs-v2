@@ -41,7 +41,7 @@ export const sendJobStatusEmail = async ({ to, customerName, vehicle, status, jo
                             You can view more details and photos in your portal.
                         </p>
                         <div style="text-align: center; margin-top: 30px;">
-                            <a href="${process.env.FRONTEND_URL || 'http://localhost:5173'}/status/${jobId}" style="background: transparent; border: 1px solid #fff; color: #fff; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-size: 14px;">View Job Details</a>
+                            <a href="${process.env.FRONTEND_URL || 'https://nextgen-customs-v2.vercel.app'}/status/${jobId}" style="background: transparent; border: 1px solid #fff; color: #fff; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-size: 14px;">View Job Details</a>
                         </div>
                     </div>
                     <div style="text-align: center; margin-top: 20px; color: #666; font-size: 12px;">
