@@ -20,6 +20,7 @@ export default {
             fontFamily: {
                 sans: ['Inter', 'sans-serif'],
                 display: ['Rajdhani', 'sans-serif'], // Tech/Automotive font
+                outfit: ['Outfit', 'sans-serif'], // Body font
             },
             backgroundImage: {
                 'carbon-fiber': "url('https://www.transparenttextures.com/patterns/carbon-fibre.png')",
