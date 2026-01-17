@@ -51,7 +51,7 @@ export default function JobHistoryPage() {
         <div className="space-y-6">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
-                    <h1 className="text-3xl font-display font-bold text-white tracking-wide">
+                    <h1 className="text-3xl font-bold text-white tracking-wide font-rajdhani uppercase">
                         Job History <span className="text-brand-red">.</span>
                     </h1>
                     <p className="text-gray-400 mt-1 text-sm">Manage and track all vehicle projects</p>

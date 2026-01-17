@@ -59,7 +59,7 @@ export default function NewJobPage() {
     return (
         <div className="max-w-4xl mx-auto space-y-8">
             <div>
-                <h1 className="text-3xl font-display font-bold text-white tracking-wide">
+                <h1 className="text-3xl font-bold text-white tracking-wide font-rajdhani uppercase">
                     Initialize New Job <span className="text-brand-red">.</span>
                 </h1>
                 <p className="text-gray-400 mt-1">Input vehicle details and upload photos to generate content.</p>

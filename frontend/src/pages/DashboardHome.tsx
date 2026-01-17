@@ -144,7 +144,7 @@ export default function DashboardHome() {
         <div className="space-y-8">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h1 className="text-3xl font-display font-bold text-white tracking-wide">
+                    <h1 className="text-3xl font-bold text-white font-rajdhani uppercase tracking-wide">
                         Overview <span className="text-brand-red">.</span>
                     </h1>
                     <p className="text-gray-400 mt-1">Welcome back, Admin</p>
@@ -174,7 +174,7 @@ export default function DashboardHome() {
                             <div>
                                 <h3 className="text-gray-400 text-sm font-medium uppercase tracking-wider">{stat.label}</h3>
                                 <div className="mt-2 flex items-baseline space-x-2">
-                                    <span className="text-3xl font-display font-bold text-white group-hover:text-brand-silver transition-colors">
+                                    <span className="text-3xl font-bold text-white group-hover:text-brand-silver transition-colors font-rajdhani">
                                         {stat.value}
                                     </span>
                                 </div>
@@ -199,7 +199,7 @@ export default function DashboardHome() {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div className="glass-panel p-6 rounded-2xl lg:col-span-2">
                     <div className="flex justify-between items-center mb-6">
-                        <h3 className="text-lg font-display font-bold text-white">Activity Overview</h3>
+                        <h3 className="text-lg font-bold text-white font-rajdhani uppercase tracking-wide">Activity Overview</h3>
                         <select className="bg-black/30 border border-white/10 text-xs text-gray-400 rounded-md px-2 py-1 outline-none focus:border-brand-red/50">
                             <option>Last 7 Days</option>
                             <option>Last 30 Days</option>
@@ -211,7 +211,7 @@ export default function DashboardHome() {
                 </div>
 
                 <div className="glass-panel p-6 rounded-2xl">
-                    <h3 className="text-lg font-display font-bold text-white mb-6">Platform Mix</h3>
+                    <h3 className="text-lg font-bold text-white mb-6 font-rajdhani uppercase tracking-wide">Platform Mix</h3>
                     <div className="h-64 flex justify-center relative">
                         <Pie options={{
                             responsive: true,
@@ -234,7 +234,7 @@ export default function DashboardHome() {
             {/* Recent Jobs Table - Glass Style */}
             <div className="glass-panel rounded-2xl overflow-hidden border border-white/10">
                 <div className="p-6 border-b border-white/5 flex justify-between items-center bg-white/5">
-                    <h3 className="text-lg font-display font-bold text-white">Recent Projects</h3>
+                    <h3 className="text-lg font-bold text-white font-rajdhani uppercase tracking-wide">Recent Projects</h3>
                     <Link to="/dashboard/history" className="text-brand-red text-sm font-medium flex items-center hover:text-brand-neon transition-colors">
                         View All <ArrowRight className="h-4 w-4 ml-1" />
                     </Link>

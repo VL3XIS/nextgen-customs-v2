@@ -88,7 +88,7 @@ export default function PostReviewPage() {
                         <ArrowLeft className="h-5 w-5" />
                     </button>
                     <div>
-                        <h1 className="text-2xl font-display font-bold text-white tracking-wide">Review Content</h1>
+                        <h1 className="text-2xl font-bold text-white tracking-wide font-rajdhani uppercase">Review Content</h1>
                         <p className="text-gray-400 text-sm flex items-center mt-1">
                             <span className="text-brand-red mr-2">●</span>
                             {job.vehicle}
