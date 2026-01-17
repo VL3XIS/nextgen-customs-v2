@@ -142,91 +142,71 @@ export default function DashboardHome() {
 
     return (
         <div className="space-y-8">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-2">
                 <div>
-                    <h1 className="text-3xl font-bold text-white font-rajdhani uppercase tracking-wide">
+                    <h1 className="text-4xl font-bold text-white font-rajdhani uppercase tracking-wide neon-text">
                         Overview <span className="text-brand-red">.</span>
                     </h1>
-                    <p className="text-gray-400 mt-1">Welcome back, Admin</p>
+                    <p className="text-gray-400 mt-1 italic font-light tracking-wide">Welcome back, Admin</p>
                 </div>
 
-                <Link to="new-job" className="group relative px-6 py-3 bg-brand-red overflow-hidden rounded-lg font-medium text-white shadow-lg shadow-brand-red/30 hover:shadow-brand-red/50 transition-all duration-300">
+                <Link to="new-job" className="group relative px-8 py-3 bg-brand-red overflow-hidden rounded-xl font-bold text-lg text-white shadow-[0_0_20px_rgba(220,38,38,0.4)] hover:shadow-[0_0_30px_rgba(220,38,38,0.6)] hover:bg-red-600 transition-all duration-300 font-rajdhani uppercase tracking-wider">
                     <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]"></div>
                     <div className="flex items-center relative z-10">
-                        <Zap className="h-4 w-4 mr-2" />
-                        <span>Initialize New Job</span>
+                        <Zap className="h-5 w-5 mr-3 fill-current" />
+                        <span>Initiate New Job</span>
                     </div>
                 </Link>
             </div>
 
-            {/* Metrics Cards */}
+            {/* Metrics Cards - Exact Match Style */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {[
-                    { label: 'Total Jobs', value: summary.totalJobs, icon: Briefcase, trend: '+12%', trendColor: 'text-green-400' },
-                    { label: 'Posts Generated', value: summary.totalPosts, icon: Zap, trend: 'stable', trendColor: 'text-gray-400' },
-                    { label: 'Time Saved', value: `${Math.round(summary.timeSavedMinutes / 60)}h ${summary.timeSavedMinutes % 60}m`, icon: Clock, trend: '~30m/post', trendColor: 'text-brand-neon' },
-                    { label: 'Active Clients', value: '48', icon: Users, trend: '+3 new', trendColor: 'text-green-400' }
+                    { label: 'Total Jobs', value: summary.totalJobs, icon: Briefcase, trend: '+ 12%', trendColor: 'text-green-400' },
+                    { label: 'Posts Generated', value: summary.totalPosts, icon: Zap, trend: '- stable', trendColor: 'text-gray-400' },
+                    { label: 'Time Saved', value: `${Math.round(summary.timeSavedMinutes / 60)}h ${summary.timeSavedMinutes % 60}m`, icon: Clock, trend: '~ 30m/post', trendColor: 'text-brand-red' },
+                    { label: 'Active Clients', value: '48', icon: Users, trend: '+ 16 new', trendColor: 'text-green-400' }
                 ].map((stat, i) => (
-                    <div key={i} className="glass-card p-6 rounded-2xl group relative overflow-hidden">
-                        <div className="absolute top-0 right-0 w-24 h-24 bg-brand-red/10 rounded-full blur-2xl -translate-y-12 translate-x-12 group-hover:bg-brand-red/20 transition-colors" />
-
-                        <div className="flex items-start justify-between mb-4 relative z-10">
-                            <div>
-                                <h3 className="text-gray-400 text-sm font-medium uppercase tracking-wider">{stat.label}</h3>
-                                <div className="mt-2 flex items-baseline space-x-2">
-                                    <span className="text-3xl font-bold text-white group-hover:text-brand-silver transition-colors font-rajdhani">
-                                        {stat.value}
-                                    </span>
-                                </div>
-                            </div>
-                            <div className="p-3 bg-white/5 rounded-lg border border-white/5 group-hover:border-brand-red/30 transition-colors">
-                                <stat.icon className="h-5 w-5 text-brand-red" />
+                    <div key={i} className="glass-panel-neon p-6 rounded-2xl relative overflow-hidden flex flex-col justify-between min-h-[140px] group">
+                        {/* Header Row */}
+                        <div className="flex justify-between items-start">
+                            <h3 className="text-gray-400 text-xs font-bold uppercase tracking-[0.1em] font-display">{stat.label}</h3>
+                            <div className="h-10 w-10 bg-white/5 rounded-lg flex items-center justify-center border border-white/10 group-hover:border-red-500/50 transition-colors shadow-inner">
+                                <stat.icon className="h-5 w-5 text-red-500" />
                             </div>
                         </div>
 
-                        <div className="flex items-center text-xs font-medium relative z-10">
-                            <TrendingUp className={cn("h-3 w-3 mr-1", stat.trendColor)} />
-                            <span className={stat.trendColor}>{stat.trend}</span>
+                        {/* Value Row */}
+                        <div className="mt-4">
+                            <span className="text-4xl font-bold text-white font-rajdhani tracking-tight drop-shadow-lg block">{stat.value}</span>
+                            <span className={cn("text-xs font-bold mt-1 block tracking-wide", stat.trendColor)}>{stat.trend}</span>
                         </div>
-
-                        {/* Bottom Glow Bar */}
-                        <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-brand-red/0 via-brand-red/50 to-brand-red/0 opacity-0 group-hover:opacity-100 transition-opacity" />
                     </div>
                 ))}
             </div>
 
-            {/* Charts Section */}
+            {/* Charts Section - Exact Match Style */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div className="glass-panel p-6 rounded-2xl lg:col-span-2">
+                <div className="glass-panel-neon p-6 rounded-2xl lg:col-span-2 flex flex-col">
                     <div className="flex justify-between items-center mb-6">
                         <h3 className="text-lg font-bold text-white font-rajdhani uppercase tracking-wide">Activity Overview</h3>
-                        <select className="bg-black/30 border border-white/10 text-xs text-gray-400 rounded-md px-2 py-1 outline-none focus:border-brand-red/50">
-                            <option>Last 7 Days</option>
-                            <option>Last 30 Days</option>
-                        </select>
+                        <div className="bg-black/40 border border-white/10 rounded-lg px-3 py-1 text-xs text-gray-500 font-medium">Last 7 Days</div>
                     </div>
-                    <div className="h-72">
+                    <div className="flex-1 min-h-[250px] relative">
                         <Line options={chartOptions} data={lineChartData} />
                     </div>
                 </div>
 
-                <div className="glass-panel p-6 rounded-2xl">
+                <div className="glass-panel-neon p-6 rounded-2xl flex flex-col">
                     <h3 className="text-lg font-bold text-white mb-6 font-rajdhani uppercase tracking-wide">Platform Mix</h3>
-                    <div className="h-64 flex justify-center relative">
+                    <div className="flex-1 flex items-center justify-center relative min-h-[250px]">
                         <Pie options={{
                             responsive: true,
                             maintainAspectRatio: false,
                             plugins: {
-                                legend: { position: 'bottom', labels: { color: '#9CA3AF', usePointStyle: true, boxWidth: 8 } }
+                                legend: { position: 'bottom', labels: { color: '#9CA3AF', usePointStyle: true, boxWidth: 8, padding: 20 } }
                             }
                         }} data={pieChartData} />
-                        {/* Donut Hole Effect */}
-                        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                            <div className="text-center">
-                                <span className="block text-2xl font-bold text-white">{summary.totalPosts}</span>
-                                <span className="text-xs text-gray-500 uppercase">Total</span>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
