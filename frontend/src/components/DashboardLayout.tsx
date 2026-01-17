@@ -42,9 +42,9 @@ export default function DashboardLayout() {
                 <div className="p-6 border-b border-white/5 flex flex-col items-center justify-center relative overflow-hidden">
                     <div className="flex flex-col items-center z-10 w-full">
                         <img
-                            src="/logo.svg"
+                            src="/logo-full.png"
                             alt="Next Gen Customs"
-                            className="w-full h-auto max-w-[240px] object-contain filter drop-shadow-[0_0_10px_rgba(220,38,38,0.3)]"
+                            className="w-full h-auto max-w-[260px] object-contain"
                         />
                     </div>
                 </div>
