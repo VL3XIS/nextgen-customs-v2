@@ -19,7 +19,7 @@ export default function AnalyticsPage() {
     return (
         <div className="space-y-8">
             <div className="flex justify-between items-center">
-                <h1 className="text-3xl font-bold text-white font-rajdhani uppercase tracking-wide">Performance Analytics</h1>
+                <h1 className="text-3xl font-bold text-white font-rajdhani uppercase tracking-wider">ANALYTICS</h1>
                 <select
                     value={range}
                     onChange={(e) => setRange(e.target.value)}
@@ -32,45 +32,65 @@ export default function AnalyticsPage() {
             </div>
 
             {/* Summary Cards */}
-            {/* Summary Cards */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                <div className="glass-panel-neon p-6 rounded-2xl relative overflow-hidden group">
-                    <div className="absolute top-0 right-0 w-20 h-20 bg-brand-red/5 rounded-full blur-xl -translate-y-10 translate-x-10"></div>
-                    <p className="text-gray-400 text-sm font-medium uppercase tracking-wider relative z-10">Total Jobs</p>
-                    <p className="text-4xl font-bold text-white mt-1 relative z-10 font-rajdhani">{summary.totalJobs}</p>
+                <div className="bg-gradient-to-br from-brand-red/20 to-brand-red/5 backdrop-blur-md rounded-xl border border-brand-red/30 p-6 relative overflow-hidden group hover:shadow-[0_0_20px_rgba(220,38,38,0.4)] transition-all">
+                    <div className="absolute inset-0 opacity-10" style={{
+                        backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,255,255,0.03) 10px, rgba(255,255,255,0.03) 20px)'
+                    }}></div>
+                    <div className="relative z-10">
+                        <p className="text-gray-400 text-[10px] font-bold uppercase tracking-[0.15em] mb-3">TOTAL JOBS</p>
+                        <p className="text-4xl font-bold text-white font-rajdhani mb-1">{summary.totalJobs}</p>
+                        <p className="text-gray-500 text-xs">~ 0.0%</p>
+                    </div>
                 </div>
-                <div className="glass-panel-neon p-6 rounded-2xl relative overflow-hidden group">
-                    <div className="absolute top-0 right-0 w-20 h-20 bg-brand-red/5 rounded-full blur-xl -translate-y-10 translate-x-10"></div>
-                    <p className="text-gray-400 text-sm font-medium uppercase tracking-wider relative z-10">Posts Created</p>
-                    <p className="text-4xl font-bold text-white mt-1 relative z-10 font-rajdhani">{summary.totalPosts}</p>
+                <div className="bg-gradient-to-br from-brand-red/20 to-brand-red/5 backdrop-blur-md rounded-xl border border-brand-red/30 p-6 relative overflow-hidden group hover:shadow-[0_0_20px_rgba(220,38,38,0.4)] transition-all">
+                    <div className="absolute inset-0 opacity-10" style={{
+                        backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,255,255,0.03) 10px, rgba(255,255,255,0.03) 20px)'
+                    }}></div>
+                    <div className="relative z-10">
+                        <p className="text-gray-400 text-[10px] font-bold uppercase tracking-[0.15em] mb-3">POSTS CREATED</p>
+                        <p className="text-4xl font-bold text-white font-rajdhani mb-1">{summary.totalPosts}</p>
+                        <p className="text-gray-500 text-xs">~ 0.0%</p>
+                    </div>
                 </div>
-                <div className="glass-panel-neon p-6 rounded-2xl relative overflow-hidden group">
-                    <div className="absolute top-0 right-0 w-20 h-20 bg-brand-red/10 rounded-full blur-xl -translate-y-10 translate-x-10"></div>
-                    <p className="text-gray-400 text-sm font-medium uppercase tracking-wider relative z-10">Time Saved (Hours)</p>
-                    <p className="text-4xl font-bold text-brand-red mt-1 relative z-10 font-rajdhani drop-shadow-[0_0_8px_rgba(255,42,60,0.5)]">{Math.round(summary.timeSavedMinutes / 60)}</p>
+                <div className="bg-gradient-to-br from-brand-red/20 to-brand-red/5 backdrop-blur-md rounded-xl border border-brand-red/30 p-6 relative overflow-hidden group hover:shadow-[0_0_20px_rgba(220,38,38,0.4)] transition-all">
+                    <div className="absolute inset-0 opacity-10" style={{
+                        backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,255,255,0.03) 10px, rgba(255,255,255,0.03) 20px)'
+                    }}></div>
+                    <div className="relative z-10">
+                        <p className="text-gray-400 text-[10px] font-bold uppercase tracking-[0.15em] mb-3">TIME SAVED</p>
+                        <p className="text-4xl font-bold text-white font-rajdhani mb-1">{Math.round(summary.timeSavedMinutes / 60)}</p>
+                        <p className="text-gray-500 text-xs">~ Significant</p>
+                    </div>
                 </div>
-                <div className="glass-panel-neon p-6 rounded-2xl relative overflow-hidden group">
-                    <div className="absolute top-0 right-0 w-20 h-20 bg-brand-red/5 rounded-full blur-xl -translate-y-10 translate-x-10"></div>
-                    <p className="text-gray-400 text-sm font-medium uppercase tracking-wider relative z-10">Avg Posts/Job</p>
-                    <p className="text-4xl font-bold text-white mt-1 relative z-10 font-rajdhani">3.0</p>
+                <div className="bg-gradient-to-br from-brand-red/20 to-brand-red/5 backdrop-blur-md rounded-xl border border-brand-red/30 p-6 relative overflow-hidden group hover:shadow-[0_0_20px_rgba(220,38,38,0.4)] transition-all">
+                    <div className="absolute inset-0 opacity-10" style={{
+                        backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,255,255,0.03) 10px, rgba(255,255,255,0.03) 20px)'
+                    }}></div>
+                    <div className="relative z-10">
+                        <p className="text-gray-400 text-[10px] font-bold uppercase tracking-[0.15em] mb-3">AVG POSTS/JOB</p>
+                        <p className="text-4xl font-bold text-white font-rajdhani mb-1">3.0</p>
+                        <p className="text-gray-500 text-xs">~ 12 posts/job</p>
+                    </div>
                 </div>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div className="glass-panel-neon p-6 rounded-2xl">
-                    <h3 className="text-lg font-bold mb-4 text-white font-rajdhani uppercase tracking-wide">Post Generation Trend</h3>
+                <div className="bg-black/60 backdrop-blur-md rounded-xl border border-brand-red/20 p-6">
+                    <h3 className="text-sm font-bold mb-4 text-white font-rajdhani uppercase tracking-wider">POST GENERATION TREND</h3>
                     <div className="h-64">
                         <Line data={{
                             labels: charts.postsOverTime.map((d) => d.date),
                             datasets: [{
                                 label: 'Posts',
                                 data: charts.postsOverTime.map((d) => d.count),
-                                borderColor: '#DC2626',
-                                backgroundColor: 'rgba(220, 38, 38, 0.2)',
+                                borderColor: '#D0202F',
+                                backgroundColor: 'rgba(208, 32, 47, 0.2)',
                                 fill: true,
                                 tension: 0.4,
                                 pointBackgroundColor: '#fff',
-                                pointBorderColor: '#DC2626'
+                                pointBorderColor: '#D0202F',
+                                borderWidth: 2
                             }]
                         }} options={{
                             maintainAspectRatio: false,
@@ -83,20 +103,21 @@ export default function AnalyticsPage() {
                     </div>
                 </div>
 
-                <div className="glass-panel-neon p-6 rounded-2xl">
-                    <h3 className="text-lg font-bold mb-4 text-white font-rajdhani uppercase tracking-wide">Platform Mix</h3>
+                <div className="bg-black/60 backdrop-blur-md rounded-xl border border-brand-red/20 p-6">
+                    <h3 className="text-sm font-bold mb-4 text-white font-rajdhani uppercase tracking-wider">PLATFORM MIX</h3>
                     <div className="h-64 flex justify-center">
                         <Pie data={{
                             labels: charts.byPlatform.map((d) => d.name),
                             datasets: [{
                                 data: charts.byPlatform.map((d) => d.value),
-                                backgroundColor: ['#DC2626', '#111827', '#4B5563'],
-                                borderWidth: 0
+                                backgroundColor: ['#D0202F', '#18181B', '#4B5563'],
+                                borderColor: 'rgba(255,255,255,0.1)',
+                                borderWidth: 1
                             }]
                         }} options={{
                             maintainAspectRatio: false,
                             plugins: {
-                                legend: { position: 'bottom', labels: { color: '#9CA3AF' } }
+                                legend: { position: 'bottom', labels: { color: '#9CA3AF', font: { size: 11 }, usePointStyle: true, boxWidth: 8, padding: 20 } }
                             }
                         }} />
                     </div>

@@ -59,18 +59,18 @@ export default function NewJobPage() {
     return (
         <div className="max-w-4xl mx-auto space-y-8">
             <div>
-                <h1 className="text-3xl font-bold text-white tracking-wide font-rajdhani uppercase">
-                    Initialize New Job <span className="text-brand-red">.</span>
+                <h1 className="text-3xl font-bold text-white tracking-wider font-rajdhani uppercase">
+                    NEW JOB
                 </h1>
-                <p className="text-gray-400 mt-1">Input vehicle details and upload photos to generate content.</p>
+                <p className="text-gray-500 mt-1 text-sm">Create a new vehicle job and generate social media posts</p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
 
                 {/* Photo Upload Section - Glass Card */}
                 <div className="md:col-span-1 space-y-4">
-                    <div className="glass-panel-neon p-6 rounded-2xl text-center">
-                        <div className="border-2 border-dashed border-white/10 rounded-xl p-8 hover:border-brand-red hover:bg-brand-red/5 transition-all cursor-pointer relative group">
+                    <div className="bg-black/60 backdrop-blur-md rounded-xl border border-brand-red/20 p-6 text-center">
+                        <div className="border-2 border-dashed border-brand-red/30 rounded-xl p-8 hover:border-brand-red hover:bg-brand-red/5 transition-all cursor-pointer relative group">
                             <input
                                 type="file"
                                 multiple
@@ -79,8 +79,8 @@ export default function NewJobPage() {
                                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
                             />
                             <div className="relative z-0">
-                                <div className="mx-auto h-12 w-12 bg-white/5 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                                    <Upload className="h-6 w-6 text-brand-red" />
+                                <div className="mx-auto h-16 w-16 bg-brand-red/10 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform border border-brand-red/30">
+                                    <Upload className="h-8 w-8 text-brand-red" />
                                 </div>
                                 <p className="text-sm text-gray-300 font-medium group-hover:text-white transition-colors">Drop photos here</p>
                                 <p className="text-xs text-gray-500 mt-1">or click to browse</p>
@@ -106,49 +106,49 @@ export default function NewJobPage() {
 
                 {/* Form Section - Glass Panel */}
                 <div className="md:col-span-2">
-                    <form onSubmit={handleSubmit} className="glass-panel-neon p-8 rounded-2xl space-y-6">
-                        <div className="space-y-4">
+                    <form onSubmit={handleSubmit} className="bg-black/60 backdrop-blur-md rounded-xl border border-brand-red/20 p-8 space-y-6">
+                        <div className="space-y-5">
                             <div>
-                                <label className="block text-xs font-medium text-gray-400 uppercase tracking-wider mb-2">Customer Name</label>
+                                <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-[0.15em] mb-2">CUSTOMER NAME</label>
                                 <input
                                     type="text"
                                     value={formData.customerName}
                                     onChange={(e) => setFormData({ ...formData, customerName: e.target.value })}
-                                    className="w-full px-4 py-3 input-neon"
-                                    placeholder="e.g. John Doe"
+                                    className="w-full px-4 py-3 bg-black/40 border border-white/10 text-white rounded-xl focus:border-brand-red/50 focus:ring-1 focus:ring-brand-red/50 outline-none transition-all"
+                                    placeholder="e.g. 2022 Honda Accord"
                                     required
                                 />
                             </div>
 
                             <div>
-                                <label className="block text-xs font-medium text-gray-400 uppercase tracking-wider mb-2">Vehicle Info</label>
+                                <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-[0.15em] mb-2">VEHICLE INFO</label>
                                 <input
                                     type="text"
                                     value={formData.vehicle}
                                     onChange={(e) => setFormData({ ...formData, vehicle: e.target.value })}
-                                    className="w-full px-4 py-3 input-neon"
-                                    placeholder="e.g. 2023 Honda Accord"
+                                    className="w-full px-4 py-3 bg-black/40 border border-white/10 text-white rounded-xl focus:border-brand-red/50 focus:ring-1 focus:ring-brand-red/50 outline-none transition-all"
+                                    placeholder="e.g. 2022 Honda Accord"
                                     required
                                 />
                             </div>
 
                             <div>
-                                <label className="block text-xs font-medium text-gray-400 uppercase tracking-wider mb-2">Services Performed</label>
+                                <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-[0.15em] mb-2">SERVICES PERFORMED</label>
                                 <textarea
                                     value={formData.services}
                                     onChange={(e) => setFormData({ ...formData, services: e.target.value })}
-                                    className="w-full px-4 py-3 input-neon h-32 resize-none"
+                                    className="w-full px-4 py-3 bg-black/40 border border-white/10 text-white rounded-xl h-28 resize-none focus:border-brand-red/50 focus:ring-1 focus:ring-brand-red/50 outline-none transition-all"
                                     placeholder="e.g. Front bumper repair, color matching, clear coat..."
                                     required
                                 />
                             </div>
 
                             <div>
-                                <label className="block text-xs font-medium text-gray-400 uppercase tracking-wider mb-2">Additional Notes (Optional)</label>
+                                <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-[0.15em] mb-2">ADDITIONAL NOTES (OPTIONAL)</label>
                                 <textarea
                                     value={formData.notes}
                                     onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                                    className="w-full px-4 py-3 input-neon h-24 resize-none"
+                                    className="w-full px-4 py-3 bg-black/40 border border-white/10 text-white rounded-xl h-20 resize-none focus:border-brand-red/50 focus:ring-1 focus:ring-brand-red/50 outline-none transition-all"
                                     placeholder="Any specific details to highlight?"
                                 />
                             </div>
@@ -158,14 +158,14 @@ export default function NewJobPage() {
                             <button
                                 type="button"
                                 onClick={() => navigate('/dashboard')}
-                                className="text-gray-400 hover:text-white font-medium transition-colors text-sm px-4 py-2"
+                                className="text-gray-400 hover:text-white font-medium transition-colors text-sm px-6 py-2 border border-white/10 rounded-lg hover:bg-white/5"
                             >
                                 Cancel
                             </button>
                             <button
                                 type="submit"
                                 disabled={loading}
-                                className="bg-brand-red hover:bg-brand-neon text-white font-bold py-3 px-8 rounded-xl transition-all duration-300 shadow-lg shadow-brand-red/20 disabled:opacity-50 disabled:cursor-not-allowed flex items-center group"
+                                className="bg-brand-red hover:bg-brand-red/80 text-white font-bold py-3 px-8 rounded-lg transition-all duration-300 shadow-[0_0_15px_rgba(220,38,38,0.3)] hover:shadow-[0_0_25px_rgba(220,38,38,0.5)] disabled:opacity-50 disabled:cursor-not-allowed flex items-center font-rajdhani uppercase tracking-wider border border-brand-red/50"
                             >
                                 {loading ? (
                                     <>
@@ -175,7 +175,6 @@ export default function NewJobPage() {
                                 ) : (
                                     <>
                                         <span>Generate AI Posts</span>
-                                        <div className="ml-2 w-2 h-2 rounded-full bg-white group-hover:animate-pulse" />
                                     </>
                                 )}
                             </button>

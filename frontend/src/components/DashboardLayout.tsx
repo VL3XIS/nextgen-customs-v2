@@ -39,18 +39,13 @@ export default function DashboardLayout() {
                 "fixed lg:static inset-y-0 left-0 z-50 w-72 bg-brand-obsidian/90 backdrop-blur-xl border-r border-white/5 text-white transform transition-transform duration-300 ease-in-out lg:transform-none flex flex-col",
                 sidebarOpen ? "translate-x-0" : "-translate-x-full"
             )}>
-                <div className="p-8 border-b border-white/5 flex flex-col items-center justify-center relative overflow-hidden h-32">
-                    <div className="flex flex-col items-center z-10">
-                        {/* Shield Logo Approximation */}
-                        <div className="relative mb-2">
-                            <div className="w-12 h-14 bg-gradient-to-br from-red-600 to-black rounded-b-full border-2 border-red-500 flex items-center justify-center shadow-[0_0_20px_rgba(220,38,38,0.4)]">
-                                <span className="font-display font-bold text-2xl text-white italic">NC</span>
-                            </div>
-                        </div>
-                        <div className="text-center leading-none">
-                            <span className="block font-display font-bold text-2xl tracking-widest text-white neon-text">NEXTGEN</span>
-                            <span className="block font-sans text-[10px] text-red-500 tracking-[0.4em] font-bold mt-1">CUSTOMS</span>
-                        </div>
+                <div className="p-6 border-b border-white/5 flex flex-col items-center justify-center relative overflow-hidden">
+                    <div className="flex flex-col items-center z-10 w-full">
+                        <img
+                            src="/logo.svg"
+                            alt="Next Gen Customs"
+                            className="w-full h-auto max-w-[240px] object-contain filter drop-shadow-[0_0_10px_rgba(220,38,38,0.3)]"
+                        />
                     </div>
                 </div>
 

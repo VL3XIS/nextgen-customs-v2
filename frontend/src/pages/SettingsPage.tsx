@@ -40,9 +40,9 @@ export default function SettingsPage() {
     };
 
     return (
-        <div className="max-w-2xl">
-            <h1 className="text-3xl font-bold text-white mb-8 font-rajdhani uppercase tracking-wide">
-                Settings <span className="text-brand-red">.</span>
+        <div className="max-w-3xl">
+            <h1 className="text-3xl font-bold text-white mb-8 font-rajdhani uppercase tracking-wider">
+                SETTINGS
             </h1>
 
             {toast && (
@@ -51,17 +51,18 @@ export default function SettingsPage() {
                 </div>
             )}
 
-            <div className="glass-panel-neon p-8 rounded-2xl border border-brand-red/20 space-y-8">
+            <div className="bg-black/60 backdrop-blur-md rounded-xl border border-brand-red/20 p-8 space-y-10">
                 <section>
-                    <h2 className="text-lg font-bold text-white mb-6 border-b border-white/10 pb-2 font-rajdhani uppercase tracking-wide">Shop Profile</h2>
+                    <h2 className="text-sm font-bold text-white mb-6 border-b border-brand-red/20 pb-3 font-rajdhani uppercase tracking-wider">SHOP PROFILE</h2>
                     <form onSubmit={handleUpdateProfile} className="space-y-6">
                         <div>
-                            <label className="block text-xs font-medium text-gray-400 mb-2 uppercase tracking-wider">Shop Name</label>
+                            <label className="block text-[10px] font-bold text-gray-400 mb-2 uppercase tracking-[0.15em]">CUSTOMER NAME</label>
                             <input
                                 type="text"
                                 value={shopName}
                                 onChange={(e) => setShopName(e.target.value)}
-                                className="w-full px-4 py-3 input-neon"
+                                className="w-full px-4 py-3 bg-black/40 border border-white/10 text-white rounded-xl focus:border-brand-red/50 focus:ring-1 focus:ring-brand-red/50 outline-none transition-all"
+                                placeholder="Next Gen Customs"
                             />
                         </div>
                         <div className="flex justify-end">
@@ -73,39 +74,39 @@ export default function SettingsPage() {
                 </section>
 
                 <section>
-                    <h2 className="text-lg font-bold text-white mb-6 border-b border-white/10 pb-2 font-rajdhani uppercase tracking-wide">Security</h2>
+                    <h2 className="text-sm font-bold text-white mb-6 border-b border-brand-red/20 pb-3 font-rajdhani uppercase tracking-wider">CHANGE PASSWORD</h2>
                     <form onSubmit={handleChangePassword} className="space-y-6">
                         <div>
-                            <label className="block text-xs font-medium text-gray-400 mb-2 uppercase tracking-wider">Current Password</label>
+                            <label className="block text-[10px] font-bold text-gray-400 mb-2 uppercase tracking-[0.15em]">CURRENT PASSWORD</label>
                             <input
                                 type="password"
                                 value={passwords.current}
                                 onChange={(e) => setPasswords({ ...passwords, current: e.target.value })}
-                                className="w-full px-4 py-3 input-neon"
+                                className="w-full px-4 py-3 bg-black/40 border border-white/10 text-white rounded-xl focus:border-brand-red/50 focus:ring-1 focus:ring-brand-red/50 outline-none transition-all"
                             />
                         </div>
                         <div className="grid grid-cols-2 gap-4">
                             <div>
-                                <label className="block text-xs font-medium text-gray-400 mb-2 uppercase tracking-wider">New Password</label>
+                                <label className="block text-[10px] font-bold text-gray-400 mb-2 uppercase tracking-[0.15em]">NEW PASSWORD</label>
                                 <input
                                     type="password"
                                     value={passwords.new}
                                     onChange={(e) => setPasswords({ ...passwords, new: e.target.value })}
-                                    className="w-full px-4 py-3 input-neon"
+                                    className="w-full px-4 py-3 bg-black/40 border border-white/10 text-white rounded-xl focus:border-brand-red/50 focus:ring-1 focus:ring-brand-red/50 outline-none transition-all"
                                 />
                             </div>
                             <div>
-                                <label className="block text-xs font-medium text-gray-400 mb-2 uppercase tracking-wider">Confirm New Password</label>
+                                <label className="block text-[10px] font-bold text-gray-400 mb-2 uppercase tracking-[0.15em]">CONFIRM PASSWORD</label>
                                 <input
                                     type="password"
                                     value={passwords.confirm}
                                     onChange={(e) => setPasswords({ ...passwords, confirm: e.target.value })}
-                                    className="w-full px-4 py-3 input-neon"
+                                    className="w-full px-4 py-3 bg-black/40 border border-white/10 text-white rounded-xl focus:border-brand-red/50 focus:ring-1 focus:ring-brand-red/50 outline-none transition-all"
                                 />
                             </div>
                         </div>
                         <div className="flex justify-end">
-                            <button type="submit" className="bg-brand-red hover:bg-brand-neon text-white px-6 py-2 rounded-lg shadow-[0_0_15px_rgba(255,42,60,0.3)] hover:shadow-[0_0_25px_rgba(255,42,60,0.5)] transition-all font-bold tracking-wide">
+                            <button type="submit" className="bg-brand-red hover:bg-brand-red/80 text-white px-6 py-2.5 rounded-lg shadow-[0_0_15px_rgba(220,38,38,0.3)] hover:shadow-[0_0_25px_rgba(220,38,38,0.5)] transition-all font-bold tracking-wide border border-brand-red/50 font-rajdhani uppercase">
                                 Change Password
                             </button>
                         </div>

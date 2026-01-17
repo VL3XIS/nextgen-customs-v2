@@ -51,10 +51,10 @@ export default function JobHistoryPage() {
         <div className="space-y-6">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
-                    <h1 className="text-3xl font-bold text-white tracking-wide font-rajdhani uppercase">
-                        Job History <span className="text-brand-red">.</span>
+                    <h1 className="text-3xl font-bold text-white tracking-wider font-rajdhani uppercase">
+                        JOB HISTORY
                     </h1>
-                    <p className="text-gray-400 mt-1 text-sm">Manage and track all vehicle projects</p>
+                    <p className="text-gray-500 mt-1 text-sm">View and search all completed vehicle jobs</p>
                 </div>
 
                 <div className="flex items-center space-x-4 w-full sm:w-auto">
@@ -74,39 +74,37 @@ export default function JobHistoryPage() {
                 </div>
             </div>
 
-            <div className="glass-panel rounded-2xl overflow-hidden border border-white/10">
+            <div className="bg-black/60 backdrop-blur-md rounded-xl overflow-hidden border border-brand-red/20">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left">
                         <thead>
-                            <tr className="border-b border-white/5 bg-black/20">
-                                <th className="px-6 py-4 font-semibold text-gray-400 text-xs uppercase tracking-wider">Vehicle</th>
-                                <th className="px-6 py-4 font-semibold text-gray-400 text-xs uppercase tracking-wider">Services</th>
-                                <th className="px-6 py-4 font-semibold text-gray-400 text-xs uppercase tracking-wider">Date</th>
-                                <th className="px-6 py-4 font-semibold text-gray-400 text-xs uppercase tracking-wider">Posts</th>
-                                <th className="px-6 py-4 font-semibold text-gray-400 text-xs uppercase tracking-wider">Actions</th>
+                            <tr className="border-b border-brand-red/20 bg-brand-red/10">
+                                <th className="px-6 py-4 font-bold text-gray-300 text-[10px] uppercase tracking-wider">VEHICLE</th>
+                                <th className="px-6 py-4 font-bold text-gray-300 text-[10px] uppercase tracking-wider">DATE</th>
+                                <th className="px-6 py-4 font-bold text-gray-300 text-[10px] uppercase tracking-wider">POSTS</th>
+                                <th className="px-6 py-4 font-bold text-gray-300 text-[10px] uppercase tracking-wider">ACTIONS</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-white/5">
                             {filteredJobs.length === 0 ? (
                                 <tr>
-                                    <td colSpan={5} className="px-6 py-12 text-center text-gray-500">
+                                    <td colSpan={4} className="px-6 py-12 text-center text-gray-500">
                                         No jobs found matching your search. <Link to="/dashboard/new-job" className="text-brand-red hover:underline ml-1">Create new?</Link>
                                     </td>
                                 </tr>
                             ) : (
                                 filteredJobs.map((job) => (
-                                    <tr key={job.id} className="hover:bg-white/5 transition-colors group">
+                                    <tr key={job.id} className="hover:bg-brand-red/5 transition-colors group">
                                         <td className="px-6 py-4">
                                             <span className="font-medium text-white group-hover:text-brand-neon transition-colors">{job.vehicle}</span>
                                         </td>
-                                        <td className="px-6 py-4 text-gray-400 truncate max-w-[200px]">{job.services}</td>
-                                        <td className="px-6 py-4 text-gray-500 flex items-center">
+                                        <td className="px-6 py-4 text-gray-400 flex items-center">
                                             <Calendar className="h-4 w-4 mr-2" />
                                             {new Date(job.createdAt).toLocaleDateString()}
                                         </td>
-                                        <td className="px-6 py-4 text-gray-500">
+                                        <td className="px-6 py-4 text-gray-400">
                                             <span className="bg-white/5 border border-white/10 text-gray-300 px-2.5 py-1 rounded-full text-xs font-semibold">
-                                                {job._count?.posts || 0} Generated
+                                                {job._count?.posts || 0}
                                             </span>
                                         </td>
                                         <td className="px-6 py-4">

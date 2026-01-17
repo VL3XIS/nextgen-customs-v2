@@ -8,24 +8,22 @@ import { Plus } from 'lucide-react';
 import type { Job } from '../types';
 
 const COLUMNS = [
-    { id: 'ESTIMATE', title: 'Estimate' },
-    { id: 'APPROVED', title: 'Approved' },
-    { id: 'IN_PROGRESS', title: 'In Progress' },
-    { id: 'PAINT', title: 'Paint' },
-    { id: 'QUALITY_CHECK', title: 'QC' },
-    { id: 'COMPLETE', title: 'Complete' },
+    { id: 'ESTIMATE', title: 'ESTIMATE' },
+    { id: 'APPROVED', title: 'APPROVED' },
+    { id: 'IN_PROGRESS', title: 'IN PROGRESS' },
+    { id: 'PAINT', title: 'PAINT' },
 ];
 
 function Column({ id, title, jobs }: { id: string, title: string, jobs: Job[] }) {
     const { setNodeRef } = useDroppable({ id });
 
     return (
-        <div className="flex flex-col h-full min-w-[280px] w-72 bg-black/40 backdrop-blur-md rounded-xl border border-white/10 shadow-xl">
-            <div className="p-4 border-b border-white/10 flex justify-between items-center bg-white/5 rounded-t-xl">
-                <h3 className="font-bold text-white font-rajdhani uppercase tracking-wider">{title}</h3>
-                <span className="text-xs font-bold bg-brand-red/20 text-brand-red px-2 py-1 rounded-full border border-brand-red/20">{jobs.length}</span>
+        <div className="flex flex-col h-full min-w-[300px] w-80 bg-gradient-to-b from-brand-red/10 to-black/60 backdrop-blur-md rounded-xl border border-brand-red/30 shadow-xl">
+            <div className="p-4 border-b border-brand-red/30 flex justify-between items-center bg-brand-red/10">
+                <h3 className="font-bold text-white font-rajdhani uppercase tracking-wider text-sm">{title}</h3>
+                <span className="text-xs font-bold bg-brand-red/30 text-white px-2.5 py-1 rounded-full border border-brand-red/50">{jobs.length}</span>
             </div>
-            <div ref={setNodeRef} className="flex-1 p-3 overflow-y-auto custom-scrollbar">
+            <div ref={setNodeRef} className="flex-1 p-4 overflow-y-auto custom-scrollbar space-y-3">
                 {jobs.map((job) => (
                     <JobCard key={job.id} job={job} />
                 ))}
@@ -85,12 +83,12 @@ export default function KanbanBoard() {
         <div className="h-[calc(100vh-8rem)] flex flex-col">
             <div className="flex justify-between items-center mb-6">
                 <div>
-                    <h1 className="text-3xl font-bold text-white font-rajdhani uppercase tracking-widest glowing-text">Job Status Tracker</h1>
-                    <p className="text-gray-400 text-sm mt-1">Drag and drop jobs to update status</p>
+                    <h1 className="text-3xl font-bold text-white font-rajdhani uppercase tracking-wider">JOBS</h1>
+                    <p className="text-gray-500 text-sm mt-1">Manage vehicle jobs and workflow</p>
                 </div>
                 <button
                     onClick={() => setIsModalOpen(true)}
-                    className="bg-brand-red hover:bg-brand-darkRed text-white px-6 py-2.5 rounded-lg transition-all shadow-[0_0_15px_rgba(255,42,60,0.3)] hover:shadow-[0_0_25px_rgba(255,42,60,0.5)] flex items-center font-bold font-rajdhani uppercase tracking-wider border border-brand-red"
+                    className="bg-brand-red hover:bg-brand-red/80 text-white px-6 py-2.5 rounded-lg transition-all shadow-[0_0_15px_rgba(220,38,38,0.3)] hover:shadow-[0_0_25px_rgba(220,38,38,0.5)] flex items-center font-bold font-rajdhani uppercase tracking-wider border border-brand-red/50"
                 >
                     <Plus className="h-4 w-4 mr-2" />
                     New Job

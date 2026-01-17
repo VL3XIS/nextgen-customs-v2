@@ -23,27 +23,33 @@ export default function LoginPage() {
     };
 
     return (
-        <div className="min-h-screen bg-brand-black flex items-center justify-center p-4">
-            <div className="bg-white rounded-xl shadow-2xl p-8 w-full max-w-md border-t-4 border-brand-red">
-                <h1 className="text-3xl font-bold text-center mb-2 text-brand-black">Next Gen Customs</h1>
-                <p className="text-center text-gray-500 mb-8">Sign in to your dashboard</p>
+        <div className="min-h-screen carbon-bg flex items-center justify-center p-4">
+            <div className="bg-black/60 backdrop-blur-md rounded-2xl shadow-2xl p-8 w-full max-w-md border border-brand-red/30">
+                <div className="flex justify-center mb-6">
+                    <img
+                        src="/logo.svg"
+                        alt="Next Gen Customs"
+                        className="w-full h-auto max-w-[280px] object-contain filter drop-shadow-[0_0_15px_rgba(220,38,38,0.4)]"
+                    />
+                </div>
+                <p className="text-center text-gray-400 mb-8 text-sm uppercase tracking-wider font-rajdhani">Sign in to your dashboard</p>
 
                 {error && (
-                    <div className="bg-red-50 text-red-600 p-3 rounded-lg mb-4 text-sm font-medium">
+                    <div className="bg-red-500/10 border border-red-500/50 text-red-400 p-3 rounded-lg mb-4 text-sm font-medium">
                         {error}
                     </div>
                 )}
 
                 <form onSubmit={handleLogin} className="space-y-6">
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                        <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-[0.15em] mb-2">Email</label>
                         <div className="relative">
-                            <Mail className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
+                            <Mail className="absolute left-3 top-3 h-5 w-5 text-gray-500" />
                             <input
                                 type="email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
-                                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red focus:border-transparent outline-none transition-all"
+                                className="w-full pl-10 pr-4 py-3 bg-black/40 border border-white/10 text-white rounded-xl focus:border-brand-red/50 focus:ring-1 focus:ring-brand-red/50 outline-none transition-all"
                                 placeholder="you@company.com"
                                 required
                             />
@@ -51,14 +57,14 @@ export default function LoginPage() {
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                        <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-[0.15em] mb-2">Password</label>
                         <div className="relative">
-                            <Lock className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
+                            <Lock className="absolute left-3 top-3 h-5 w-5 text-gray-500" />
                             <input
                                 type="password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red focus:border-transparent outline-none transition-all"
+                                className="w-full pl-10 pr-4 py-3 bg-black/40 border border-white/10 text-white rounded-xl focus:border-brand-red/50 focus:ring-1 focus:ring-brand-red/50 outline-none transition-all"
                                 placeholder="••••••••"
                                 required
                             />
@@ -67,7 +73,7 @@ export default function LoginPage() {
 
                     <button
                         type="submit"
-                        className="w-full bg-brand-red hover:bg-brand-darkRed text-white font-bold py-2.5 rounded-lg transition-colors shadow-lg shadow-red-500/30"
+                        className="w-full bg-brand-red hover:bg-brand-red/80 text-white font-bold py-3 rounded-lg transition-colors shadow-[0_0_15px_rgba(220,38,38,0.3)] hover:shadow-[0_0_25px_rgba(220,38,38,0.5)] border border-brand-red/50 font-rajdhani uppercase tracking-wider"
                     >
                         Sign In
                     </button>
@@ -75,7 +81,7 @@ export default function LoginPage() {
 
                 <div className="mt-6 text-center text-sm text-gray-500">
                     Don't have an account?{' '}
-                    <Link to="/signup" className="text-brand-red hover:text-brand-darkRed font-medium">
+                    <Link to="/signup" className="text-brand-red hover:text-brand-neon font-medium transition-colors">
                         Sign up
                     </Link>
                 </div>
