@@ -34,22 +34,22 @@ export default function AnalyticsPage() {
             {/* Summary Cards */}
             {/* Summary Cards */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                <div className="bg-black/40 backdrop-blur-md p-6 rounded-xl border border-white/10 shadow-lg relative overflow-hidden group hover:border-brand-red/30 transition-all">
+                <div className="glass-panel-neon p-6 rounded-2xl relative overflow-hidden group">
                     <div className="absolute top-0 right-0 w-20 h-20 bg-brand-red/5 rounded-full blur-xl -translate-y-10 translate-x-10"></div>
                     <p className="text-gray-400 text-sm font-medium uppercase tracking-wider relative z-10">Total Jobs</p>
                     <p className="text-4xl font-bold text-white mt-1 relative z-10 font-rajdhani">{summary.totalJobs}</p>
                 </div>
-                <div className="bg-black/40 backdrop-blur-md p-6 rounded-xl border border-white/10 shadow-lg relative overflow-hidden group hover:border-brand-red/30 transition-all">
+                <div className="glass-panel-neon p-6 rounded-2xl relative overflow-hidden group">
                     <div className="absolute top-0 right-0 w-20 h-20 bg-brand-red/5 rounded-full blur-xl -translate-y-10 translate-x-10"></div>
                     <p className="text-gray-400 text-sm font-medium uppercase tracking-wider relative z-10">Posts Created</p>
                     <p className="text-4xl font-bold text-white mt-1 relative z-10 font-rajdhani">{summary.totalPosts}</p>
                 </div>
-                <div className="bg-black/40 backdrop-blur-md p-6 rounded-xl border border-white/10 shadow-lg relative overflow-hidden group hover:border-brand-red/30 transition-all">
+                <div className="glass-panel-neon p-6 rounded-2xl relative overflow-hidden group">
                     <div className="absolute top-0 right-0 w-20 h-20 bg-brand-red/10 rounded-full blur-xl -translate-y-10 translate-x-10"></div>
                     <p className="text-gray-400 text-sm font-medium uppercase tracking-wider relative z-10">Time Saved (Hours)</p>
                     <p className="text-4xl font-bold text-brand-red mt-1 relative z-10 font-rajdhani drop-shadow-[0_0_8px_rgba(255,42,60,0.5)]">{Math.round(summary.timeSavedMinutes / 60)}</p>
                 </div>
-                <div className="bg-black/40 backdrop-blur-md p-6 rounded-xl border border-white/10 shadow-lg relative overflow-hidden group hover:border-brand-red/30 transition-all">
+                <div className="glass-panel-neon p-6 rounded-2xl relative overflow-hidden group">
                     <div className="absolute top-0 right-0 w-20 h-20 bg-brand-red/5 rounded-full blur-xl -translate-y-10 translate-x-10"></div>
                     <p className="text-gray-400 text-sm font-medium uppercase tracking-wider relative z-10">Avg Posts/Job</p>
                     <p className="text-4xl font-bold text-white mt-1 relative z-10 font-rajdhani">3.0</p>
@@ -57,7 +57,7 @@ export default function AnalyticsPage() {
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div className="bg-black/40 backdrop-blur-md p-6 rounded-xl border border-white/10 shadow-lg">
+                <div className="glass-panel-neon p-6 rounded-2xl">
                     <h3 className="text-lg font-bold mb-4 text-white font-rajdhani uppercase tracking-wide">Post Generation Trend</h3>
                     <div className="h-64">
                         <Line data={{
@@ -83,7 +83,7 @@ export default function AnalyticsPage() {
                     </div>
                 </div>
 
-                <div className="bg-black/40 backdrop-blur-md p-6 rounded-xl border border-white/10 shadow-lg">
+                <div className="glass-panel-neon p-6 rounded-2xl">
                     <h3 className="text-lg font-bold mb-4 text-white font-rajdhani uppercase tracking-wide">Platform Mix</h3>
                     <div className="h-64 flex justify-center">
                         <Pie data={{

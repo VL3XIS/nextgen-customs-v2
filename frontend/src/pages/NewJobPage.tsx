@@ -69,8 +69,8 @@ export default function NewJobPage() {
 
                 {/* Photo Upload Section - Glass Card */}
                 <div className="md:col-span-1 space-y-4">
-                    <div className="glass-panel p-6 rounded-2xl text-center">
-                        <div className="border-2 border-dashed border-white/10 rounded-xl p-8 hover:border-brand-red/50 hover:bg-brand-red/5 transition-all cursor-pointer relative group">
+                    <div className="glass-panel-neon p-6 rounded-2xl text-center">
+                        <div className="border-2 border-dashed border-white/10 rounded-xl p-8 hover:border-brand-red hover:bg-brand-red/5 transition-all cursor-pointer relative group">
                             <input
                                 type="file"
                                 multiple
@@ -106,7 +106,7 @@ export default function NewJobPage() {
 
                 {/* Form Section - Glass Panel */}
                 <div className="md:col-span-2">
-                    <form onSubmit={handleSubmit} className="glass-panel p-8 rounded-2xl space-y-6">
+                    <form onSubmit={handleSubmit} className="glass-panel-neon p-8 rounded-2xl space-y-6">
                         <div className="space-y-4">
                             <div>
                                 <label className="block text-xs font-medium text-gray-400 uppercase tracking-wider mb-2">Customer Name</label>
@@ -114,7 +114,7 @@ export default function NewJobPage() {
                                     type="text"
                                     value={formData.customerName}
                                     onChange={(e) => setFormData({ ...formData, customerName: e.target.value })}
-                                    className="w-full px-4 py-3 bg-black/30 border border-white/10 rounded-xl text-white placeholder-gray-600 focus:ring-1 focus:ring-brand-red focus:border-brand-red/50 outline-none transition-all"
+                                    className="w-full px-4 py-3 input-neon"
                                     placeholder="e.g. John Doe"
                                     required
                                 />
@@ -126,7 +126,7 @@ export default function NewJobPage() {
                                     type="text"
                                     value={formData.vehicle}
                                     onChange={(e) => setFormData({ ...formData, vehicle: e.target.value })}
-                                    className="w-full px-4 py-3 bg-black/30 border border-white/10 rounded-xl text-white placeholder-gray-600 focus:ring-1 focus:ring-brand-red focus:border-brand-red/50 outline-none transition-all"
+                                    className="w-full px-4 py-3 input-neon"
                                     placeholder="e.g. 2023 Honda Accord"
                                     required
                                 />
@@ -137,7 +137,7 @@ export default function NewJobPage() {
                                 <textarea
                                     value={formData.services}
                                     onChange={(e) => setFormData({ ...formData, services: e.target.value })}
-                                    className="w-full px-4 py-3 bg-black/30 border border-white/10 rounded-xl text-white placeholder-gray-600 focus:ring-1 focus:ring-brand-red focus:border-brand-red/50 outline-none h-32 resize-none transition-all"
+                                    className="w-full px-4 py-3 input-neon h-32 resize-none"
                                     placeholder="e.g. Front bumper repair, color matching, clear coat..."
                                     required
                                 />
@@ -148,7 +148,7 @@ export default function NewJobPage() {
                                 <textarea
                                     value={formData.notes}
                                     onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                                    className="w-full px-4 py-3 bg-black/30 border border-white/10 rounded-xl text-white placeholder-gray-600 focus:ring-1 focus:ring-brand-red focus:border-brand-red/50 outline-none h-24 resize-none transition-all"
+                                    className="w-full px-4 py-3 input-neon h-24 resize-none"
                                     placeholder="Any specific details to highlight?"
                                 />
                             </div>

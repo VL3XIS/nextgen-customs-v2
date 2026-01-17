@@ -51,7 +51,7 @@ export default function SettingsPage() {
                 </div>
             )}
 
-            <div className="glass-panel p-8 rounded-2xl border border-white/10 space-y-8">
+            <div className="glass-panel-neon p-8 rounded-2xl border border-brand-red/20 space-y-8">
                 <section>
                     <h2 className="text-lg font-bold text-white mb-6 border-b border-white/10 pb-2 font-rajdhani uppercase tracking-wide">Shop Profile</h2>
                     <form onSubmit={handleUpdateProfile} className="space-y-6">
@@ -61,7 +61,7 @@ export default function SettingsPage() {
                                 type="text"
                                 value={shopName}
                                 onChange={(e) => setShopName(e.target.value)}
-                                className="w-full px-4 py-3 bg-black/30 border border-white/10 rounded-xl text-white placeholder-gray-600 focus:ring-1 focus:ring-brand-red focus:border-brand-red/50 outline-none transition-all"
+                                className="w-full px-4 py-3 input-neon"
                             />
                         </div>
                         <div className="flex justify-end">
@@ -81,7 +81,7 @@ export default function SettingsPage() {
                                 type="password"
                                 value={passwords.current}
                                 onChange={(e) => setPasswords({ ...passwords, current: e.target.value })}
-                                className="w-full px-4 py-3 bg-black/30 border border-white/10 rounded-xl text-white placeholder-gray-600 focus:ring-1 focus:ring-brand-red focus:border-brand-red/50 outline-none transition-all"
+                                className="w-full px-4 py-3 input-neon"
                             />
                         </div>
                         <div className="grid grid-cols-2 gap-4">
@@ -91,7 +91,7 @@ export default function SettingsPage() {
                                     type="password"
                                     value={passwords.new}
                                     onChange={(e) => setPasswords({ ...passwords, new: e.target.value })}
-                                    className="w-full px-4 py-3 bg-black/30 border border-white/10 rounded-xl text-white placeholder-gray-600 focus:ring-1 focus:ring-brand-red focus:border-brand-red/50 outline-none transition-all"
+                                    className="w-full px-4 py-3 input-neon"
                                 />
                             </div>
                             <div>
@@ -100,7 +100,7 @@ export default function SettingsPage() {
                                     type="password"
                                     value={passwords.confirm}
                                     onChange={(e) => setPasswords({ ...passwords, confirm: e.target.value })}
-                                    className="w-full px-4 py-3 bg-black/30 border border-white/10 rounded-xl text-white placeholder-gray-600 focus:ring-1 focus:ring-brand-red focus:border-brand-red/50 outline-none transition-all"
+                                    className="w-full px-4 py-3 input-neon"
                                 />
                             </div>
                         </div>

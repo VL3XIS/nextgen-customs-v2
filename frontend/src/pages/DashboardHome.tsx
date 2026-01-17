@@ -232,8 +232,8 @@ export default function DashboardHome() {
             </div>
 
             {/* Recent Jobs Table - Glass Style */}
-            <div className="glass-panel rounded-2xl overflow-hidden border border-white/10">
-                <div className="p-6 border-b border-white/5 flex justify-between items-center bg-white/5">
+            <div className="glass-panel-neon rounded-2xl overflow-hidden">
+                <div className="p-6 border-b border-brand-red/20 flex justify-between items-center bg-brand-red/5">
                     <h3 className="text-lg font-bold text-white font-rajdhani uppercase tracking-wide">Recent Projects</h3>
                     <Link to="/dashboard/history" className="text-brand-red text-sm font-medium flex items-center hover:text-brand-neon transition-colors">
                         View All <ArrowRight className="h-4 w-4 ml-1" />
