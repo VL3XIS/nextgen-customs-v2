@@ -8,13 +8,18 @@ interface AuthRequest extends Request {
     };
 }
 
+import { sendJobStatusEmail } from '../services/notificationService';
+
 export const updateJobStatus = async (req: AuthRequest, res: Response) => {
     try {
         const userId = req.user?.userId;
         const { id } = req.params;
         const { status } = req.body;
 
-        const job = await prisma.job.findUnique({ where: { id } });
+        const job = await prisma.job.findUnique({
+            where: { id },
+            include: { user: true } // Include user to get email if needed
+        });
 
         if (!job) {
             return res.status(404).json({ success: false, error: 'Job not found' });
@@ -28,6 +33,20 @@ export const updateJobStatus = async (req: AuthRequest, res: Response) => {
             where: { id },
             data: { status },
         });
+
+        // Trigger Notification
+        // Prefer DEMO_EMAIL_RECIPIENT for demos, otherwise use the shop owner's email
+        // In a real app, this would be job.customerEmail
+        const recipientEmail = process.env.DEMO_EMAIL_RECIPIENT || job.user.email;
+
+        // Don't await this, let it run in background so UI is snappy
+        sendJobStatusEmail({
+            to: recipientEmail,
+            customerName: job.customerName,
+            vehicle: job.vehicle,
+            status: status,
+            jobId: job.id
+        }).catch(err => console.error('Background email failed:', err));
 
         res.json({ success: true, job: updatedJob });
     } catch (error) {

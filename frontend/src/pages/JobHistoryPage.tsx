@@ -1,7 +1,8 @@
+// ... imports ...
 import { useEffect, useState } from 'react';
 import api from '../services/api';
 import { Link } from 'react-router-dom';
-import { Eye, Trash2, Calendar, Search } from 'lucide-react';
+import { Eye, Trash2, Calendar, Search, PlusCircle } from 'lucide-react';
 import type { Job } from '../types';
 
 export default function JobHistoryPage() {
@@ -40,73 +41,90 @@ export default function JobHistoryPage() {
         job.services.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    if (loading) return <div className="text-center py-12">Loading history...</div>;
+    if (loading) return (
+        <div className="flex items-center justify-center p-12">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-red"></div>
+        </div>
+    );
 
     return (
         <div className="space-y-6">
-            <div className="flex justify-between items-center">
-                <h1 className="text-2xl font-bold text-gray-900">Job History</h1>
-                <div className="relative">
-                    <Search className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
-                    <input
-                        type="text"
-                        placeholder="Search jobs..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-red focus:border-transparent outline-none w-64"
-                    />
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <div>
+                    <h1 className="text-3xl font-display font-bold text-white tracking-wide">
+                        Job History <span className="text-brand-red">.</span>
+                    </h1>
+                    <p className="text-gray-400 mt-1 text-sm">Manage and track all vehicle projects</p>
+                </div>
+
+                <div className="flex items-center space-x-4 w-full sm:w-auto">
+                    <div className="relative group w-full sm:w-auto">
+                        <Search className="absolute left-3 top-2.5 h-5 w-5 text-gray-400 group-hover:text-brand-red transition-colors" />
+                        <input
+                            type="text"
+                            placeholder="Search vehicle or service..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className="w-full sm:w-64 pl-10 pr-4 py-2 bg-black/30 border border-white/10 rounded-lg text-white placeholder-gray-500 focus:ring-1 focus:ring-brand-red focus:border-brand-red/50 outline-none transition-all"
+                        />
+                    </div>
+                    <Link to="/dashboard/new-job" className="bg-white/5 hover:bg-brand-red text-white p-2 rounded-lg border border-white/10 transition-colors hidden sm:block">
+                        <PlusCircle className="h-6 w-6" />
+                    </Link>
                 </div>
             </div>
 
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                <table className="w-full text-left">
-                    <thead className="bg-gray-50 border-b border-gray-100">
-                        <tr>
-                            <th className="px-6 py-4 font-semibold text-gray-500 text-sm">Vehicle</th>
-                            <th className="px-6 py-4 font-semibold text-gray-500 text-sm">Services</th>
-                            <th className="px-6 py-4 font-semibold text-gray-500 text-sm">Date</th>
-                            <th className="px-6 py-4 font-semibold text-gray-500 text-sm">Posts Generated</th>
-                            <th className="px-6 py-4 font-semibold text-gray-500 text-sm">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-50">
-                        {filteredJobs.length === 0 ? (
-                            <tr>
-                                <td colSpan={5} className="px-6 py-8 text-center text-gray-500">
-                                    No jobs found. <Link to="/dashboard/new-job" className="text-brand-red hover:underline">Create one?</Link>
-                                </td>
+            <div className="glass-panel rounded-2xl overflow-hidden border border-white/10">
+                <div className="overflow-x-auto">
+                    <table className="w-full text-left">
+                        <thead>
+                            <tr className="border-b border-white/5 bg-black/20">
+                                <th className="px-6 py-4 font-semibold text-gray-400 text-xs uppercase tracking-wider">Vehicle</th>
+                                <th className="px-6 py-4 font-semibold text-gray-400 text-xs uppercase tracking-wider">Services</th>
+                                <th className="px-6 py-4 font-semibold text-gray-400 text-xs uppercase tracking-wider">Date</th>
+                                <th className="px-6 py-4 font-semibold text-gray-400 text-xs uppercase tracking-wider">Posts</th>
+                                <th className="px-6 py-4 font-semibold text-gray-400 text-xs uppercase tracking-wider">Actions</th>
                             </tr>
-                        ) : (
-                            filteredJobs.map((job) => (
-                                <tr key={job.id} className="hover:bg-gray-50 transition-colors">
-                                    <td className="px-6 py-4">
-                                        <span className="font-medium text-gray-900">{job.vehicle}</span>
-                                    </td>
-                                    <td className="px-6 py-4 text-gray-500 truncate max-w-[200px]">{job.services}</td>
-                                    <td className="px-6 py-4 text-gray-500 flex items-center">
-                                        <Calendar className="h-4 w-4 mr-2" />
-                                        {new Date(job.createdAt).toLocaleDateString()}
-                                    </td>
-                                    <td className="px-6 py-4 text-gray-500">
-                                        <span className="bg-gray-100 text-gray-700 px-2 py-1 rounded-full text-xs font-semibold">
-                                            {job._count?.posts || 0} Posts
-                                        </span>
-                                    </td>
-                                    <td className="px-6 py-4">
-                                        <div className="flex items-center space-x-3">
-                                            <Link to={`/dashboard/jobs/${job.id}/review`} className="text-blue-600 hover:text-blue-800" title="View">
-                                                <Eye className="h-5 w-5" />
-                                            </Link>
-                                            <button onClick={() => handleDelete(job.id)} className="text-red-500 hover:text-red-700" title="Delete">
-                                                <Trash2 className="h-5 w-5" />
-                                            </button>
-                                        </div>
+                        </thead>
+                        <tbody className="divide-y divide-white/5">
+                            {filteredJobs.length === 0 ? (
+                                <tr>
+                                    <td colSpan={5} className="px-6 py-12 text-center text-gray-500">
+                                        No jobs found matching your search. <Link to="/dashboard/new-job" className="text-brand-red hover:underline ml-1">Create new?</Link>
                                     </td>
                                 </tr>
-                            ))
-                        )}
-                    </tbody>
-                </table>
+                            ) : (
+                                filteredJobs.map((job) => (
+                                    <tr key={job.id} className="hover:bg-white/5 transition-colors group">
+                                        <td className="px-6 py-4">
+                                            <span className="font-medium text-white group-hover:text-brand-neon transition-colors">{job.vehicle}</span>
+                                        </td>
+                                        <td className="px-6 py-4 text-gray-400 truncate max-w-[200px]">{job.services}</td>
+                                        <td className="px-6 py-4 text-gray-500 flex items-center">
+                                            <Calendar className="h-4 w-4 mr-2" />
+                                            {new Date(job.createdAt).toLocaleDateString()}
+                                        </td>
+                                        <td className="px-6 py-4 text-gray-500">
+                                            <span className="bg-white/5 border border-white/10 text-gray-300 px-2.5 py-1 rounded-full text-xs font-semibold">
+                                                {job._count?.posts || 0} Generated
+                                            </span>
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            <div className="flex items-center space-x-3">
+                                                <Link to={`/dashboard/jobs/${job.id}/review`} className="text-gray-400 hover:text-brand-neon transition-colors" title="View">
+                                                    <Eye className="h-5 w-5" />
+                                                </Link>
+                                                <button onClick={() => handleDelete(job.id)} className="text-gray-400 hover:text-brand-red transition-colors" title="Delete">
+                                                    <Trash2 className="h-5 w-5" />
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))
+                            )}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     );

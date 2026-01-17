@@ -8,14 +8,22 @@ export default {
         extend: {
             colors: {
                 brand: {
-                    red: '#DC2626',
-                    darkRed: '#991B1B',
-                    black: '#111827',
-                    gray: '#F3F4F6',
+                    red: '#D0202F', // The Logo Red
+                    neon: '#FF2A3C', // Glowing accent
+                    black: '#0A0A0A', // Deepest background
+                    obsidian: '#121212', // Card background
+                    carbon: '#18181B', // Textured areas
+                    silver: '#E5E7EB', // Text
+                    muted: '#9CA3AF', // Muted text
                 }
             },
             fontFamily: {
                 sans: ['Inter', 'sans-serif'],
+                display: ['Rajdhani', 'sans-serif'], // Tech/Automotive font
+            },
+            backgroundImage: {
+                'carbon-fiber': "url('https://www.transparenttextures.com/patterns/carbon-fibre.png')",
+                'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
             }
         },
     },
