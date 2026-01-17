@@ -3,8 +3,9 @@ import { DndContext, useDroppable, DragOverlay } from '@dnd-kit/core';
 import type { DragEndEvent, DragStartEvent } from '@dnd-kit/core';
 import api from '../services/api';
 import JobCard from '../components/JobCard';
+import ImportJobModal from '../components/ImportJobModal';
 import AddJobModal from '../components/AddJobModal';
-import { Plus } from 'lucide-react';
+import { Plus, Upload } from 'lucide-react';
 import type { Job } from '../types';
 
 const COLUMNS = [
@@ -37,10 +38,17 @@ export default function KanbanBoard() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [refreshKey, setRefreshKey] = useState(0);
     const [activeId, setActiveId] = useState<string | null>(null);
+    const [isImportModalOpen, setIsImportModalOpen] = useState(false);
+    const [importedData, setImportedData] = useState<any>(null);
 
     const triggerRefresh = useCallback(() => {
         setRefreshKey(prev => prev + 1);
     }, []);
+
+    const handleImport = (data: any) => {
+        setImportedData(data);
+        setIsModalOpen(true);
+    };
 
     useEffect(() => {
         const fetchJobs = async () => {
@@ -86,13 +94,25 @@ export default function KanbanBoard() {
                     <h1 className="text-3xl font-bold text-white font-rajdhani uppercase tracking-wider">JOBS</h1>
                     <p className="text-gray-500 text-sm mt-1">Manage vehicle jobs and workflow</p>
                 </div>
-                <button
-                    onClick={() => setIsModalOpen(true)}
-                    className="bg-brand-red hover:bg-brand-red/80 text-white px-6 py-2.5 rounded-lg transition-all shadow-[0_0_15px_rgba(220,38,38,0.3)] hover:shadow-[0_0_25px_rgba(220,38,38,0.5)] flex items-center font-bold font-rajdhani uppercase tracking-wider border border-brand-red/50"
-                >
-                    <Plus className="h-4 w-4 mr-2" />
-                    New Job
-                </button>
+                <div className="flex gap-3">
+                    <button
+                        onClick={() => setIsImportModalOpen(true)}
+                        className="bg-black/40 hover:bg-black/60 text-gray-300 hover:text-white px-4 py-2.5 rounded-lg border border-white/10 hover:border-brand-red/50 transition-all flex items-center font-rajdhani uppercase tracking-wider text-sm font-bold"
+                    >
+                        <Upload className="h-4 w-4 mr-2" />
+                        Import Estimate
+                    </button>
+                    <button
+                        onClick={() => {
+                            setImportedData(null);
+                            setIsModalOpen(true);
+                        }}
+                        className="bg-brand-red hover:bg-brand-red/80 text-white px-6 py-2.5 rounded-lg transition-all shadow-[0_0_15px_rgba(220,38,38,0.3)] hover:shadow-[0_0_25px_rgba(220,38,38,0.5)] flex items-center font-bold font-rajdhani uppercase tracking-wider border border-brand-red/50"
+                    >
+                        <Plus className="h-4 w-4 mr-2" />
+                        New Job
+                    </button>
+                </div>
             </div>
 
             <div className="flex-1 overflow-x-auto pb-4">
@@ -117,8 +137,17 @@ export default function KanbanBoard() {
 
             <AddJobModal
                 isOpen={isModalOpen}
-                onClose={() => setIsModalOpen(false)}
+                onClose={() => {
+                    setIsModalOpen(false);
+                    setImportedData(null);
+                }}
                 onJobAdded={triggerRefresh}
+                initialData={importedData}
+            />
+            <ImportJobModal
+                isOpen={isImportModalOpen}
+                onClose={() => setIsImportModalOpen(false)}
+                onImport={handleImport}
             />
         </div>
     );

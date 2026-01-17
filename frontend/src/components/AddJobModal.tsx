@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { X, Loader2 } from 'lucide-react';
 import api from '../services/api';
 
@@ -6,16 +6,34 @@ interface AddJobModalProps {
     isOpen: boolean;
     onClose: () => void;
     onJobAdded: () => void;
+    initialData?: {
+        vehicle?: string;
+        customerName?: string;
+        services?: string;
+        notes?: string;
+    };
 }
 
-export default function AddJobModal({ isOpen, onClose, onJobAdded }: AddJobModalProps) {
+export default function AddJobModal({ isOpen, onClose, onJobAdded, initialData }: AddJobModalProps) {
     const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({
-        vehicle: '',
-        customerName: '',
-        services: '',
-        notes: ''
+        vehicle: initialData?.vehicle || '',
+        customerName: initialData?.customerName || '',
+        services: initialData?.services || '',
+        notes: initialData?.notes || ''
     });
+
+    // Update form data when initialData changes
+    useEffect(() => {
+        if (initialData) {
+            setFormData({
+                vehicle: initialData.vehicle || '',
+                customerName: initialData.customerName || '',
+                services: initialData.services || '',
+                notes: initialData.notes || ''
+            });
+        }
+    }, [initialData]);
 
     if (!isOpen) return null;
 
