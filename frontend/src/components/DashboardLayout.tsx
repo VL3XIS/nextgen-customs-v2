@@ -1,6 +1,6 @@
 // ... imports ...
 import { Link, useLocation, Outlet, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, PlusCircle, History, BarChart2, Settings, LogOut, Menu, X, Briefcase, User as UserIcon } from 'lucide-react';
+import { LayoutDashboard, PlusCircle, History, BarChart2, Settings, LogOut, Menu, Briefcase, User as UserIcon } from 'lucide-react';
 import { useState } from 'react';
 import { cn } from '../utils/cn';
 

@@ -14,7 +14,7 @@ import {
 } from 'chart.js';
 import { Line, Pie } from 'react-chartjs-2';
 import api from '../services/api';
-import { Briefcase, Zap, Clock, Users, ArrowRight, TrendingUp } from 'lucide-react';
+import { Briefcase, Zap, Clock, Users, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import type { AnalyticsStats, Job } from '../types';
 import { cn } from '../utils/cn';
