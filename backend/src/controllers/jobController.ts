@@ -22,6 +22,7 @@ export const updateJobStatus = async (req: AuthRequest, res: Response) => {
         });
 
         if (!job) {
+            console.error(`Job not found: ${id} (User: ${userId})`);
             return res.status(404).json({ success: false, error: 'Job not found' });
         }
 
