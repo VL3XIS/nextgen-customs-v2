@@ -1,10 +1,4 @@
-import { useEffect } from 'react';
-
-declare global {
-    interface Window {
-        elevenlabs?: any;
-    }
-}
+import React, { useEffect } from 'react';
 
 export default function VoiceWidget() {
     useEffect(() => {
@@ -19,10 +13,8 @@ export default function VoiceWidget() {
         };
     }, []);
 
-    return (
-        <elevenlabs-convai
-            agent-id="REPLACE_WITH_YOUR_AGENT_ID"
-            style={{ position: 'fixed', bottom: '20px', right: '20px', zIndex: 9999 }}
-        ></elevenlabs-convai>
-    );
+    return React.createElement('elevenlabs-convai', {
+        'agent-id': 'REPLACE_WITH_YOUR_AGENT_ID',
+        style: { position: 'fixed', bottom: '20px', right: '20px', zIndex: 9999 }
+    });
 }
