@@ -42,9 +42,24 @@ export default function VideoCreatorModal({ isOpen, onClose }: VideoCreatorProps
         }, 3500);
     };
 
+    // Handle Escape key
+    useEffect(() => {
+        const handleEsc = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') onClose();
+        };
+        window.addEventListener('keydown', handleEsc);
+        return () => window.removeEventListener('keydown', handleEsc);
+    }, [onClose]);
+
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm p-4">
-            <div className="bg-[#121212] w-full max-w-4xl rounded-2xl border border-white/10 overflow-hidden shadow-2xl flex flex-col md:flex-row h-[90vh] md:h-[600px]">
+        <div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm p-4 animate-in fade-in duration-200"
+            onClick={onClose}
+        >
+            <div
+                className="bg-[#121212] w-full max-w-4xl rounded-2xl border border-white/10 overflow-hidden shadow-2xl flex flex-col md:flex-row h-[90vh] md:h-[600px] relative"
+                onClick={(e) => e.stopPropagation()}
+            >
 
                 {/* Left: Input Panel */}
                 <div className="w-full md:w-1/2 p-6 flex flex-col border-r border-white/10 bg-black/20">
