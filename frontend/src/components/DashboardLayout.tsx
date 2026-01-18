@@ -1,7 +1,7 @@
 // ... imports ...
 import { Link, useLocation, Outlet, useNavigate } from 'react-router-dom';
 import { Toaster } from 'sonner';
-import { LayoutDashboard, PlusCircle, History, BarChart2, Settings, LogOut, Menu, Briefcase, User as UserIcon, Share2 } from 'lucide-react';
+import { LayoutDashboard, PlusCircle, History, BarChart2, Settings, LogOut, Menu, Briefcase, User as UserIcon, Share2, Calendar } from 'lucide-react';
 import { useState } from 'react';
 import { cn } from '../utils/cn';
 import VoiceWidget from './VoiceWidget';
@@ -21,6 +21,7 @@ export default function DashboardLayout() {
         { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard' },
         { icon: Briefcase, label: 'Jobs', path: '/dashboard/jobs' },
         { icon: PlusCircle, label: 'Job Intake', path: '/dashboard/new-job' },
+        { icon: Calendar, label: 'Schedule', path: '/dashboard/schedule' },
         { icon: Share2, label: 'Social Studio', path: '/dashboard/social-studio' },
         { icon: History, label: 'Job History', path: '/dashboard/history' },
         { icon: BarChart2, label: 'Analytics', path: '/dashboard/analytics' },

@@ -11,6 +11,7 @@ import SettingsPage from './pages/SettingsPage';
 import KanbanBoard from './pages/KanbanBoard';
 import StatusPage from './pages/StatusPage';
 import SocialStudioPage from './pages/SocialStudioPage';
+import SchedulePage from './pages/SchedulePage';
 
 // Routes are managed using DashboardLayout for internal pages
 
@@ -38,7 +39,8 @@ export default function App() {
           </ProtectedRoute>
         }>
           <Route index element={<DashboardHome />} />
-          <Route path="jobs" element={<KanbanBoard />} />
+          <Route path="kanban" element={<KanbanBoard />} />
+          <Route path="schedule" element={<SchedulePage />} />
           <Route path="new-job" element={<NewJobPage />} />
           <Route path="social-studio" element={<SocialStudioPage />} />
           <Route path="jobs/:jobId/review" element={<PostReviewPage />} />
