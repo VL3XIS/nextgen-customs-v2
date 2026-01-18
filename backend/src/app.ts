@@ -7,6 +7,7 @@ import postRoutes from './routes/posts';
 import analyticsRoutes from './routes/analytics';
 import userRoutes from './routes/user';
 import publicRoutes from './routes/public';
+import agentRoutes from './routes/api/agent';
 
 dotenv.config();
 
@@ -36,5 +37,6 @@ app.use('/api/posts', postRoutes);
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/public', publicRoutes);
+app.use('/api/agent', agentRoutes);
 
 export default app;
