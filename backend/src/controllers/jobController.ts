@@ -88,12 +88,13 @@ export const createJob = async (req: AuthRequest, res: Response) => {
                 }
             },
             include: {
-                photos: true
+                photos: true,
+                user: true
             }
         });
 
         // Trigger initial notification
-        const recipientEmail = job.customerEmail || process.env.DEMO_EMAIL_RECIPIENT || req.user?.email || 'test@example.com';
+        const recipientEmail = job.customerEmail || process.env.DEMO_EMAIL_RECIPIENT || job.user.email;
 
         sendJobStatusEmail({
             to: recipientEmail,
