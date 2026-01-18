@@ -128,6 +128,7 @@ export default function DashboardLayout() {
                 <main className="flex-1 p-6 lg:p-10 overflow-y-auto w-full max-w-7xl mx-auto">
                     <Outlet />
                 </main>
+                <VoiceWidget />
             </div>
         </div>
     );
