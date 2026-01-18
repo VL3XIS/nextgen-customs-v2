@@ -40,14 +40,10 @@ export default function NewJobPage() {
                 data.append('photos', photo);
             });
 
-            const jobResponse = await api.post('/jobs', data);
-            const jobId = jobResponse.data.job.id;
+            await api.post('/jobs', data);
 
-            // 2. Generate Posts immediately
-            await api.post('/posts/generate', { jobId });
-
-            // 3. Navigate to review
-            navigate(`/dashboard/jobs/${jobId}/review`);
+            // 3. Navigate to active jobs board (Kanban)
+            navigate('/dashboard/jobs');
         } catch (error) {
             console.error('Error creating job:', error);
             alert('Failed to create job. Please try again.');
@@ -60,7 +56,7 @@ export default function NewJobPage() {
         <div className="max-w-4xl mx-auto space-y-8">
             <div>
                 <h1 className="text-3xl font-bold text-white tracking-wider font-rajdhani uppercase">
-                    NEW JOB
+                    JOB INTAKE
                 </h1>
                 <p className="text-gray-500 mt-1 text-sm">Create a new vehicle job and generate social media posts</p>
             </div>
@@ -174,7 +170,7 @@ export default function NewJobPage() {
                                     </>
                                 ) : (
                                     <>
-                                        <span>Generate AI Posts</span>
+                                        <span>Create Job Entry</span>
                                     </>
                                 )}
                             </button>
