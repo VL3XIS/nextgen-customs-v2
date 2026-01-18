@@ -39,14 +39,18 @@ export const updateJobStatus = async (req: AuthRequest, res: Response) => {
         // (Resend Sandbox only allows sending to verified emails)
         const recipientEmail = process.env.DEMO_EMAIL_RECIPIENT || 'alexisruiz1040@gmail.com';
 
-        // Don't await this, let it run in background so UI is snappy
-        sendJobStatusEmail({
-            to: recipientEmail,
-            customerName: job.customerName,
-            vehicle: job.vehicle,
-            status: status,
-            jobId: job.id
-        }).catch(err => console.error('Background email failed:', JSON.stringify(err, null, 2)));
+        // MUST await this in Vercel Serverless, otherwise the function freezes before sending!
+        try {
+            await sendJobStatusEmail({
+                to: recipientEmail,
+                customerName: job.customerName,
+                vehicle: job.vehicle,
+                status: status,
+                jobId: job.id
+            });
+        } catch (emailErr) {
+            console.error('Email failed (non-blocking):', emailErr);
+        }
 
         res.json({ success: true, job: updatedJob });
     } catch (error) {
@@ -94,16 +98,21 @@ export const createJob = async (req: AuthRequest, res: Response) => {
             }
         });
 
-        // Trigger initial notification
-        const recipientEmail = job.customerEmail || process.env.DEMO_EMAIL_RECIPIENT || job.user.email;
+        // Force demo email for testing consistency
+        const recipientEmail = process.env.DEMO_EMAIL_RECIPIENT || 'alexisruiz1040@gmail.com';
 
-        sendJobStatusEmail({
-            to: recipientEmail,
-            customerName: job.customerName,
-            vehicle: job.vehicle,
-            status: 'Received',
-            jobId: job.id
-        }).catch(err => console.error('Initial background email failed:', err));
+        // MUST await this in Vercel Serverless, otherwise the function freezes before sending!
+        try {
+            await sendJobStatusEmail({
+                to: recipientEmail,
+                customerName: job.customerName,
+                vehicle: job.vehicle,
+                status: 'Received',
+                jobId: job.id
+            });
+        } catch (emailErr) {
+            console.error('Email failed (non-blocking):', emailErr);
+        }
 
         res.status(201).json({ success: true, job });
     } catch (error: any) {
