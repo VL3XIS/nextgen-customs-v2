@@ -92,6 +92,17 @@ export const createJob = async (req: AuthRequest, res: Response) => {
             }
         });
 
+        // Trigger initial notification
+        const recipientEmail = job.customerEmail || process.env.DEMO_EMAIL_RECIPIENT || req.user?.email || 'test@example.com';
+
+        sendJobStatusEmail({
+            to: recipientEmail,
+            customerName: job.customerName,
+            vehicle: job.vehicle,
+            status: 'Received',
+            jobId: job.id
+        }).catch(err => console.error('Initial background email failed:', err));
+
         res.status(201).json({ success: true, job });
     } catch (error: any) {
         console.error('Create job error deep trace:', error);
