@@ -36,7 +36,7 @@ router.get('/test-email', async (req, res) => {
             success: true,
             data,
             message: `Sent to ${to}`,
-            version: "v2-forced-update"
+            version: "v3-frontend-fix"
         });
     } catch (err: any) {
         return res.status(500).json({ success: false, error: err.message, stack: err.stack });
