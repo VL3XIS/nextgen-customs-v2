@@ -33,9 +33,13 @@ VITE_API_URL=https://your-backend-url.up.railway.app/api
    npx prisma generate
    npm run dev
    ```
-2. **Frontend:**
-   ```bash
    cd frontend
    npm install
    npm run dev
    ```
+
+## Release Log (v2.1 - "The Marketing Engine")
+- **Command Center:** Holographic UI, Framer Motion animations, real-time metrics.
+- **Social Studio:** Added "Reel Creator" (Beta) with Flash Cut tech.
+- **AI Engine:** "Growth Hacker" prompt engineering (v4) for Instagram/LinkedIn viral hooks.
+- **Voice Agent:** Integration ready for ElevenLabs.
