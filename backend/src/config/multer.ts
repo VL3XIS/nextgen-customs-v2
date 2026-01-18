@@ -2,11 +2,16 @@ import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
 
-const uploadDir = 'uploads';
+import os from 'os';
+
+// Use /tmp directory in production (Vercel) as the root filesystem is read-only
+const uploadDir = process.env.NODE_ENV === 'production'
+    ? path.join(os.tmpdir(), 'uploads')
+    : 'uploads';
 
 // Create uploads directory if it doesn't exist
 if (!fs.existsSync(uploadDir)) {
-    fs.mkdirSync(uploadDir);
+    fs.mkdirSync(uploadDir, { recursive: true });
 }
 
 const storage = multer.diskStorage({
