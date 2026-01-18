@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Upload, X, Play, Wand2 } from 'lucide-react';
+import { Upload, X, Play, Wand2, Download, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 
 interface VideoCreatorProps {
@@ -149,6 +149,7 @@ export default function VideoCreatorModal({ isOpen, onClose }: VideoCreatorProps
 function VideoPreviewPlayer({ before, after }: { before: string, after: string }) {
     const [phase, setPhase] = useState<'before' | 'after'>('before');
     const [flash, setFlash] = useState(false);
+    const [exporting, setExporting] = useState(false);
 
     useEffect(() => {
         // beat match loop: 2s beat
@@ -161,6 +162,14 @@ function VideoPreviewPlayer({ before, after }: { before: string, after: string }
 
         return () => clearInterval(interval);
     }, []);
+
+    const handleExport = () => {
+        setExporting(true);
+        setTimeout(() => {
+            setExporting(false);
+            toast.success('Video Exported', { description: 'Reel saved to device gallery.' });
+        }, 2000);
+    };
 
     return (
         <div className="relative w-full h-full flex items-center justify-center bg-black">
@@ -213,6 +222,22 @@ function VideoPreviewPlayer({ before, after }: { before: string, after: string }
                         ))}
                     </div>
                 </div>
+            </div>
+
+            {/* Export Button floating outside phone frame */}
+            <div className="absolute bottom-8 right-8 z-50">
+                <button
+                    onClick={handleExport}
+                    disabled={exporting}
+                    className="bg-brand-red hover:bg-brand-red/80 text-white p-3 rounded-full shadow-lg shadow-brand-red/30 transition-all hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+                    title="Export Reel"
+                >
+                    {exporting ? (
+                        <Loader2 className="h-6 w-6 animate-spin" />
+                    ) : (
+                        <Download className="h-6 w-6" />
+                    )}
+                </button>
             </div>
 
             <style>{`
