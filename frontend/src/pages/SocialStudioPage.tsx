@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
+import { toast } from 'sonner';
 import { Search, Loader2, Upload, FileImage, X, Sparkles, CheckCircle2 } from 'lucide-react';
 // import { Job } from '../types'; // Removed to fix unused var error
 
@@ -57,45 +58,69 @@ export default function SocialStudioPage() {
     };
 
     const handleGenerate = async () => {
+        console.log('Generate button clicked');
+
+        // Validation for Quick Post
+        if (activeTab === 'quick') {
+            if (!quickData.vehicle || !quickData.services) {
+                toast.error('Missing Information', {
+                    description: 'Please enter both Vehicle and Services information.'
+                });
+                return;
+            }
+        }
+
+        if (photos.length === 0) {
+            toast.error('No Photos', {
+                description: 'Please upload at least one photo.'
+            });
+            return;
+        }
+
         setLoading(true);
+        const toastId = toast.loading('Processing your request...');
+
         try {
             let jobId = selectedJob?.id;
 
             // 1. If Quick Post, Create Job First
             if (activeTab === 'quick') {
+                toast.loading('Creating draft job...', { id: toastId });
                 const jobFormData = new FormData();
                 jobFormData.append('vehicle', quickData.vehicle);
-                jobFormData.append('customerName', quickData.customerName || 'Walk-in'); // Fallback
+                jobFormData.append('customerName', quickData.customerName || 'Walk-in');
                 jobFormData.append('services', quickData.services);
                 jobFormData.append('notes', quickData.notes);
-                // Status defaults to IN_PROGRESS logic in backend, but we might want COMPLETE. 
-                // For now standard create is fine, it just won't have photos yet.
 
                 const createRes = await api.post('/jobs', jobFormData);
                 jobId = createRes.data.job.id;
-
-                // Set status to COMPLETED since we are posting about it? 
-                // Optional, but lets keeps it simple for now.
             }
 
             if (!jobId) throw new Error("No Job ID available");
 
             // 2. Upload "After" Photos to the Job
             if (photos.length > 0) {
+                toast.loading('Uploading photos...', { id: toastId });
                 const photoData = new FormData();
                 photos.forEach(p => photoData.append('photos', p));
                 await api.post(`/jobs/${jobId}/photos`, photoData);
             }
 
             // 3. Generate Posts
+            toast.loading('Generating social content with AI...', { id: toastId });
             await api.post('/posts/generate', { jobId });
 
-            // 4. Navigate
+            // 4. Success & Navigate
+            toast.success('Content generated successfully!', { id: toastId });
             navigate(`/dashboard/jobs/${jobId}/review`);
 
-        } catch (error) {
+        } catch (error: any) {
             console.error('Generation Error:', error);
-            alert('Failed to generate posts. Please try again.');
+            const errorMessage = error.response?.data?.error || error.message || 'Failed to generate posts.';
+            toast.error('Generation Failed', {
+                id: toastId,
+                description: errorMessage
+            });
         } finally {
             setLoading(false);
         }
@@ -117,8 +142,8 @@ export default function SocialStudioPage() {
                     <button
                         onClick={() => setActiveTab('existing')}
                         className={`px-6 py-2 rounded-md text-sm font-medium transition-all ${activeTab === 'existing'
-                            ? 'bg-brand-red text-white shadow-lg'
-                            : 'text-gray-400 hover:text-white'
+                                ? 'bg-brand-red text-white shadow-lg'
+                                : 'text-gray-400 hover:text-white'
                             }`}
                     >
                         Search Existing Job
@@ -126,8 +151,8 @@ export default function SocialStudioPage() {
                     <button
                         onClick={() => setActiveTab('quick')}
                         className={`px-6 py-2 rounded-md text-sm font-medium transition-all ${activeTab === 'quick'
-                            ? 'bg-brand-red text-white shadow-lg'
-                            : 'text-gray-400 hover:text-white'
+                                ? 'bg-brand-red text-white shadow-lg'
+                                : 'text-gray-400 hover:text-white'
                             }`}
                     >
                         Quick Post
@@ -166,8 +191,8 @@ export default function SocialStudioPage() {
                                             key={job.id}
                                             onClick={() => setSelectedJob(job)}
                                             className={`p-4 rounded-xl border cursor-pointer transition-all ${selectedJob?.id === job.id
-                                                ? 'bg-brand-red/10 border-brand-red scale-[1.02]'
-                                                : 'bg-white/5 border-white/5 hover:bg-white/10 hover:border-white/10'
+                                                    ? 'bg-brand-red/10 border-brand-red scale-[1.02]'
+                                                    : 'bg-white/5 border-white/5 hover:bg-white/10 hover:border-white/10'
                                                 }`}
                                         >
                                             <div className="flex justify-between items-start">
@@ -177,7 +202,7 @@ export default function SocialStudioPage() {
                                                 </div>
                                                 <div className="flex flex-col items-end">
                                                     <span className={`text-[10px] px-2 py-0.5 rounded-full border ${job.status === 'COMPLETED' ? 'bg-green-500/20 text-green-400 border-green-500/30' :
-                                                        'bg-blue-500/20 text-blue-400 border-blue-500/30'
+                                                            'bg-blue-500/20 text-blue-400 border-blue-500/30'
                                                         }`}>
                                                         {job.status}
                                                     </span>
@@ -279,7 +304,12 @@ export default function SocialStudioPage() {
                         <div className="border-t border-white/10 pt-4">
                             <button
                                 onClick={handleGenerate}
-                                disabled={loading || (activeTab === 'existing' && !selectedJob) || photos.length === 0}
+                                disabled={
+                                    loading ||
+                                    photos.length === 0 ||
+                                    (activeTab === 'existing' && !selectedJob) ||
+                                    (activeTab === 'quick' && (!quickData.vehicle || !quickData.services))
+                                }
                                 className="w-full bg-brand-red hover:bg-brand-red/80 text-white font-bold py-3 px-4 rounded-lg transition-all shadow-lg shadow-brand-red/20 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 uppercase tracking-wide font-rajdhani"
                             >
                                 {loading ? (
