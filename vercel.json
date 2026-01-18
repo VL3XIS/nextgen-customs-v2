@@ -22,7 +22,7 @@
       "handle": "filesystem"
     },
     {
-      "src": "/((?!api/|assets/|.*\\..*).*)",
+      "src": "/(.*)",
       "dest": "/index.html"
     }
   ],
