@@ -9,7 +9,8 @@ const jobSchema = z.object({
     customerEmail: z.string().email("Invalid email address").optional().or(z.literal('')),
     vehicle: z.string().min(3, "Vehicle details too short"),
     services: z.string().min(5, "Please detail the services"),
-    notes: z.string().optional()
+    notes: z.string().optional(),
+    estimatedValue: z.coerce.number().optional()
 });
 
 interface AddJobModalProps {
@@ -22,6 +23,7 @@ interface AddJobModalProps {
         customerEmail?: string;
         services?: string;
         notes?: string;
+        estimatedValue?: string | number;
     };
 }
 
@@ -32,7 +34,8 @@ export default function AddJobModal({ isOpen, onClose, onJobAdded, initialData }
         customerName: initialData?.customerName || '',
         customerEmail: initialData?.customerEmail || '',
         services: initialData?.services || '',
-        notes: initialData?.notes || ''
+        notes: initialData?.notes || '',
+        estimatedValue: initialData?.estimatedValue?.toString() || ''
     });
 
     // Update form data when initialData changes
@@ -43,7 +46,8 @@ export default function AddJobModal({ isOpen, onClose, onJobAdded, initialData }
                 customerName: initialData.customerName || '',
                 customerEmail: initialData.customerEmail || '',
                 services: initialData.services || '',
-                notes: initialData.notes || ''
+                notes: initialData.notes || '',
+                estimatedValue: initialData.estimatedValue?.toString() || ''
             });
         }
     }, [initialData]);
@@ -68,7 +72,8 @@ export default function AddJobModal({ isOpen, onClose, onJobAdded, initialData }
                 customerName: formData.customerName,
                 customerEmail: formData.customerEmail,
                 services: formData.services,
-                notes: formData.notes || ''
+                notes: formData.notes || '',
+                estimatedValue: formData.estimatedValue
             };
 
             // Using JSON instead of FormData unless we are actively uploading files in this modal
@@ -78,7 +83,9 @@ export default function AddJobModal({ isOpen, onClose, onJobAdded, initialData }
             toast.success('Job created successfully');
             onJobAdded();
             onClose();
-            setFormData({ vehicle: '', customerName: '', customerEmail: '', services: '', notes: '' });
+            onJobAdded();
+            onClose();
+            setFormData({ vehicle: '', customerName: '', customerEmail: '', services: '', notes: '', estimatedValue: '' });
         } catch (error) {
             console.error('Error adding job:', error);
             toast.error('Failed to create job. Please try again.');
@@ -120,6 +127,19 @@ export default function AddJobModal({ isOpen, onClose, onJobAdded, initialData }
                             onChange={(e) => setFormData({ ...formData, customerEmail: e.target.value })}
                             className="input-neon w-full px-4 py-2"
                             placeholder="john@example.com"
+                        />
+                    </div>
+
+                    <div>
+                        <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Estimated Value ($)</label>
+                        <input
+                            type="number"
+                            min="0"
+                            step="0.01"
+                            value={formData.estimatedValue}
+                            onChange={(e) => setFormData({ ...formData, estimatedValue: e.target.value })}
+                            className="input-neon w-full px-4 py-2"
+                            placeholder="0.00"
                         />
                     </div>
 
@@ -174,7 +194,7 @@ export default function AddJobModal({ isOpen, onClose, onJobAdded, initialData }
                         </button>
                     </div>
                 </form>
-            </div>
-        </div>
+            </div >
+        </div >
     );
 }

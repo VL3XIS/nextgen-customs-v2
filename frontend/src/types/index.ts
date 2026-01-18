@@ -36,6 +36,8 @@ export interface AnalyticsSummary {
     totalPosts: number;
     timeSavedMinutes: number;
     totalJobs: number;
+    activeClients: number;
+    pipelineRevenue: number;
 }
 
 export interface PostTrend {

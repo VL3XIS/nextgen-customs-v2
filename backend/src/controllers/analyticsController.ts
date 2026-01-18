@@ -9,13 +9,39 @@ export const getAnalyticsSummary = async (req: AuthRequest, res: Response) => {
     try {
         const userId = req.user?.userId;
 
-        const [totalJobs, totalPosts, analyticsData] = await Promise.all([
+        const [totalJobs, totalPosts, analyticsData, activeClientsCount, pipelineRevenue] = await Promise.all([
             prisma.job.count({ where: { userId } }),
             prisma.post.count({ where: { job: { userId } } }),
             prisma.analytics.aggregate({
                 where: { userId },
                 _sum: {
                     timeSavedMinutes: true,
+                }
+            }),
+            // Count unique customers with active jobs (simplification: just counting active jobs for now to ensure speed, 
+            // or we can use distinct if Prisma supports it easily. GroupBy is better for distinct.)
+            prisma.job.groupBy({
+                by: ['customerName'],
+                where: {
+                    userId,
+                    status: {
+                        notIn: ['COMPLETE'] // Assuming CANCELLED doesn't exist yet based on STEPS, but check schema if needed. 
+                        // Status enum is ESTIMATE, APPROVED, IN_PROGRESS, PAINT, QUALITY_CHECK, COMPLETE.
+                    }
+                },
+                _count: true
+            }).then(groups => groups.length),
+
+            // Calculate Pipeline Revenue (Sum of estimatedValue for non-complete jobs)
+            prisma.job.aggregate({
+                where: {
+                    userId,
+                    status: {
+                        notIn: ['COMPLETE']
+                    }
+                },
+                _sum: {
+                    estimatedValue: true
                 }
             })
         ]);
@@ -73,6 +99,8 @@ export const getAnalyticsSummary = async (req: AuthRequest, res: Response) => {
                 totalJobs,
                 totalPosts,
                 timeSavedMinutes: analyticsData._sum.timeSavedMinutes || 0,
+                activeClients: activeClientsCount,
+                pipelineRevenue: pipelineRevenue._sum.estimatedValue || 0
             },
             charts: {
                 postsOverTime,

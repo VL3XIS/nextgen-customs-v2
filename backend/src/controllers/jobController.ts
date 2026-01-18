@@ -76,7 +76,7 @@ export const createJob = async (req: AuthRequest, res: Response) => {
             return res.status(400).json({ success: false, error: validation.error.errors[0].message });
         }
 
-        const { vehicle, services, notes, customerName, customerEmail } = validation.data;
+        const { vehicle, services, notes, customerName, customerEmail, estimatedValue } = validation.data;
         const uploadedFiles = req.files as Express.Multer.File[];
 
         const job = await prisma.job.create({
@@ -87,6 +87,7 @@ export const createJob = async (req: AuthRequest, res: Response) => {
                 customerEmail: customerEmail || null,
                 services,
                 notes,
+                estimatedValue,
                 photos: {
                     create: uploadedFiles?.map(file => ({
                         url: `/uploads/${file.filename}`

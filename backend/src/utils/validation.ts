@@ -17,4 +17,5 @@ export const jobCreateSchema = z.object({
     customerEmail: z.string().email('Invalid email').optional().or(z.literal('')),
     services: z.string().min(1, 'Services description is required'),
     notes: z.string().optional(),
+    estimatedValue: z.coerce.number().optional().default(0),
 });

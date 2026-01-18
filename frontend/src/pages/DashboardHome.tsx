@@ -152,10 +152,14 @@ export default function DashboardHome() {
             {/* Metrics Cards - Exact Match Style */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {[
-                    { label: 'TOTAL JOBS', value: summary.totalJobs, sublabel: '+ 12%' },
-                    { label: 'POSTS GENERATED', value: summary.totalPosts, sublabel: '~ stable' },
-                    { label: 'TIME SAVED', value: `${Math.round(summary.timeSavedMinutes / 60)}h 0m`, sublabel: '~ 2 hours' },
-                    { label: 'ACTIVE CLIENTS', value: '48', sublabel: '+ 2 new' }
+                    {
+                        label: 'PIPELINE REVENUE',
+                        value: summary.pipelineRevenue ? new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(summary.pipelineRevenue) : '$0',
+                        sublabel: 'Active Jobs'
+                    },
+                    { label: 'ACTIVE CLIENTS', value: summary.activeClients || 0, sublabel: 'Distinct Customers' },
+                    { label: 'POSTS GENERATED', value: summary.totalPosts, sublabel: 'Total Lifetime' },
+                    { label: 'TIME SAVED', value: `${Math.round(summary.timeSavedMinutes / 60)}h ${summary.timeSavedMinutes % 60}m`, sublabel: 'Estimated' },
                 ].map((stat, i) => (
                     <div key={i} className="bg-gradient-to-br from-brand-red/20 to-brand-red/5 backdrop-blur-md rounded-xl border border-brand-red/30 p-6 relative overflow-hidden group hover:shadow-[0_0_20px_rgba(220,38,38,0.4)] transition-all">
                         {/* Diagonal stripes background pattern */}
@@ -205,6 +209,6 @@ export default function DashboardHome() {
             </div>
 
             {/* Recent Jobs Table - Removed per design */}
-        </div>
+        </div >
     );
 }
