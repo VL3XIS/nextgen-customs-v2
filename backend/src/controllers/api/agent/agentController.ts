@@ -1,68 +1,212 @@
 import { Request, Response } from 'express';
 import prisma from '../../../config/database';
 
-// Public endpoint for Voice Agent to create a lead
-export const createAgentLead = async (req: Request, res: Response) => {
+// ------------------------------------------------------------------
+// HELPER: Generate Mock Time Slots (9 AM - 5 PM)
+// ------------------------------------------------------------------
+const generateTimeSlots = (dateStr: string, durationMinutes: number = 30) => {
+    const slots = [];
+    const startHour = 9;
+    const endHour = 17; // 5 PM
+
+    let currentTime = new Date(`${dateStr}T09:00:00`);
+    const endTime = new Date(`${dateStr}T17:00:00`);
+
+    while (currentTime < endTime) {
+        slots.push({
+            time: currentTime.toTimeString().slice(0, 5), // "09:00"
+            display: currentTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })
+        });
+        currentTime = new Date(currentTime.getTime() + durationMinutes * 60000);
+    }
+    return slots;
+};
+
+// ------------------------------------------------------------------
+// 1. CHECK AVAILABILITY
+// ------------------------------------------------------------------
+export const checkAvailability = async (req: Request, res: Response) => {
     try {
-        console.log('Voice Agent Lead Request:', req.body);
-        const { customerName, vehicle, serviceInterest, phoneNumber } = req.body;
+        const { date, appointment_type } = req.body; // date: "2026-01-21"
+        console.log('Agent: Check Availability', { date, appointment_type });
 
-        // Basic validation
-        if (!customerName || !vehicle) {
-            return res.status(400).json({
-                success: false,
-                message: "Missing required fields: customerName or vehicle"
-            });
+        if (!date) {
+            return res.json({ available_slots: [] });
         }
 
-        // Create a "Lead" Job (Status: PENDING)
-        // Since the agent is public, we assign it to a default admin user (or finding the first user)
-        // In a real multi-tenant app, we'd need an API Key in the headers to identify the shop.
-        // For this MVP demo, we will assign it to the first user found in the DB.
+        // Generate all potential slots for the day
+        const duration = appointment_type === 'drop_off' ? 30 : 15;
+        const allSlots = generateTimeSlots(date, duration);
 
-        const defaultUser = await prisma.user.findFirst();
+        // Fetch existing appointments for that day to find conflicts
+        // In a real app, strict date parsing is needed. 
+        // For MVP, we just check if any appointment starts at that time string on that date.
+        const startOfDay = new Date(`${date}T00:00:00.000Z`);
+        const endOfDay = new Date(`${date}T23:59:59.999Z`);
 
-        if (!defaultUser) {
-            return res.status(500).json({ success: false, message: "No shop owner found to assign lead." });
-        }
-
-        const newLead = await prisma.job.create({
-            data: {
-                userId: defaultUser.id,
-                customerName: customerName,
-                vehicle: vehicle,
-                status: 'PENDING', // PENDING serves as "inquiry"
-                notes: `Lead from Voice Agent.\nPhone: ${phoneNumber || 'N/A'}\nInterest: ${serviceInterest || 'General'}`,
-                services: serviceInterest || 'Consultation',
-                estimatedValue: 0
+        const conflicts = await prisma.appointment.findMany({
+            where: {
+                date: {
+                    gte: startOfDay,
+                    lte: endOfDay
+                },
+                status: {
+                    not: 'CANCELLED'
+                }
             }
         });
 
-        console.log('Lead Created:', newLead.id);
+        // Simple conflict resolution: If an appointment exists roughly at that time, remove slot
+        // This is a naive check (exact string match on HH:mm converted to Date ISO) for the demo
+        const availableSlots = allSlots.filter(slot => {
+            // Check if any conflict matching the hour
+            const slotHour = parseInt(slot.time.split(':')[0]);
+            return !conflicts.some(c => {
+                const conflictHour = new Date(c.date).getHours();
+                return conflictHour === slotHour;
+            });
+        });
 
         return res.json({
             success: true,
-            message: `Appointment request logged for ${vehicle}. Shop has been notified.`,
-            leadId: newLead.id
+            available_slots: availableSlots.map(s => ({
+                date,
+                time: s.time,
+                type: appointment_type,
+                estimator: { name: "Mike", speaks_spanish: true } // Hardcoded for demo persona
+            }))
         });
 
     } catch (error) {
-        console.error('Agent Lead Error:', error);
-        return res.status(500).json({ success: false, message: "Server error processing lead." });
+        console.error('Check Availability Error:', error);
+        return res.status(500).json({ success: false, message: "Error checking availability" });
     }
 };
 
-// Public endpoint for Voice Agent to check status
+// ------------------------------------------------------------------
+// 2. BOOK APPOINTMENT
+// ------------------------------------------------------------------
+export const bookAppointment = async (req: Request, res: Response) => {
+    try {
+        console.log('Agent: Book Appointment', req.body);
+        const {
+            customer_name,
+            customer_phone,
+            customer_email,
+            preferred_language,
+            scheduled_date, // "2026-01-21"
+            scheduled_time, // "09:00"
+            vehicle_info,
+            appointment_type,
+            special_notes
+        } = req.body;
+
+        // Find default user (shop owner)
+        const defaultUser = await prisma.user.findFirst();
+
+        // Construct Date object
+        // Combine date and time
+        const isoDateTime = new Date(`${scheduled_date}T${scheduled_time}:00`);
+
+        const newAppt = await prisma.appointment.create({
+            data: {
+                userId: defaultUser?.id,
+                customerName: customer_name,
+                customerPhone: customer_phone,
+                customerEmail: customer_email,
+                language: preferred_language || 'en',
+                date: isoDateTime,
+                appointmentType: appointment_type || 'general',
+                vehicleYear: vehicle_info?.year,
+                vehicleMake: vehicle_info?.make,
+                vehicleModel: vehicle_info?.model,
+                vehicleColor: vehicle_info?.color,
+                vehicleVin: vehicle_info?.vin,
+                notes: special_notes,
+                status: 'CONFIRMED'
+            }
+        });
+
+        return res.json({
+            success: true,
+            message: preferred_language === 'es' ? '¡Cita confirmada!' : 'Appointment confirmed!',
+            appointment_id: newAppt.id,
+            details: newAppt
+        });
+
+    } catch (error) {
+        console.error('Book Appointment Error:', error);
+        return res.status(500).json({ success: false, message: "Error booking appointment" });
+    }
+};
+
+// ------------------------------------------------------------------
+// 3. RESCHEDULE APPOINTMENT
+// ------------------------------------------------------------------
+export const rescheduleAppointment = async (req: Request, res: Response) => {
+    try {
+        console.log('Agent: Reschedule', req.body);
+        const { appointment_id, new_date, new_time } = req.body;
+
+        const isoDateTime = new Date(`${new_date}T${new_time}:00`);
+
+        const updated = await prisma.appointment.update({
+            where: { id: appointment_id },
+            data: {
+                date: isoDateTime,
+                status: 'CONFIRMED'
+            }
+        });
+
+        return res.json({
+            success: true,
+            message: 'Appointment rescheduled successfully',
+            appointment: updated
+        });
+
+    } catch (error) {
+        console.error('Reschedule Error:', error);
+        return res.status(500).json({ success: false, message: "Error rescheduling" });
+    }
+};
+
+// ------------------------------------------------------------------
+// 4. CANCEL APPOINTMENT
+// ------------------------------------------------------------------
+export const cancelAppointment = async (req: Request, res: Response) => {
+    try {
+        console.log('Agent: Cancel', req.body);
+        const { appointment_id, cancellation_reason } = req.body;
+
+        const updated = await prisma.appointment.update({
+            where: { id: appointment_id },
+            data: {
+                status: 'CANCELLED',
+                notes: `Cancelled: ${cancellation_reason}`
+            }
+        });
+
+        return res.json({
+            success: true,
+            message: 'Appointment cancelled'
+        });
+
+    } catch (error) {
+        console.error('Cancel Error:', error);
+        return res.status(500).json({ success: false, message: "Error cancelling appointment" });
+    }
+};
+
+// ------------------------------------------------------------------
+// 5. CHECK VEHICLE STATUS (Legacy Support)
+// ------------------------------------------------------------------
 export const checkVehicleStatus = async (req: Request, res: Response) => {
     try {
         const { vehicle, customerName } = req.body;
-        console.log('Voice Agent Status Check:', { vehicle, customerName });
+        console.log('Agent: Status Check', { vehicle, customerName });
 
         if (!vehicle && !customerName) {
-            return res.status(400).json({
-                success: false,
-                message: "Please provide a vehicle model or customer name to search."
-            });
+            return res.status(400).json({ success: false, message: "Provide vehicle or name." });
         }
 
         const whereClause: any = {};
@@ -71,39 +215,39 @@ export const checkVehicleStatus = async (req: Request, res: Response) => {
 
         const jobs = await prisma.job.findMany({
             where: whereClause,
-            take: 3,
-            orderBy: { updatedAt: 'desc' },
-            select: { vehicle: true, status: true, customerName: true, services: true }
+            take: 1,
+            orderBy: { updatedAt: 'desc' }
         });
 
         if (jobs.length === 0) {
             return res.json({
                 success: true,
                 found: false,
-                message: "I couldn't find a vehicle matching those details in our active shop system."
+                message: "Vehicle not found in active records."
             });
         }
 
-        const job = jobs[0]; // Take the most relevant one
-
-        // Map status to natural language
+        const job = jobs[0];
+        // Clean status text
         const statusMap: Record<string, string> = {
-            'PENDING': 'is currently pending approval and intake.',
-            'IN_PROGRESS': 'is currently on the shop floor being worked on.',
-            'COMPLETED': 'is fully finished and ready for pickup!',
-            'CANCELLED': 'was cancelled.'
+            'ESTIMATE': 'is currently in the estimate phase.',
+            'APPROVED': 'has been approved and is queued for work.',
+            'IN_PROGRESS': 'is being worked on right now.',
+            'PAINT': 'is in the paint booth.',
+            'QUALITY_CHECK': 'is undergoing final quality checks.',
+            'COMPLETE': 'is ready for pickup.'
         };
 
-        const naturalStatus = statusMap[job.status] || `is currently marked as ${job.status}.`;
+        const statusText = statusMap[job.status] || `is marked as ${job.status}.`;
 
         return res.json({
             success: true,
             found: true,
-            message: `I found the ${job.vehicle} for ${job.customerName}. It ${naturalStatus} The services listed are: ${job.services}.`
+            message: `I found the ${job.vehicle}. It ${statusText} Services: ${job.services}.`
         });
 
     } catch (error) {
-        console.error('Agent Status Error:', error);
-        return res.status(500).json({ success: false, message: "Server error checking status." });
+        console.error('Status Error:', error);
+        return res.status(500).json({ success: false, message: "Server error." });
     }
 };
