@@ -368,18 +368,19 @@ export default function SocialStudioPage() {
                     )}
                 </div>
             </div>
+
+            {/* Modal */}
+            <BeforeAfterModal
+                isOpen={showCollageModal}
+                onClose={() => setShowCollageModal(false)}
+                onSave={(file) => setPhotos([...photos, file])}
+            />
+
+            {/* Video Creator Modal */}
+            <VideoCreatorModal
+                isOpen={showVideoModal}
+                onClose={() => setShowVideoModal(false)}
+            />
         </div>
-            {/* Modal */ }
-    <BeforeAfterModal
-        isOpen={showCollageModal}
-        onClose={() => setShowCollageModal(false)}
-        onSave={(file) => setPhotos([...photos, file])}
-    />
-    {/* Video Creator Modal */ }
-    <VideoCreatorModal
-        isOpen={showVideoModal}
-        onClose={() => setShowVideoModal(false)}
-    />
-        </div >
     );
 }
