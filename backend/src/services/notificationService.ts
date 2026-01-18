@@ -34,7 +34,7 @@ export const sendJobStatusEmail = async ({ to, customerName, vehicle, status, jo
                             The status of your <strong>${vehicle}</strong> has been updated to:
                         </p>
                         <div style="background: #ff2a3c; color: white; padding: 15px; text-align: center; border-radius: 5px; font-weight: bold; font-size: 18px; margin: 20px 0; box-shadow: 0 0 15px rgba(255, 42, 60, 0.5);">
-                            ${status}
+                            ${status.replace(/_/g, ' ')}
                         </div>
                         <p style="color: #ccc; line-height: 1.6;">
                             Our team is working hard to ensure your vehicle receives the highest quality care. 
