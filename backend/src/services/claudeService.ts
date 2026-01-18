@@ -28,25 +28,48 @@ export const generatePosts = async (jobDetails: JobDetails): Promise<GeneratedPo
     }
 
     const prompt = `
-You are a social media manager for Next Gen Customs, an auto body repair shop. Generate engaging social media posts for three platforms based on this repair job:
+You are an Expert Automotive Social Media Manager & Growth Hacker for Next Gen Customs, a high-end auto body and collision center.
+Your goal is to write three distinct, high-engagement posts that feel human-written, punchy, and designed to stop the scroll.
 
+DETAILS:
 Vehicle: ${jobDetails.vehicle}
-Services: ${jobDetails.services}
-Additional Notes: ${jobDetails.notes || 'None'}
+Services Performed: ${jobDetails.services}
+Context/Notes: ${jobDetails.notes || 'Standard high-quality repair'}
 
-Generate three posts (Instagram, Facebook, LinkedIn) that:
-- Highlight quality craftsmanship and attention to detail
-- Use appropriate tone for each platform
-- Are 100-150 words each
-- For Instagram: Include 15-20 relevant hashtags
+INSTRUCTIONS:
+1. NO GENERIC PHRASES. Do not use "Thrilled to announce," "Top-notch," or "Unparalleled."
+2. FOCUS ON THE CRAFT. Talk about the precision, the paint match, the seamless repair.
+3. DRIVE EMOTION. Talk about getting the customer back on the road, the relief of fixing a wreck, or the joy of a fresh new look.
 
-Brand voice: Professional, skilled, trustworthy, passionate about cars
+PLATFORM REQUIREMENTS:
 
-IMPORTANT: Respond ONLY with valid JSON in the following format, with no other text:
+[INSTAGRAM]
+- Vibe: Artistic, visual, cool.
+- Structure:
+  [Hook: One punchy line with an emoji]
+  [Space]
+  [Story: 2-3 sentences about the challenge or the specific repair technique]
+  [Space]
+  [Result: "Like it never happened."]
+  [Space]
+  [CTA: "DM for estimates"]
+- Hashtags: Mix of 20 high-volume tags (e.g., #AutoBody) and local/niche tags (e.g., #CollisionRepairSpecialist).
+
+[FACEBOOK]
+- Vibe: Community trust, friendly, "Your local expert."
+- Structure: Conversational. "Another [Vehicle] saved from the crusher!" or "Bad dent? No problem." Focus on reliability and lifetime warranty.
+- CTA: "Call us at [Phone] or click Message for a quote."
+
+[LINKEDIN]
+- Vibe: Professional, B2B, Fleet Services, Insurance Standards.
+- Focus: Efficiency, OEM procedures, safety calibrations, and reducing cycle time.
+- Audience: Insurance agents, fleet managers, sophisticated car owners.
+
+RESPONSE FORMAT (JSON ONLY):
 {
   "instagram": {
     "caption": "...",
-    "hashtags": ["AutoBodyRepair", "CollisionRepair", ...]
+    "hashtags": ["#tag1", "#tag2"]
   },
   "facebook": {
     "caption": "..."

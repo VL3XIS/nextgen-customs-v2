@@ -4,6 +4,7 @@ import { Toaster } from 'sonner';
 import { LayoutDashboard, PlusCircle, History, BarChart2, Settings, LogOut, Menu, Briefcase, User as UserIcon, Share2 } from 'lucide-react';
 import { useState } from 'react';
 import { cn } from '../utils/cn';
+import VoiceWidget from './VoiceWidget';
 
 export default function DashboardLayout() {
     const [sidebarOpen, setSidebarOpen] = useState(false);
