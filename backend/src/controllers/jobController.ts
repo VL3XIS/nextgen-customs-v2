@@ -133,8 +133,20 @@ export const getJobs = async (req: AuthRequest, res: Response) => {
         const limit = parseInt(req.query.limit as string) || 20;
         const skip = (page - 1) * limit;
 
+        const { search } = req.query;
+
+        // Build search filter
+        const whereClause: any = { userId };
+
+        if (search) {
+            whereClause.OR = [
+                { vehicle: { contains: search as string, mode: 'insensitive' } },
+                { customerName: { contains: search as string, mode: 'insensitive' } }
+            ];
+        }
+
         const jobs = await prisma.job.findMany({
-            where: { userId },
+            where: whereClause,
             orderBy: { createdAt: 'desc' },
             take: limit,
             skip: skip,
@@ -145,7 +157,7 @@ export const getJobs = async (req: AuthRequest, res: Response) => {
             }
         });
 
-        const total = await prisma.job.count({ where: { userId } });
+        const total = await prisma.job.count({ where: whereClause });
 
         res.json({
             success: true,
@@ -212,5 +224,42 @@ export const deleteJob = async (req: AuthRequest, res: Response) => {
     } catch (error) {
         console.error('Delete job error:', error);
         res.status(500).json({ success: false, error: 'Server error deleting job' });
+    }
+};
+
+export const addJobPhotos = async (req: AuthRequest, res: Response) => {
+    try {
+        const userId = req.user?.userId;
+        const { id } = req.params;
+        const uploadedFiles = req.files as Express.Multer.File[];
+
+        console.log('Adding photos to job:', id, 'Files:', uploadedFiles?.length);
+
+        if (!uploadedFiles || uploadedFiles.length === 0) {
+            return res.status(400).json({ success: false, error: 'No photos uploaded' });
+        }
+
+        const job = await prisma.job.findUnique({ where: { id } });
+
+        if (!job) return res.status(404).json({ success: false, error: 'Job not found' });
+        if (job.userId !== userId) return res.status(403).json({ success: false, error: 'Access denied' });
+
+        await prisma.photo.createMany({
+            data: uploadedFiles.map(file => ({
+                jobId: id,
+                url: `/uploads/${file.filename}`
+            }))
+        });
+
+        // Fetch updated job with new photos
+        const updatedJob = await prisma.job.findUnique({
+            where: { id },
+            include: { photos: true, user: true }
+        });
+
+        res.json({ success: true, job: updatedJob });
+    } catch (error) {
+        console.error('Add job photos error:', error);
+        res.status(500).json({ success: false, error: 'Server error adding photos' });
     }
 };
