@@ -39,7 +39,7 @@ export default function App() {
           </ProtectedRoute>
         }>
           <Route index element={<DashboardHome />} />
-          <Route path="kanban" element={<KanbanBoard />} />
+          <Route path="jobs" element={<KanbanBoard />} />
           <Route path="schedule" element={<SchedulePage />} />
           <Route path="new-job" element={<NewJobPage />} />
           <Route path="social-studio" element={<SocialStudioPage />} />
