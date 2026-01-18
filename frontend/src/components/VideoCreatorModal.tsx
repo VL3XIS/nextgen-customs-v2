@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Upload, X, Play, Wand2 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -138,50 +138,94 @@ export default function VideoCreatorModal({ isOpen, onClose }: VideoCreatorProps
                             <p className="text-sm text-gray-500">Generate a video to see the magic happen.</p>
                         </div>
                     ) : (
-                        <div className="relative w-full h-full flex items-center justify-center bg-black">
-                            {/* Comparison Slider Simulation (CSS Animation) */}
-                            <div className="relative w-[300px] h-[533px] overflow-hidden rounded-xl shadow-2xl border border-white/10">
-                                {/* The "Video" is actually a CSS animation of the two images */}
-                                <div className="absolute inset-0 animate-[kenburns_10s_infinite_alternate]">
-                                    <img
-                                        src={afterImage!}
-                                        className="absolute inset-0 w-full h-full object-cover animate-[crossfade_4s_infinite_alternate]"
-                                    />
-                                    <img
-                                        src={beforeImage!}
-                                        className="absolute inset-0 w-full h-full object-cover animate-[crossfade_4s_infinite_alternate_reverse]"
-                                    />
-
-                                    {/* Overlay UI to create "TikTok/Reel" look */}
-                                    <div className="absolute bottom-4 left-4 right-4 z-20">
-                                        <div className="flex items-center gap-2 mb-2">
-                                            <div className="w-8 h-8 rounded-full bg-gray-800 border border-white/20"></div>
-                                            <span className="text-xs font-bold text-white shadow-black drop-shadow-md">NextGen Customs</span>
-                                        </div>
-                                        <p className="text-sm text-white font-medium drop-shadow-md leading-tight">Transformation Complete! 🚀 #AutoBody #Restoration</p>
-                                    </div>
-
-                                    {/* Music Waveform Visualizer Simulation */}
-                                    <div className="absolute right-2 bottom-20 flex gap-1 items-end h-8">
-                                        <div className="w-1 bg-brand-red/80 animate-[bounce_0.5s_infinite] h-4"></div>
-                                        <div className="w-1 bg-brand-red/80 animate-[bounce_0.7s_infinite] h-8"></div>
-                                        <div className="w-1 bg-brand-red/80 animate-[bounce_0.6s_infinite] h-5"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        <VideoPreviewPlayer before={beforeImage!} after={afterImage!} />
                     )}
+                </div>
+            </div>
+        </div>
+    );
+}
+
+function VideoPreviewPlayer({ before, after }: { before: string, after: string }) {
+    const [phase, setPhase] = useState<'before' | 'after'>('before');
+    const [flash, setFlash] = useState(false);
+
+    useEffect(() => {
+        // beat match loop: 2s beat
+        const interval = setInterval(() => {
+            setFlash(true);
+            setTimeout(() => setFlash(false), 150); // Flash duration
+
+            setPhase(prev => prev === 'before' ? 'after' : 'before');
+        }, 2200);
+
+        return () => clearInterval(interval);
+    }, []);
+
+    return (
+        <div className="relative w-full h-full flex items-center justify-center bg-black">
+            {/* Phone Frame */}
+            <div className="relative w-[300px] h-[580px] overflow-hidden rounded-2xl shadow-2xl border border-white/10 bg-black">
+
+                {/* Active Image Layer */}
+                <div className="absolute inset-0">
+                    <img
+                        key={phase} // Remount to restart zoom animation
+                        src={phase === 'before' ? before : after}
+                        className="w-full h-full object-cover animate-[kenburnsPunch_3s_linear_forwards]"
+                        alt="Content"
+                    />
+                </div>
+
+                {/* Flash Overlay */}
+                <div className={`absolute inset-0 bg-white pointer-events-none transition-opacity duration-100 ${flash ? 'opacity-80' : 'opacity-0'}`} />
+
+                {/* UI Overlay */}
+                <div className="absolute top-4 left-0 right-0 p-4 bg-gradient-to-b from-black/60 to-transparent z-10 flex justify-between items-start">
+                    <div className="bg-black/40 backdrop-blur-md px-3 py-1 rounded-full border border-white/10">
+                        <span className="text-[10px] font-bold text-white tracking-widest uppercase">
+                            {phase === 'before' ? 'BEFORE' : 'AFTER ✨'}
+                        </span>
+                    </div>
+                </div>
+
+                <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/90 to-transparent z-10">
+                    <div className="flex items-center gap-3 mb-3">
+                        <div className="w-10 h-10 rounded-full bg-brand-red flex items-center justify-center border-2 border-white/20">
+                            <span className="font-rajdhani font-bold text-white text-xs">NX</span>
+                        </div>
+                        <div>
+                            <p className="text-sm font-bold text-white shadow-black drop-shadow-md">NextGen Customs</p>
+                            <p className="text-[10px] text-gray-300">Original Audio • Trending</p>
+                        </div>
+                    </div>
+                    <p className="text-sm text-white font-medium drop-shadow-md leading-tight mb-4">
+                        Wait for the result... 🤯 The transformation is insane! #Detailing #AutoBody
+                    </p>
+
+                    {/* Fake Music Visualizer */}
+                    <div className="flex items-end gap-1 h-6 opacity-80">
+                        {[...Array(6)].map((_, i) => (
+                            <div key={i} className="w-1 bg-brand-red rounded-full animate-music-bar" style={{
+                                height: `${Math.random() * 100}%`,
+                                animationDelay: `${i * 0.1}s`
+                            }} />
+                        ))}
+                    </div>
                 </div>
             </div>
 
             <style>{`
-                @keyframes crossfade {
-                    0%, 45% { opacity: 1; }
-                    55%, 100% { opacity: 0; }
+                @keyframes kenburnsPunch {
+                    0% { transform: scale(1); filter: brightness(1); }
+                    100% { transform: scale(1.15); filter: brightness(1.1); }
                 }
-                @keyframes kenburns {
-                    0% { transform: scale(1); }
-                    100% { transform: scale(1.1); }
+                @keyframes music-bar {
+                    0%, 100% { height: 20%; }
+                    50% { height: 100%; }
+                }
+                .animate-music-bar {
+                    animation: music-bar 0.8s ease-in-out infinite;
                 }
             `}</style>
         </div>
