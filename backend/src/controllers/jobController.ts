@@ -35,8 +35,9 @@ export const updateJobStatus = async (req: AuthRequest, res: Response) => {
         });
 
         // Trigger Notification
-        // Prefer explicit customer email, then DEMO recipient, then shop owner fallback
-        const recipientEmail = job.customerEmail || process.env.DEMO_EMAIL_RECIPIENT || job.user.email;
+        // For testing/verified-domain reasons, prioritize the demo recipient so emails actually deliver
+        // (Resend Sandbox only allows sending to verified emails)
+        const recipientEmail = process.env.DEMO_EMAIL_RECIPIENT || 'alexisruiz1040@gmail.com';
 
         // Don't await this, let it run in background so UI is snappy
         sendJobStatusEmail({
@@ -45,7 +46,7 @@ export const updateJobStatus = async (req: AuthRequest, res: Response) => {
             vehicle: job.vehicle,
             status: status,
             jobId: job.id
-        }).catch(err => console.error('Background email failed:', err));
+        }).catch(err => console.error('Background email failed:', JSON.stringify(err, null, 2)));
 
         res.json({ success: true, job: updatedJob });
     } catch (error) {
