@@ -2,8 +2,9 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import { toast } from 'sonner';
-import { Search, Loader2, Upload, FileImage, X, Sparkles, CheckCircle2, Columns } from 'lucide-react';
+import { Search, Loader2, Upload, FileImage, X, Sparkles, CheckCircle2, Columns, Video } from 'lucide-react';
 import BeforeAfterModal from '../components/BeforeAfterModal';
+import VideoCreatorModal from '../components/VideoCreatorModal';
 
 // Minimal Job Type Definition if not imported
 interface JobType {
@@ -22,6 +23,7 @@ export default function SocialStudioPage() {
     const [selectedJob, setSelectedJob] = useState<JobType | null>(null);
     const [photos, setPhotos] = useState<File[]>([]);
     const [showCollageModal, setShowCollageModal] = useState(false);
+    const [showVideoModal, setShowVideoModal] = useState(false);
 
     // Quick Post Data
     const [quickData, setQuickData] = useState({
@@ -282,6 +284,13 @@ export default function SocialStudioPage() {
                                 <Columns className="h-3 w-3" />
                                 Create Comparison
                             </button>
+                            <button
+                                onClick={() => setShowVideoModal(true)}
+                                className="text-xs bg-brand-red/10 hover:bg-brand-red/20 border border-brand-red/20 hover:border-brand-red/40 text-brand-red px-3 py-1.5 rounded-lg flex items-center gap-2 transition-all ml-2"
+                            >
+                                <Video className="h-3 w-3" />
+                                Create Reel
+                            </button>
                         </div>
 
                         <div className="border-2 border-dashed border-brand-red/30 rounded-xl p-8 hover:border-brand-red hover:bg-brand-red/5 transition-all cursor-pointer relative group text-center mb-4">
@@ -359,12 +368,18 @@ export default function SocialStudioPage() {
                     )}
                 </div>
             </div>
-            {/* Modal */}
-            <BeforeAfterModal
-                isOpen={showCollageModal}
-                onClose={() => setShowCollageModal(false)}
-                onSave={(file) => setPhotos([...photos, file])}
-            />
         </div>
+            {/* Modal */ }
+    <BeforeAfterModal
+        isOpen={showCollageModal}
+        onClose={() => setShowCollageModal(false)}
+        onSave={(file) => setPhotos([...photos, file])}
+    />
+    {/* Video Creator Modal */ }
+    <VideoCreatorModal
+        isOpen={showVideoModal}
+        onClose={() => setShowVideoModal(false)}
+    />
+        </div >
     );
 }
