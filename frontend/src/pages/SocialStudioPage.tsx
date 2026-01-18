@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import { toast } from 'sonner';
-import { Search, Loader2, Upload, FileImage, X, Sparkles, CheckCircle2 } from 'lucide-react';
-// import { Job } from '../types'; // Removed to fix unused var error
+import { Search, Loader2, Upload, FileImage, X, Sparkles, CheckCircle2, Columns } from 'lucide-react';
+import BeforeAfterModal from '../components/BeforeAfterModal';
 
 // Minimal Job Type Definition if not imported
 interface JobType {
@@ -21,6 +21,7 @@ export default function SocialStudioPage() {
     const [isSearching, setIsSearching] = useState(false);
     const [selectedJob, setSelectedJob] = useState<JobType | null>(null);
     const [photos, setPhotos] = useState<File[]>([]);
+    const [showCollageModal, setShowCollageModal] = useState(false);
 
     // Quick Post Data
     const [quickData, setQuickData] = useState({
@@ -142,8 +143,8 @@ export default function SocialStudioPage() {
                     <button
                         onClick={() => setActiveTab('existing')}
                         className={`px-6 py-2 rounded-md text-sm font-medium transition-all ${activeTab === 'existing'
-                                ? 'bg-brand-red text-white shadow-lg'
-                                : 'text-gray-400 hover:text-white'
+                            ? 'bg-brand-red text-white shadow-lg'
+                            : 'text-gray-400 hover:text-white'
                             }`}
                     >
                         Search Existing Job
@@ -151,8 +152,8 @@ export default function SocialStudioPage() {
                     <button
                         onClick={() => setActiveTab('quick')}
                         className={`px-6 py-2 rounded-md text-sm font-medium transition-all ${activeTab === 'quick'
-                                ? 'bg-brand-red text-white shadow-lg'
-                                : 'text-gray-400 hover:text-white'
+                            ? 'bg-brand-red text-white shadow-lg'
+                            : 'text-gray-400 hover:text-white'
                             }`}
                     >
                         Quick Post
@@ -191,8 +192,8 @@ export default function SocialStudioPage() {
                                             key={job.id}
                                             onClick={() => setSelectedJob(job)}
                                             className={`p-4 rounded-xl border cursor-pointer transition-all ${selectedJob?.id === job.id
-                                                    ? 'bg-brand-red/10 border-brand-red scale-[1.02]'
-                                                    : 'bg-white/5 border-white/5 hover:bg-white/10 hover:border-white/10'
+                                                ? 'bg-brand-red/10 border-brand-red scale-[1.02]'
+                                                : 'bg-white/5 border-white/5 hover:bg-white/10 hover:border-white/10'
                                                 }`}
                                         >
                                             <div className="flex justify-between items-start">
@@ -202,7 +203,7 @@ export default function SocialStudioPage() {
                                                 </div>
                                                 <div className="flex flex-col items-end">
                                                     <span className={`text-[10px] px-2 py-0.5 rounded-full border ${job.status === 'COMPLETED' ? 'bg-green-500/20 text-green-400 border-green-500/30' :
-                                                            'bg-blue-500/20 text-blue-400 border-blue-500/30'
+                                                        'bg-blue-500/20 text-blue-400 border-blue-500/30'
                                                         }`}>
                                                         {job.status}
                                                     </span>
@@ -269,10 +270,19 @@ export default function SocialStudioPage() {
                 {/* Right Panel: Upload & Action */}
                 <div className="space-y-6">
                     <div className="bg-black/60 backdrop-blur-md rounded-xl border border-white/10 p-6">
-                        <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-                            <Upload className="h-5 w-5 text-brand-red" />
-                            Upload Photos
-                        </h3>
+                        <div className="flex items-center justify-between mb-4">
+                            <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                                <Upload className="h-5 w-5 text-brand-red" />
+                                Upload Photos
+                            </h3>
+                            <button
+                                onClick={() => setShowCollageModal(true)}
+                                className="text-xs bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 text-gray-300 px-3 py-1.5 rounded-lg flex items-center gap-2 transition-all"
+                            >
+                                <Columns className="h-3 w-3" />
+                                Create Comparison
+                            </button>
+                        </div>
 
                         <div className="border-2 border-dashed border-brand-red/30 rounded-xl p-8 hover:border-brand-red hover:bg-brand-red/5 transition-all cursor-pointer relative group text-center mb-4">
                             <input
@@ -349,6 +359,12 @@ export default function SocialStudioPage() {
                     )}
                 </div>
             </div>
+            {/* Modal */}
+            <BeforeAfterModal
+                isOpen={showCollageModal}
+                onClose={() => setShowCollageModal(false)}
+                onSave={(file) => setPhotos([...photos, file])}
+            />
         </div>
     );
 }

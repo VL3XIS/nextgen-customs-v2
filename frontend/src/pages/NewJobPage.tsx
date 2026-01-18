@@ -9,9 +9,12 @@ export default function NewJobPage() {
     const [formData, setFormData] = useState({
         vehicle: '',
         customerName: '',
+        customerEmail: '',
+        estimatedValue: '',
         services: '',
         notes: ''
     });
+
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
@@ -33,6 +36,8 @@ export default function NewJobPage() {
             const data = new FormData();
             data.append('vehicle', formData.vehicle);
             data.append('customerName', formData.customerName);
+            data.append('customerEmail', formData.customerEmail);
+            data.append('estimatedValue', formData.estimatedValue);
             data.append('services', formData.services);
             data.append('notes', formData.notes);
 
@@ -111,9 +116,32 @@ export default function NewJobPage() {
                                     value={formData.customerName}
                                     onChange={(e) => setFormData({ ...formData, customerName: e.target.value })}
                                     className="w-full px-4 py-3 bg-black/40 border border-white/10 text-white rounded-xl focus:border-brand-red/50 focus:ring-1 focus:ring-brand-red/50 outline-none transition-all"
-                                    placeholder="e.g. 2022 Honda Accord"
+                                    placeholder="e.g. John Doe"
                                     required
                                 />
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                <div>
+                                    <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-[0.15em] mb-2">CUSTOMER EMAIL</label>
+                                    <input
+                                        type="email"
+                                        value={formData.customerEmail}
+                                        onChange={(e) => setFormData({ ...formData, customerEmail: e.target.value })}
+                                        className="w-full px-4 py-3 bg-black/40 border border-white/10 text-white rounded-xl focus:border-brand-red/50 focus:ring-1 focus:ring-brand-red/50 outline-none transition-all"
+                                        placeholder="john@example.com"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-[0.15em] mb-2">ESTIMATED VALUE ($)</label>
+                                    <input
+                                        type="number"
+                                        value={formData.estimatedValue}
+                                        onChange={(e) => setFormData({ ...formData, estimatedValue: e.target.value })}
+                                        className="w-full px-4 py-3 bg-black/40 border border-white/10 text-white rounded-xl focus:border-brand-red/50 focus:ring-1 focus:ring-brand-red/50 outline-none transition-all"
+                                        placeholder="0.00"
+                                    />
+                                </div>
                             </div>
 
                             <div>
