@@ -72,23 +72,26 @@ export default function VideoCreatorModal({ isOpen, onClose }: VideoCreatorProps
 
     return (
         <div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm p-4 animate-in fade-in duration-200"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-300"
             onClick={onClose}
         >
             <div
-                className="bg-[#121212] w-full max-w-4xl rounded-2xl border border-white/10 overflow-hidden shadow-2xl flex flex-col md:flex-row h-[90vh] md:h-[600px] relative"
+                className="bg-zinc-950/80 backdrop-blur-xl w-full max-w-5xl rounded-3xl border border-white/10 overflow-hidden shadow-2xl flex flex-col md:flex-row h-[600px] relative animate-in zoom-in-95 fade-in duration-300 ring-1 ring-white/5"
                 onClick={(e) => e.stopPropagation()}
             >
 
                 {/* Left: Input Panel */}
-                <div className="w-full md:w-1/2 p-6 flex flex-col border-r border-white/10 bg-black/20">
+                <div className="w-full md:w-1/2 p-6 flex flex-col border-r border-white/5 bg-white/[0.02]">
                     <div className="flex justify-between items-center mb-6">
                         <h2 className="text-xl font-bold font-rajdhani uppercase tracking-wider text-white flex items-center gap-2">
                             <Play className="h-5 w-5 text-brand-red" />
                             Reel Creator <span className="text-[10px] bg-brand-neon/20 text-brand-neon px-2 py-0.5 rounded border border-brand-neon/30">BETA</span>
                         </h2>
-                        <button onClick={onClose} className="p-1 hover:bg-white/10 rounded-full transition-colors">
-                            <X className="h-5 w-5 text-gray-500" />
+                        <button
+                            onClick={onClose}
+                            className="p-2 bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white rounded-full transition-all duration-200 hover:scale-105"
+                        >
+                            <X className="h-5 w-5" />
                         </button>
                     </div>
 
@@ -162,7 +165,7 @@ export default function VideoCreatorModal({ isOpen, onClose }: VideoCreatorProps
                 </div>
 
                 {/* Right: Preview Panel */}
-                <div className="w-full md:w-1/2 bg-black/80 flex items-center justify-center relative overflow-hidden">
+                <div className="w-full md:w-1/2 bg-black/40 flex items-center justify-center relative overflow-hidden">
                     {(generatedVideo && beforeImage && afterImage) ? (
                         <VideoPreviewPlayer before={beforeImage} after={afterImage} />
                     ) : (
