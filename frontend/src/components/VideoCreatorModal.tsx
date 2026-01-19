@@ -27,6 +27,14 @@ export default function VideoCreatorModal({ isOpen, onClose }: VideoCreatorProps
         }
     };
 
+    // Safety check for unmounting
+    useEffect(() => {
+        if (!isOpen) {
+            setIsGenerating(false);
+            setGeneratedVideo(false);
+        }
+    }, [isOpen]);
+
     const handleGenerate = () => {
         if (!beforeImage || !afterImage) {
             toast.error('Missing Assets', { description: 'Please upload both Before and After images.' });
@@ -36,9 +44,11 @@ export default function VideoCreatorModal({ isOpen, onClose }: VideoCreatorProps
         setIsGenerating(true);
         // Simulate "AI Processing" time
         setTimeout(() => {
-            setIsGenerating(false);
-            setGeneratedVideo(true);
-            toast.success('Video Generated', { description: 'Your Reel has been created successfully!' });
+            if (isOpen) {
+                setIsGenerating(false);
+                setGeneratedVideo(true);
+                toast.success('Video Generated', { description: 'Your Reel has been created successfully!' });
+            }
         }, 3500);
     };
 
@@ -162,29 +172,14 @@ export default function VideoCreatorModal({ isOpen, onClose }: VideoCreatorProps
 }
 
 function VideoPreviewPlayer({ before, after }: { before: string, after: string }) {
-    const [phase, setPhase] = useState<'before' | 'after'>('before');
-    const [flash, setFlash] = useState(false);
+    const [showAfter, setShowAfter] = useState(false);
     const [exporting, setExporting] = useState(false);
 
     useEffect(() => {
-        let mounted = true;
-        // beat match loop: 2.2s beat
         const interval = setInterval(() => {
-            if (!mounted) return;
-            setFlash(true);
-
-            // Clear flash after 150ms
-            setTimeout(() => {
-                if (mounted) setFlash(false);
-            }, 150);
-
-            setPhase(prev => prev === 'before' ? 'after' : 'before');
+            setShowAfter(prev => !prev);
         }, 2200);
-
-        return () => {
-            mounted = false;
-            clearInterval(interval);
-        };
+        return () => clearInterval(interval);
     }, []);
 
     const handleExport = () => {
@@ -200,24 +195,32 @@ function VideoPreviewPlayer({ before, after }: { before: string, after: string }
             {/* Phone Frame */}
             <div className="relative w-[300px] h-[580px] overflow-hidden rounded-2xl shadow-2xl border border-white/10 bg-black">
 
-                {/* Active Image Layer */}
+                {/* Layer 1: Before Image (Always present at bottom) */}
                 <div className="absolute inset-0">
                     <img
-                        key={phase} // Remount to restart zoom animation
-                        src={phase === 'before' ? before : after}
+                        src={before}
                         className="w-full h-full object-cover animate-[kenburnsPunch_3s_linear_forwards]"
-                        alt="Content"
+                        alt="Before"
+                    />
+                </div>
+
+                {/* Layer 2: After Image (Fades in/out) */}
+                <div className={`absolute inset-0 transition-opacity duration-300 ${showAfter ? 'opacity-100' : 'opacity-0'}`}>
+                    <img
+                        src={after}
+                        className="w-full h-full object-cover animate-[kenburnsPunch_3s_linear_forwards]"
+                        alt="After"
                     />
                 </div>
 
                 {/* Flash Overlay */}
-                <div className={`absolute inset-0 bg-white pointer-events-none transition-opacity duration-100 ${flash ? 'opacity-80' : 'opacity-0'}`} />
+                <div className={`absolute inset-0 bg-white pointer-events-none transition-opacity duration-150 ${showAfter ? 'opacity-40' : 'opacity-0'}`} />
 
                 {/* UI Overlay */}
                 <div className="absolute top-4 left-0 right-0 p-4 bg-gradient-to-b from-black/60 to-transparent z-10 flex justify-between items-start">
                     <div className="bg-black/40 backdrop-blur-md px-3 py-1 rounded-full border border-white/10">
-                        <span className="text-[10px] font-bold text-white tracking-widest uppercase">
-                            {phase === 'before' ? 'BEFORE' : 'AFTER ✨'}
+                        <span className="text-[10px] font-bold text-white tracking-widest uppercase transition-all duration-300">
+                            {showAfter ? 'AFTER ✨' : 'BEFORE'}
                         </span>
                     </div>
                 </div>
