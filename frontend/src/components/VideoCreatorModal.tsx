@@ -144,7 +144,9 @@ export default function VideoCreatorModal({ isOpen, onClose }: VideoCreatorProps
 
                 {/* Right: Preview Panel */}
                 <div className="w-full md:w-1/2 bg-black/80 flex items-center justify-center relative overflow-hidden">
-                    {!generatedVideo || !beforeImage || !afterImage ? (
+                    {(generatedVideo && beforeImage && afterImage) ? (
+                        <VideoPreviewPlayer before={beforeImage} after={afterImage} />
+                    ) : (
                         <div className="text-center p-8">
                             <div className="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center mx-auto mb-4 border border-white/10">
                                 <Play className="h-8 w-8 text-gray-600 ml-1" />
@@ -152,8 +154,6 @@ export default function VideoCreatorModal({ isOpen, onClose }: VideoCreatorProps
                             <h3 className="text-white font-bold mb-2">Detailed Preview</h3>
                             <p className="text-sm text-gray-500">Generate a video to see the magic happen.</p>
                         </div>
-                    ) : (
-                        <VideoPreviewPlayer before={beforeImage} after={afterImage} />
                     )}
                 </div>
             </div>
