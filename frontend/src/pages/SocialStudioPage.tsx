@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import { toast } from 'sonner';
 import { Search, Loader2, Upload, FileImage, X, Sparkles, CheckCircle2, Columns, Video } from 'lucide-react';
 import BeforeAfterModal from '../components/BeforeAfterModal';
 import VideoCreatorModal from '../components/VideoCreatorModal';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 // Minimal Job Type Definition if not imported
 interface JobType {
@@ -35,6 +36,11 @@ export default function SocialStudioPage() {
 
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
+
+    // Memoized Handlers to prevent re-renders
+    const handleCloseCollage = useCallback(() => setShowCollageModal(false), []);
+    const handleCloseVideo = useCallback(() => setShowVideoModal(false), []);
+    const handleSaveCollage = useCallback((file: File) => setPhotos(prev => [...prev, file]), []);
 
     // Search Logic
     const handleSearch = async (e: React.FormEvent) => {
@@ -370,17 +376,21 @@ export default function SocialStudioPage() {
             </div>
 
             {/* Modal */}
-            <BeforeAfterModal
-                isOpen={showCollageModal}
-                onClose={() => setShowCollageModal(false)}
-                onSave={(file) => setPhotos([...photos, file])}
-            />
+            <ErrorBoundary location="Collage Tool">
+                <BeforeAfterModal
+                    isOpen={showCollageModal}
+                    onClose={handleCloseCollage}
+                    onSave={handleSaveCollage}
+                />
+            </ErrorBoundary>
 
             {/* Video Creator Modal */}
-            <VideoCreatorModal
-                isOpen={showVideoModal}
-                onClose={() => setShowVideoModal(false)}
-            />
+            <ErrorBoundary location="Video Creator">
+                <VideoCreatorModal
+                    isOpen={showVideoModal}
+                    onClose={handleCloseVideo}
+                />
+            </ErrorBoundary>
         </div>
     );
 }

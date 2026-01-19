@@ -1,8 +1,11 @@
 import { Component } from 'react';
 import type { ErrorInfo, ReactNode } from 'react';
+import { AlertTriangle, RefreshCcw } from 'lucide-react';
 
 interface Props {
-    children?: ReactNode;
+    children: ReactNode;
+    fallback?: ReactNode;
+    location?: string;
 }
 
 interface State {
@@ -24,23 +27,31 @@ export default class ErrorBoundary extends Component<Props, State> {
         console.error('Uncaught error:', error, errorInfo);
     }
 
+    private handleReset = () => {
+        this.setState({ hasError: false, error: null });
+    };
+
     public render() {
         if (this.state.hasError) {
+            if (this.props.fallback) return this.props.fallback;
+
             return (
-                <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
-                    <div className="bg-white p-8 rounded-lg shadow-xl max-w-lg w-full border-l-4 border-red-500">
-                        <h1 className="text-2xl font-bold text-gray-900 mb-4">Something went wrong</h1>
-                        <p className="text-gray-600 mb-4">The application encountered an unexpected error.</p>
-                        <div className="bg-gray-100 p-4 rounded overflow-auto text-sm font-mono text-red-600 mb-6">
-                            {this.state.error?.message}
-                        </div>
-                        <button
-                            onClick={() => window.location.reload()}
-                            className="px-4 py-2 bg-gray-900 text-white rounded hover:bg-gray-800 transition-colors"
-                        >
-                            Reload Page
-                        </button>
+                <div className="w-full h-full min-h-[200px] flex flex-col items-center justify-center p-8 bg-zinc-900/90 border border-red-500/20 rounded-xl text-center backdrop-blur-sm">
+                    <div className="w-12 h-12 bg-red-500/10 rounded-full flex items-center justify-center mb-4 border border-red-500/20 shadow-[0_0_15px_rgba(239,68,68,0.2)]">
+                        <AlertTriangle className="h-6 w-6 text-red-500" />
                     </div>
+                    <h2 className="text-xl font-bold text-white mb-2">Something went wrong</h2>
+                    <p className="text-sm text-gray-400 mb-6 max-w-md">
+                        {this.props.location ? `Error in ${this.props.location}: ` : ''}
+                        {this.state.error?.message || 'An unexpected error occurred.'}
+                    </p>
+                    <button
+                        onClick={this.handleReset}
+                        className="flex items-center gap-2 px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 text-white rounded-lg transition-colors text-sm font-medium"
+                    >
+                        <RefreshCcw className="h-4 w-4" />
+                        Try Again
+                    </button>
                 </div>
             );
         }

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Upload, X, Play, Wand2, Download, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -12,6 +12,12 @@ export default function VideoCreatorModal({ isOpen, onClose }: VideoCreatorProps
     const [afterImage, setAfterImage] = useState<string | null>(null);
     const [isGenerating, setIsGenerating] = useState(false);
     const [generatedVideo, setGeneratedVideo] = useState<boolean>(false);
+
+    // Ref to track open state inside async closures
+    const isOpenRef = useRef(isOpen);
+    useEffect(() => {
+        isOpenRef.current = isOpen;
+    }, [isOpen]);
 
     if (!isOpen) return null;
 
@@ -27,7 +33,7 @@ export default function VideoCreatorModal({ isOpen, onClose }: VideoCreatorProps
         }
     };
 
-    // Safety check for unmounting
+    // Safety check for resets
     useEffect(() => {
         if (!isOpen) {
             setIsGenerating(false);
@@ -44,7 +50,8 @@ export default function VideoCreatorModal({ isOpen, onClose }: VideoCreatorProps
         setIsGenerating(true);
         // Simulate "AI Processing" time
         setTimeout(() => {
-            if (isOpen) {
+            // Check the Ref, not the stale closure variable
+            if (isOpenRef.current) {
                 setIsGenerating(false);
                 setGeneratedVideo(true);
                 toast.success('Video Generated', { description: 'Your Reel has been created successfully!' });
