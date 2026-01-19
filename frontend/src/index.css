@@ -46,11 +46,13 @@
 
   /* Neon Accents (The "Underglow") */
   .neon-border {
-    @apply border border-red-500/30 shadow-[0_0_10px_rgba(220, 38, 38, 0.2)];
+    @apply border border-red-500/30;
+    box-shadow: 0 0 10px rgba(220, 38, 38, 0.2);
   }
 
   .neon-border-hover:hover {
-    @apply border-red-500/80 shadow-[0_0_20px_rgba(220, 38, 38, 0.5)];
+    @apply border-red-500/80;
+    box-shadow: 0 0 20px rgba(220, 38, 38, 0.5);
   }
 
   .neon-text-glow {
@@ -64,7 +66,11 @@
 
   /* Buttons */
   .btn-neon {
-    @apply bg-gradient-to-r from-red-600 to-red-700 text-white font-rajdhani font-bold uppercase tracking-wider relative overflow-hidden transition-all duration-300 hover:shadow-[0_0_20px_rgba(220, 38, 38, 0.6)] hover:scale-[1.02] active:scale-[0.98];
+    @apply bg-gradient-to-r from-red-600 to-red-700 text-white font-display font-bold uppercase tracking-wider relative overflow-hidden transition-all duration-300 hover:scale-[1.02] active:scale-[0.98];
+  }
+
+  .btn-neon:hover {
+    box-shadow: 0 0 20px rgba(220, 38, 38, 0.6);
   }
 
   /* Typography */
