@@ -167,15 +167,24 @@ function VideoPreviewPlayer({ before, after }: { before: string, after: string }
     const [exporting, setExporting] = useState(false);
 
     useEffect(() => {
-        // beat match loop: 2s beat
+        let mounted = true;
+        // beat match loop: 2.2s beat
         const interval = setInterval(() => {
+            if (!mounted) return;
             setFlash(true);
-            setTimeout(() => setFlash(false), 150); // Flash duration
+
+            // Clear flash after 150ms
+            setTimeout(() => {
+                if (mounted) setFlash(false);
+            }, 150);
 
             setPhase(prev => prev === 'before' ? 'after' : 'before');
         }, 2200);
 
-        return () => clearInterval(interval);
+        return () => {
+            mounted = false;
+            clearInterval(interval);
+        };
     }, []);
 
     const handleExport = () => {
