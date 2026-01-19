@@ -235,7 +235,7 @@ export default function DashboardHome() {
                     <motion.div
                         key={i}
                         variants={itemVariants as any}
-                        className="glass-panel-neon p-6 relative overflow-hidden group hover:-translate-y-1 transition-transform duration-300"
+                        className="glass-panel p-6 relative overflow-hidden group hover:-translate-y-1 transition-transform duration-300"
                     >
                         {/* Background Accents */}
                         <div className="absolute -right-6 -top-6 w-24 h-24 bg-gradient-to-br from-white/10 to-transparent rounded-full blur-xl group-hover:bg-brand-red/20 transition-colors duration-500" />
@@ -270,7 +270,7 @@ export default function DashboardHome() {
                 {/* Main Activity Chart */}
                 <motion.div
                     variants={itemVariants as any}
-                    className="glass-panel-neon p-6 lg:col-span-2 flex flex-col min-h-[400px]"
+                    className="glass-panel p-6 lg:col-span-2 flex flex-col min-h-[400px]"
                 >
                     <div className="flex justify-between items-center mb-8">
                         <div>
@@ -296,7 +296,7 @@ export default function DashboardHome() {
                 {/* Platform Distribution */}
                 <motion.div
                     variants={itemVariants as any}
-                    className="glass-panel-neon p-6 flex flex-col min-h-[400px]"
+                    className="glass-panel p-6 flex flex-col min-h-[400px]"
                 >
                     <div className="mb-6">
                         <h3 className="text-xl font-bold text-white font-rajdhani uppercase tracking-wider mb-1">Target Distribution</h3>

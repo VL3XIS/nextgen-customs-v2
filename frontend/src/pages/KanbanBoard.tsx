@@ -19,12 +19,15 @@ function Column({ id, title, jobs }: { id: string, title: string, jobs: Job[] })
     const { setNodeRef } = useDroppable({ id });
 
     return (
-        <div className="flex flex-col h-full min-w-[300px] w-80 bg-gradient-to-b from-brand-red/10 to-black/60 backdrop-blur-md rounded-xl border border-brand-red/30 shadow-xl">
-            <div className="p-4 border-b border-brand-red/30 flex justify-between items-center bg-brand-red/10">
-                <h3 className="font-bold text-white font-rajdhani uppercase tracking-wider text-sm">{title}</h3>
-                <span className="text-xs font-bold bg-brand-red/30 text-white px-2.5 py-1 rounded-full border border-brand-red/50">{jobs.length}</span>
+        <div className="flex flex-col h-full min-w-[300px] w-80 glass-panel rounded-xl">
+            <div className="p-4 border-b border-white/5 flex justify-between items-center bg-white/[0.02]">
+                <h3 className="font-bold text-white font-rajdhani uppercase tracking-wider text-sm flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-brand-red shadow-[0_0_8px_rgba(220,38,38,0.8)]"></span>
+                    {title}
+                </h3>
+                <span className="text-[10px] font-bold bg-black/40 text-gray-400 px-2.5 py-0.5 rounded border border-white/10 font-mono">{jobs.length}</span>
             </div>
-            <div ref={setNodeRef} className="flex-1 p-4 overflow-y-auto custom-scrollbar space-y-3">
+            <div ref={setNodeRef} className="flex-1 p-3 overflow-y-auto custom-scrollbar space-y-3">
                 {jobs.map((job) => (
                     <JobCard key={job.id} job={job} />
                 ))}
@@ -91,13 +94,16 @@ export default function KanbanBoard() {
         <div className="h-[calc(100vh-8rem)] flex flex-col">
             <div className="flex justify-between items-center mb-6">
                 <div>
-                    <h1 className="text-3xl font-bold text-white font-rajdhani uppercase tracking-wider">JOBS</h1>
-                    <p className="text-gray-500 text-sm mt-1">Manage vehicle jobs and workflow</p>
+                    <h1 className="text-3xl font-bold text-white font-rajdhani uppercase tracking-wider flex items-center gap-3">
+                        JOBS
+                        <div className="h-px w-12 bg-gradient-to-r from-brand-red to-transparent"></div>
+                    </h1>
+                    <p className="text-gray-500 text-sm mt-1 font-light tracking-wide">Manage vehicle jobs and workflow</p>
                 </div>
                 <div className="flex gap-3">
                     <button
                         onClick={() => setIsImportModalOpen(true)}
-                        className="bg-black/40 hover:bg-black/60 text-gray-300 hover:text-white px-4 py-2.5 rounded-lg border border-white/10 hover:border-brand-red/50 transition-all flex items-center font-rajdhani uppercase tracking-wider text-sm font-bold"
+                        className="bg-black/40 hover:bg-black/60 text-gray-300 hover:text-white px-4 py-2.5 rounded-lg border border-white/10 hover:border-white/30 transition-all flex items-center font-rajdhani uppercase tracking-wider text-sm font-bold"
                     >
                         <Upload className="h-4 w-4 mr-2" />
                         Import Estimate
@@ -107,7 +113,7 @@ export default function KanbanBoard() {
                             setImportedData(null);
                             setIsModalOpen(true);
                         }}
-                        className="bg-brand-red hover:bg-brand-red/80 text-white px-6 py-2.5 rounded-lg transition-all shadow-[0_0_15px_rgba(220,38,38,0.3)] hover:shadow-[0_0_25px_rgba(220,38,38,0.5)] flex items-center font-bold font-rajdhani uppercase tracking-wider border border-brand-red/50"
+                        className="btn-neon px-6 py-2.5 rounded-xl flex items-center"
                     >
                         <Plus className="h-4 w-4 mr-2" />
                         New Job

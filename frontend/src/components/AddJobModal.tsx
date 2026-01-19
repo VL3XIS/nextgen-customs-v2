@@ -96,7 +96,7 @@ export default function AddJobModal({ isOpen, onClose, onJobAdded, initialData }
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md">
-            <div className="glass-panel-neon w-full max-w-md p-6 relative animate-fade-in border border-white/10">
+            <div className="glass-panel w-full max-w-md p-6 relative animate-fade-in border border-white/10">
                 <button
                     onClick={onClose}
                     className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors"

@@ -41,20 +41,20 @@ export default function DashboardLayout() {
 
             {/* Sidebar with Glass Effect */}
             <aside className={cn(
-                "fixed lg:static inset-y-0 left-0 z-50 w-72 bg-brand-obsidian/90 backdrop-blur-xl border-r border-white/5 text-white transform transition-transform duration-300 ease-in-out lg:transform-none flex flex-col",
+                "fixed lg:static inset-y-0 left-0 z-50 w-72 bg-black/60 backdrop-blur-xl border-r border-white/5 text-white transform transition-transform duration-300 ease-in-out lg:transform-none flex flex-col shadow-[4px_0_24px_rgba(0,0,0,0.4)]",
                 sidebarOpen ? "translate-x-0" : "-translate-x-full"
             )}>
-                <div className="p-6 border-b border-white/5 flex flex-col items-center justify-center relative overflow-hidden">
+                <div className="p-6 border-b border-white/5 flex flex-col items-center justify-center relative overflow-hidden bg-white/[0.02]">
                     <div className="flex flex-col items-center z-10 w-full">
                         <img
                             src="/logo-full.png"
                             alt="Next Gen Customs"
-                            className="w-full h-auto max-w-[260px] object-contain"
+                            className="w-full h-auto max-w-[220px] object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.1)]"
                         />
                     </div>
                 </div>
 
-                <nav className="flex-1 px-4 py-6 space-y-2">
+                <nav className="flex-1 px-4 py-8 space-y-2 overflow-y-auto custom-scrollbar">
                     {navItems.map((item) => {
                         const Icon = item.icon;
                         const isActive = location.pathname === item.path;
@@ -64,33 +64,33 @@ export default function DashboardLayout() {
                                 key={item.path}
                                 to={item.path}
                                 className={cn(
-                                    "flex items-center space-x-4 px-4 py-4 rounded-xl transition-all duration-300 group relative overflow-hidden",
+                                    "flex items-center space-x-4 px-4 py-3.5 rounded-r-xl rounded-l-md transition-all duration-300 group relative overflow-hidden",
                                     isActive
-                                        ? "bg-gradient-to-r from-red-900/80 to-red-600/20 text-white border-l-4 border-red-500 shadow-[0_0_15px_rgba(220,38,38,0.2)]"
-                                        : "text-gray-400 hover:text-white hover:bg-white/5"
+                                        ? "bg-gradient-to-r from-red-600/20 to-transparent text-white border-l-4 border-red-600 shadow-[inset_10px_0_20px_-10px_rgba(220,38,38,0.3)]"
+                                        : "text-zinc-400 hover:text-white hover:bg-white/5 border-l-4 border-transparent"
                                 )}
                                 onClick={() => setSidebarOpen(false)}
                             >
                                 <Icon className={cn(
                                     "h-5 w-5 relative z-10 transition-transform duration-300",
-                                    isActive ? "text-white" : "text-gray-500 group-hover:text-white"
+                                    isActive ? "text-red-500 drop-shadow-[0_0_8px_rgba(220,38,38,0.5)]" : "group-hover:text-white group-hover:scale-110"
                                 )} />
                                 <span className={cn(
-                                    "font-medium tracking-wide relative z-10 text-sm",
-                                    isActive && "font-bold"
+                                    "font-rajdhani font-medium tracking-wide relative z-10 text-[15px] uppercase",
+                                    isActive ? "text-white neon-text-glow" : "group-hover:text-white"
                                 )}>{item.label}</span>
                             </Link>
                         );
                     })}
                 </nav>
 
-                <div className="p-6 border-t border-white/5 bg-black/20">
+                <div className="p-6 border-t border-white/5 bg-black/40 backdrop-blur-lg">
                     <button
                         onClick={handleLogout}
-                        className="flex items-center space-x-3 px-4 py-3 w-full text-left text-gray-400 hover:text-brand-red hover:bg-brand-red/5 rounded-xl transition-all duration-300 group"
+                        className="flex items-center space-x-3 px-4 py-3 w-full text-left text-zinc-400 hover:text-red-400 hover:bg-red-500/10 rounded-xl transition-all duration-300 group border border-transparent hover:border-red-500/20"
                     >
                         <LogOut className="h-5 w-5 group-hover:-translate-x-1 transition-transform" />
-                        <span className="font-medium">Logout</span>
+                        <span className="font-rajdhani font-bold uppercase tracking-wider text-sm">Logout</span>
                     </button>
                 </div>
             </aside>

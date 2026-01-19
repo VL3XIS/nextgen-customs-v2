@@ -29,7 +29,7 @@ export default function JobCard({ job }: JobCardProps) {
                 style={style}
                 {...listeners}
                 {...attributes}
-                className="bg-brand-black/80 backdrop-blur-sm p-4 rounded-lg shadow-lg border border-white/5 cursor-grab active:cursor-grabbing hover:border-brand-red/50 hover:shadow-[0_0_15px_rgba(255,42,60,0.15)] transition-all duration-300 mb-3 group relative"
+                className="glass-panel p-4 rounded-xl cursor-grab active:cursor-grabbing neon-border-hover transition-all duration-300 mb-3 group relative hover:-translate-y-1 hover:shadow-xl"
             >
                 {/* Share Button - Absolute Positioned */}
                 <button
@@ -38,26 +38,28 @@ export default function JobCard({ job }: JobCardProps) {
                         e.stopPropagation(); // Prevent drag/click propagation
                         setIsShareModalOpen(true);
                     }}
-                    className="absolute top-3 right-3 p-1.5 rounded-full bg-white/5 text-gray-400 hover:text-brand-red hover:bg-white/10 transition-all opacity-0 group-hover:opacity-100 z-10"
+                    className="absolute top-3 right-3 p-2 rounded-full bg-black/40 text-gray-400 hover:text-white hover:bg-brand-red hover:shadow-[0_0_10px_rgba(220,38,38,0.5)] transition-all opacity-0 group-hover:opacity-100 z-10"
                     title="Share Status"
                 >
-                    <Share2 className="h-4 w-4" />
+                    <Share2 className="h-3.5 w-3.5" />
                 </button>
 
-                <h4 className="font-bold text-white mb-2 font-rajdhani tracking-wide text-lg group-hover:text-brand-red transition-colors pr-8">{job.vehicle}</h4>
+                <div className="flex justify-between items-start pr-6">
+                    <h4 className="font-bold text-white mb-3 font-rajdhani tracking-wide text-lg group-hover:text-brand-neon transition-colors truncate w-full">{job.vehicle}</h4>
+                </div>
 
-                <div className="space-y-2 text-xs text-gray-400">
-                    <div className="flex items-center">
-                        <User className="h-3 w-3 mr-2 text-brand-red" />
+                <div className="space-y-2.5 text-xs text-zinc-400">
+                    <div className="flex items-center group-hover:text-zinc-300 transition-colors">
+                        <User className="h-3.5 w-3.5 mr-2.5 text-brand-red" />
                         {job.customerName}
                     </div>
-                    <div className="flex items-center">
-                        <Calendar className="h-3 w-3 mr-2 text-brand-red" />
+                    <div className="flex items-center group-hover:text-zinc-300 transition-colors">
+                        <Calendar className="h-3.5 w-3.5 mr-2.5 text-brand-red" />
                         Started: {new Date(job.startedAt).toLocaleDateString()}
                     </div>
-                    <div className="flex items-center text-gray-300 font-medium bg-white/5 p-1.5 rounded border border-white/5 mt-2">
-                        <Clock className="h-3 w-3 mr-2 text-brand-red" />
-                        {daysActive} days in stage
+                    <div className="flex items-center text-zinc-300 font-medium bg-black/40 p-2 rounded-lg border border-white/5 mt-3 group-hover:border-white/10 transition-colors">
+                        <Clock className="h-3.5 w-3.5 mr-2 text-brand-red" />
+                        <span className="font-mono text-[10px] uppercase tracking-wider">{daysActive} days active</span>
                     </div>
                 </div>
             </div>
