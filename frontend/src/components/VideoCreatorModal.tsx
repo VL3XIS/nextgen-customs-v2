@@ -19,7 +19,7 @@ export default function VideoCreatorModal({ isOpen, onClose }: VideoCreatorProps
         isOpenRef.current = isOpen;
     }, [isOpen]);
 
-    if (!isOpen) return null;
+
 
     const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>, type: 'before' | 'after') => {
         const file = e.target.files?.[0];
@@ -67,6 +67,8 @@ export default function VideoCreatorModal({ isOpen, onClose }: VideoCreatorProps
         window.addEventListener('keydown', handleEsc);
         return () => window.removeEventListener('keydown', handleEsc);
     }, [onClose]);
+
+    if (!isOpen) return null;
 
     return (
         <div
