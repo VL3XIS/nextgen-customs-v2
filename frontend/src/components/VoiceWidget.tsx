@@ -34,9 +34,9 @@ export default function VoiceWidget() {
         },
 
         // --- CUSTOMER SERVICE ---
-        check_vehicle_status: async ({ search_query, vehicle, customerName }: { search_query?: string, vehicle?: string, customerName?: string }) => {
+        check_status: async ({ vehicle, customerName }: { vehicle?: string, customerName?: string }) => {
             // Handle variations in parameters from LLM
-            const query = search_query || vehicle || customerName || "Unknown";
+            const query = vehicle || customerName || "Unknown";
             console.log("Alex: Check Status", query);
             try {
                 const { data } = await api.post('/agent/check-status', { vehicle: query });
@@ -115,6 +115,16 @@ export default function VoiceWidget() {
             } catch (err) {
                 return "Error cancelling appointment.";
             }
+        },
+
+        get_staff_schedule: async ({ date, staff_member }: { date: string, staff_member?: string }) => {
+            console.log("Alex: Get Staff Schedule", { date, staff_member });
+            try {
+                const { data } = await api.post('/agent/get-staff-schedule', { date, staff_member });
+                return JSON.stringify(data);
+            } catch (err) {
+                return "Error fetching staff schedule.";
+            }
         }
     };
 
@@ -169,7 +179,7 @@ export default function VoiceWidget() {
                 dynamicVariables: {
                     user_name: "Alexis (Owner)",
                     user_role: "ADMIN",
-                    current_time: `${dynamicDate} at ${dynamicTime}`
+                    current_time: `${dynamicDate} at ${dynamicTime} (Current Year is 2026)`
                 }
             };
 

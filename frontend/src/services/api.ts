@@ -2,6 +2,7 @@ import axios from 'axios';
 
 const api = axios.create({
     baseURL: '/api', // Relative path works with Vite Proxy (Local) and Vercel Rewrites (Prod)
+    timeout: 15000 // 15s timeout to prevent hanging forever
 });
 
 api.interceptors.request.use((config) => {

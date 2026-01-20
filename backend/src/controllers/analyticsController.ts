@@ -9,7 +9,7 @@ export const getAnalyticsSummary = async (req: AuthRequest, res: Response) => {
     try {
         const userId = req.user?.userId;
 
-        const [totalJobs, totalPosts, analyticsData, activeClientsCount, pipelineRevenue] = await Promise.all([
+        const [totalJobs, totalPosts, analyticsData, activeClientsCount, pipelineRevenue, completedRevenue] = await Promise.all([
             prisma.job.count({ where: { userId } }),
             prisma.post.count({ where: { job: { userId } } }),
             prisma.analytics.aggregate({
@@ -41,6 +41,17 @@ export const getAnalyticsSummary = async (req: AuthRequest, res: Response) => {
                     status: {
                         notIn: ['COMPLETE']
                     }
+                },
+                _sum: {
+                    estimatedValue: true
+                }
+            }),
+
+            // Calculate Completed Revenue (Sum of estimatedValue for complete jobs)
+            prisma.job.aggregate({
+                where: {
+                    userId,
+                    status: 'COMPLETE'
                 },
                 _sum: {
                     estimatedValue: true
@@ -102,7 +113,10 @@ export const getAnalyticsSummary = async (req: AuthRequest, res: Response) => {
                 totalPosts,
                 timeSavedMinutes: analyticsData._sum.timeSavedMinutes || 0,
                 activeClients: activeClientsCount,
-                pipelineRevenue: pipelineRevenue._sum.estimatedValue || 0
+                timeSavedMinutes: analyticsData._sum.timeSavedMinutes || 0,
+                activeClients: activeClientsCount,
+                pipelineRevenue: pipelineRevenue._sum.estimatedValue || 0,
+                completedRevenue: completedRevenue._sum.estimatedValue || 0
             },
             charts: {
                 postsOverTime,

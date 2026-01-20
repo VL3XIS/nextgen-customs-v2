@@ -3,7 +3,7 @@ import { Outlet, useLocation } from 'react-router-dom';
 import { Toaster } from 'sonner';
 import { Menu, User as UserIcon } from 'lucide-react';
 import Sidebar from './Sidebar';
-import VoiceWidget from './VoiceWidget';
+// import VoiceWidget from './VoiceWidget';
 
 export default function DashboardLayout() {
     const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -61,7 +61,7 @@ export default function DashboardLayout() {
                 <main className="flex-1 p-6 lg:p-10 overflow-y-auto w-full max-w-7xl mx-auto">
                     <Outlet />
                 </main>
-                <VoiceWidget />
+                {/* <VoiceWidget /> */}
             </div>
         </div>
     );

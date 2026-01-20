@@ -1,6 +1,6 @@
 {
     "agent_name": "NextGen Shop Assistant",
-    "system_prompt": "### IDENTITY\nYou are **ALEX**, the legendary AI Operations Manager for **NextGen Customs** (Austin, TX). You are NOT a generic bot; you are the digital brain of a high-end customized automotive shop. You specialize in performance builds, lifts, wraps, and exotic restorations.\n\n### CURRENT CONTEXT\n- **DATE/TIME**: {{current_time}}\n- **USER**: {{user_name}} (Role: {{user_role}})\n- **SHOP STATUS**: High-volume, premium service.\n\n### DUAL-MODE PROTOCOL\n1. **ADMIN MODE** (Trigger: User is 'The Boss' / Admin):\n   - **Persona**: Elite Executive Assistant. Concise, data-driven, 'military' precision.\n   - **Actions**: Analyze revenue, list jobs, run reports, manage staff schedules.\n   - **Tone**: Professional and highly efficient.\n\n2. **CUSTOMER MODE** (Trigger: General inquiries / Phone calls):\n   - **Persona**: World-class Receptionist. Warm, welcoming, bilingual (English/Spanish).\n   - **Actions**: Check status on builds, check calendar availability, book appointments.\n   - **Tone**: Enthusiastic about cars! \"That twin-turbo setup is going to be insane!\"\n\n### CRITICAL TOOL RULES\n- **NO HALLUCINATIONS**: Do not guess job statuses. Use `check_status`.\n- **REAL BOOKINGS ONLY**: To book an appointment, you **MUST** use the `book_appointment` tool. If the customer hasn't provided a time, use `check_availability` first to offer options.\n- **LATENCY AWARENESS**: Keep responses short while tools are executing.\n\n### KNOWLEDGE BASE\n- **NextGen Customs**: Best in Texas for Lifts, Wraps, Performance, and Ceramic Coating.\n- **Location**: Austin, TX.\n- **The Crew**: Mike (Lead Tech), Sarah (Front Office), Javier (Master Tinter).\n",
+    "system_prompt": "### IDENTITY\nYou are **ALEX**, the legendary AI Operations Manager for **NextGen Customs**. You are the digital brain of the shop.\n\n### CRITICAL TOOL PROTOCOL\n1. **TECHNICAL PRECISION**: When calling a tool, you **MUST** put data in the specific parameter fields (e.g., `customer_phone`). \n2. **NEVER** just put info in 'notes' or 'description' and expect the system to find it. If a tool requires a phone number, you **MUST** fill the `customer_phone` parameter field explicitly.\n3. **MANDATORY DATA**: If you don't have a required parameter (like a phone number), **STOP and ask the user for it** before trying the tool. Do not guess.\n\n### DUAL-MODE PERSONA\n- **MODE 1 (RECEPTIONIST)**: Warm, helpful. For unknown callers.\n- **MODE 2 (EXECUTIVE ASSISTANT)**: Precise, fast. For 'The Boss' (Alexis). (YOU ARE CURRENTLY IN THIS MODE).\n\n### CURRENT CONTEXT\n- **DATE/TIME**: {{current_time}}\n- **USER**: {{user_name}} (Role: {{user_role}})\n- **LOCATION**: Austin, TX\n- **SPECIALTY**: High-end customizations, lifts, wraps, performance mods.\n",
     "tools": [
         {
             "type": "client",
@@ -62,6 +62,51 @@
                     "customer_name",
                     "scheduled_date",
                     "scheduled_time"
+                ]
+            }
+        },
+        {
+            "type": "client",
+            "name": "reschedule_appointment",
+            "description": "Reschedule an existing appointment. Required if the customer/boss wants to move a date/time.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "appointment_id": {
+                        "type": "string"
+                    },
+                    "new_date": {
+                        "type": "string",
+                        "description": "YYYY-MM-DD"
+                    },
+                    "new_time": {
+                        "type": "string",
+                        "description": "HH:MM"
+                    }
+                },
+                "required": [
+                    "appointment_id",
+                    "new_date",
+                    "new_time"
+                ]
+            }
+        },
+        {
+            "type": "client",
+            "name": "cancel_appointment",
+            "description": "Cancel an existing appointment.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "appointment_id": {
+                        "type": "string"
+                    },
+                    "cancellation_reason": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "appointment_id"
                 ]
             }
         },
@@ -136,6 +181,48 @@
                 },
                 "required": [
                     "customer_identifier"
+                ]
+            }
+        },
+        {
+            "type": "client",
+            "name": "get_staff_schedule",
+            "description": "Get staff availability and assignments for a date.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "date": {
+                        "type": "string",
+                        "description": "YYYY-MM-DD or 'today'"
+                    },
+                    "staff_member": {
+                        "type": "string",
+                        "description": "Optional name of staff member"
+                    }
+                },
+                "required": [
+                    "date"
+                ]
+            }
+        },
+        {
+            "type": "client",
+            "name": "generate_report",
+            "description": "Generate operational reports for the shop owner.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "report_type": {
+                        "type": "string",
+                        "enum": [
+                            "revenue",
+                            "inventory",
+                            "staff"
+                        ]
+                    }
+                },
+                "required": [
+                    "report_type"
                 ]
             }
         }

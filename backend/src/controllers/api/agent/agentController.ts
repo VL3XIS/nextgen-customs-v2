@@ -1,12 +1,15 @@
 console.log('Controller: Loading imports...');
 import { Request, Response } from 'express';
 import prisma from '../../../config/database';
-console.log('Controller: Importing Resend...');
-import { Resend } from 'resend';
 
-console.log('Controller: Initializing Resend...');
-const resend = new Resend(process.env.RESEND_API_KEY);
-console.log('Controller: Resend Initialized.');
+console.log('Controller: Initializing Email Service...');
+import { sendPremiumConfirmation } from '../../../services/emailService';
+// import { Resend } from 'resend';
+// const resend = new Resend(process.env.RESEND_API_KEY);
+const resend = { emails: { send: async () => ({}) } }; // Mock locally to prevent crash
+console.log('Controller: Email Service Initialized.');
+
+import { calendarService } from '../../../services/calendarService';
 
 // ------------------------------------------------------------------
 // HELPERS
@@ -101,6 +104,9 @@ export const bookAppointment = async (req: Request, res: Response) => {
             time,
             name,
             phone,
+            phone_number,
+            phoneNumber,
+            cust_phone,
             email,
             // FLATTENED PARAMS SUPPORT
             vehicle_year,
@@ -114,7 +120,7 @@ export const bookAppointment = async (req: Request, res: Response) => {
         const safeDate = scheduled_date || date;
         const safeTime = scheduled_time || time;
         const safeName = customer_name || name || 'Voice Customer';
-        const safePhone = customer_phone || phone || 'Not Provided';
+        const safePhone = customer_phone || phone || phone_number || phoneNumber || cust_phone || 'Not Provided';
         const safeEmail = customer_email || email || 'alexisruiz1040@gmail.com';
 
         console.log("Agent Booking Payload (Processed):", { safeDate, safeTime, safeName });
@@ -173,8 +179,6 @@ export const bookAppointment = async (req: Request, res: Response) => {
         // -----------------------
 
         // 1. Save to Database
-        console.log("Agent: Creating DB Record...", { isoDateTime, safeType, safeVehicle });
-
         const newAppt = await prisma.appointment.create({
             data: {
                 customerName: safeName,
@@ -188,37 +192,47 @@ export const bookAppointment = async (req: Request, res: Response) => {
             }
         });
 
-        // 2. Send Confirmation Email (Real)
-        let emailStatus = 'skipped';
-        const apiKey = process.env.RESEND_API_KEY;
+        // 2. Sync to Google Calendar (Fire & Forget with Try/Catch)
+        let googleEventId = null;
+        try {
+            // Attempt to create, but don't fail booking if it errors
+            const endDateTime = new Date(isoDateTime.getTime() + 30 * 60000); // Default 30 min
+            googleEventId = await calendarService.createEvent({
+                summary: `${safeName} - ${safeType} (${safeVehicle})`,
+                description: `Customer: ${safeName}\nPhone: ${safePhone}\nVehicle: ${safeVehicle}\nNotes: ${special_notes || 'Booked via Alex Voice Agent'}`,
+                startDateTime: isoDateTime,
+                endDateTime: endDateTime
+            });
 
-        if (apiKey) {
-            try {
-                console.log('Book Appt: Attempting to send email via Resend...');
-                await resend.emails.send({
-                    from: 'NextGen Customs <onboarding@resend.dev>',
-                    to: ['alexisruiz1040@gmail.com'], // Demo override
-                    subject: `Appointment Confirmed: ${safeDate} @ ${safeTime}`,
-                    html: `
-                        <h1>Appointment Confirmed</h1>
-                        <p>Hi ${safeName},</p>
-                        <p>You are booked for a <strong>${safeType}</strong> on <strong>${safeDate} at ${safeTime}</strong>.</p>
-                        <p>Thank you for choosing NextGen Customs!</p>
-                    `
+            if (googleEventId) {
+                await prisma.appointment.update({
+                    where: { id: newAppt.id },
+                    data: { googleEventId }
                 });
-                console.log('Book Appt: Email Sent Successfully!');
-                emailStatus = 'sent';
-            } catch (emailErr) {
-                console.error("Book Appt: Email Failed:", emailErr);
-                emailStatus = 'failed';
             }
+        } catch (calErr) {
+            console.error("Google Calendar Sync Failed (Booking allowed):", calErr);
+        }
+
+        // 3. Send PREMIUM Confirmation Email
+        try {
+            await sendPremiumConfirmation({
+                customerName: safeName,
+                customerEmail: safeEmail,
+                appointmentDate: isoDateStr,
+                appointmentTime: validTime,
+                appointmentType: safeType,
+                vehicleModel: safeVehicle,
+                notes: special_notes
+            });
+        } catch (emailErr) {
+            console.error("Email failed:", emailErr);
         }
 
         return res.json({
             success: true,
             message: `Appointment confirmed for ${isoDateStr} at ${validTime}!`,
-            appointment_id: newAppt.id,
-            email_status: emailStatus
+            appointment_id: newAppt.id
         });
 
     } catch (error) {
@@ -337,6 +351,19 @@ export const rescheduleAppointment = async (req: Request, res: Response) => {
             }
         });
 
+        // Sync with Google Calendar
+        if (updatedAppt.googleEventId) {
+            try {
+                const endDateTime = new Date(isoDateTime.getTime() + 30 * 60000);
+                await calendarService.updateEvent(updatedAppt.googleEventId, {
+                    startDateTime: isoDateTime,
+                    endDateTime: endDateTime
+                });
+            } catch (calErr) {
+                console.error("Google Calendar Reschedule Sync Failed:", calErr);
+            }
+        }
+
         // Notify via email (optional but nice)
         if (process.env.RESEND_API_KEY && updatedAppt.customerEmail) {
             await resend.emails.send({
@@ -377,6 +404,15 @@ export const cancelAppointment = async (req: Request, res: Response) => {
                 notes: cancellation_reason ? `Cancelled: ${cancellation_reason}` : 'Cancelled by user'
             }
         });
+
+        const appt = await prisma.appointment.findUnique({ where: { id: appointment_id } });
+        if (appt?.googleEventId) {
+            try {
+                await calendarService.deleteEvent(appt.googleEventId);
+            } catch (calErr) {
+                console.error("Google Calendar Cancel Sync Failed:", calErr);
+            }
+        }
 
         return res.json({
             success: true,
@@ -439,13 +475,14 @@ export const searchCustomerHistory = async (req: Request, res: Response) => {
 // ------------------------------------------------------------------
 export const analyzeRevenue = async (req: Request, res: Response) => {
     try {
-        const { time_period } = req.body;
-        console.log('Agent: Analyze Revenue', time_period);
+        const { time_period, period } = req.body;
+        const safePeriod = time_period || period || 'month';
+        console.log('Agent: Analyze Revenue', safePeriod);
 
         let dateFilter = new Date();
         const now = new Date();
 
-        switch (time_period) {
+        switch (safePeriod) {
             case 'today':
                 dateFilter.setHours(0, 0, 0, 0);
                 break;
@@ -496,7 +533,7 @@ export const analyzeRevenue = async (req: Request, res: Response) => {
                 active_count: activeJobs,
                 currency: "USD"
             },
-            message: `Since ${time_period} start (${dateFilter.toLocaleDateString()}), we have completed ${completedJobs} jobs worth $${totalRevenue}. Pipeline has ${activeJobs} jobs worth $${pipelineRevenue}.`
+            message: `Since ${safePeriod} start (${dateFilter.toLocaleDateString()}), we have completed ${completedJobs} jobs worth $${totalRevenue}. Pipeline has ${activeJobs} jobs worth $${pipelineRevenue}.`
         });
 
     } catch (error) {
@@ -505,3 +542,38 @@ export const analyzeRevenue = async (req: Request, res: Response) => {
     }
 };
 
+// ------------------------------------------------------------------
+// 10. GET STAFF SCHEDULE
+// ------------------------------------------------------------------
+export const getStaffSchedule = async (req: Request, res: Response) => {
+    try {
+        const { date, staff_member } = req.body;
+        const safeDate = date || 'today';
+        console.log('Agent: Get Staff Schedule', { safeDate, staff_member });
+
+        // Mock data for staff schedules (since we don't have a Staff model yet)
+        const staffSchedules = [
+            { name: "Mike", role: "Customizer", status: "On-site", current_job: "69 Camaro Restoration" },
+            { name: "Sarah", role: "Detailer", status: "On-site", current_job: "Tesla Model S Ceramic" },
+            { name: "John", role: "Mechanic", status: "Off-site", current_job: "None" },
+            { name: "Alexis", role: "Owner", status: "On-site", current_job: "Operations Management" }
+        ];
+
+        let filtered = staffSchedules;
+        if (staff_member) {
+            filtered = staffSchedules.filter(s => s.name.toLowerCase().includes(staff_member.toLowerCase()));
+        }
+
+        return res.json({
+            success: true,
+            date: safeDate,
+            staff: filtered,
+            message: staff_member
+                ? `I found the schedule for ${staff_member}. They are currently ${filtered[0]?.status || 'unknown'}.`
+                : `We have ${staffSchedules.filter(s => s.status === 'On-site').length} staff members on-site today.`
+        });
+    } catch (error) {
+        console.error('Staff Schedule Error:', error);
+        return res.status(500).json({ success: false, message: "Error fetching staff schedule." });
+    }
+};

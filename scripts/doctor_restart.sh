@@ -9,7 +9,7 @@ NC='\033[0m' # No Color
 echo -e "${YELLOW}🏥 LOCAL DEV DOCTOR: Starting Diagnosis & Repair...${NC}"
 
 # 1. KILL ZOMBIE PROCESSES
-ports=(3000 3001 3005 5173 5432)
+ports=(3000 3001 3005 5173)
 echo -e "\n${YELLOW}step 1: Clearing ports and killing zombies...${NC}"
 for port in "${ports[@]}"; do
     pid=$(lsof -t -i:$port)
@@ -50,7 +50,7 @@ cd backend
 # Using nohup or just backgrounding.
 # We modify server.ts to ensure it listens on 3005 if not already.
 # (Assuming server is compiled or running via ts-node)
-nohup npm run dev > ../backend.log 2>&1 &
+nohup npx ts-node -T src/server.ts > ../backend.log 2>&1 &
 BACKEND_PID=$!
 cd ..
 
@@ -58,7 +58,7 @@ echo -e " - Backend launching (PID: $BACKEND_PID). Waiting for health check..."
 
 # Wait loop for Backend
 attempts=0
-max_attempts=30
+max_attempts=60
 connected=false
 
 while [ $attempts -lt $max_attempts ]; do

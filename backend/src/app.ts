@@ -3,9 +3,9 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 console.log('App: Importing agentRoutes...');
-import agentRoutes from './routes/api/agent';
-console.log('App: Importing elevenLabsRoutes...');
-import elevenLabsRoutes from './routes/elevenlabs';
+// import agentRoutes from './routes/api/agent';
+console.log('App: Importing elevenLabsRoutes... skipped');
+// import elevenLabsRoutes from './routes/elevenlabs';
 console.log('App: Importing appointmentsRoutes...');
 import appointmentsRoutes from './routes/appointments';
 
@@ -14,7 +14,7 @@ import jobRoutes from './routes/jobs';
 import postRoutes from './routes/posts';
 import analyticsRoutes from './routes/analytics';
 import userRoutes from './routes/user';
-// import publicRoutes from './routes/public';
+import publicRoutes from './routes/public';
 import devRoutes from './routes/dev';
 
 console.log('App: Configuring dotenv...');
@@ -46,11 +46,11 @@ app.use('/api/jobs', jobRoutes);
 app.use('/api/posts', postRoutes);
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/user', userRoutes);
-// app.use('/api/public', publicRoutes);
+app.use('/api/public', publicRoutes);
 app.use('/api/dev', devRoutes);
 
-app.use('/api/agent', agentRoutes);
-app.use('/api/elevenlabs', elevenLabsRoutes);
+// app.use('/api/agent', agentRoutes);
+// app.use('/api/elevenlabs', elevenLabsRoutes);
 app.use('/api/appointments', appointmentsRoutes);
 
 export default app;

@@ -62,7 +62,7 @@ export default function DashboardHome() {
     }
 
     const { summary, charts } = stats || {
-        summary: { totalJobs: 0, totalPosts: 0, timeSavedMinutes: 0 },
+        summary: { totalJobs: 0, totalPosts: 0, timeSavedMinutes: 0, activeClients: 0, pipelineRevenue: 0, completedRevenue: 0 },
         charts: { postsOverTime: [], byPlatform: [] }
     };
 
@@ -201,12 +201,20 @@ export default function DashboardHome() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 {[
                     {
+                        label: 'Total Revenue',
+                        value: summary.completedRevenue ? new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(summary.completedRevenue) : '$0',
+                        sublabel: 'Realized Earnings',
+                        icon: DollarSign,
+                        trend: '+8%',
+                        color: 'text-brand-neon'
+                    },
+                    {
                         label: 'Revenue Pipeline',
                         value: summary.pipelineRevenue ? new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(summary.pipelineRevenue) : '$0',
                         sublabel: 'Projected Earnings',
-                        icon: DollarSign,
+                        icon: Activity,
                         trend: '+12%',
-                        color: 'text-brand-neon'
+                        color: 'text-blue-400'
                     },
                     {
                         label: 'Active Clients',
@@ -214,14 +222,6 @@ export default function DashboardHome() {
                         sublabel: 'Distinct Customers',
                         icon: Users,
                         trend: '+4%',
-                        color: 'text-blue-400'
-                    },
-                    {
-                        label: 'Posts Generated',
-                        value: summary.totalPosts,
-                        sublabel: 'Total Lifetime',
-                        icon: Activity,
-                        trend: '+24%',
                         color: 'text-purple-400'
                     },
                     {
