@@ -108,8 +108,13 @@ export const getAnalyticsSummary = async (req: AuthRequest, res: Response) => {
             }
         });
 
-    } catch (error) {
+    } catch (error: any) {
         console.error('Analytics error:', error);
-        res.status(500).json({ success: false, error: 'Failed to fetch analytics' });
+        res.status(500).json({
+            success: false,
+            error: 'Failed to fetch analytics',
+            details: error.message,
+            stack: error.stack
+        });
     }
 };
