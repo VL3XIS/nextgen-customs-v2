@@ -17,7 +17,9 @@ interface JobType {
 }
 
 export default function SocialStudioPage() {
-    const [activeTab, setActiveTab] = useState<'existing' | 'quick'>('existing');
+    const [activeTab, setActiveTab] = useState<'existing' | 'quick' | 'drafts'>('existing');
+    const [drafts, setDrafts] = useState<any[]>([]);
+    const [fetchingDrafts, setFetchingDrafts] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [searchResults, setSearchResults] = useState<JobType[]>([]);
     const [isSearching, setIsSearching] = useState(false);
@@ -41,6 +43,28 @@ export default function SocialStudioPage() {
     const handleCloseCollage = useCallback(() => setShowCollageModal(false), []);
     const handleCloseVideo = useCallback(() => setShowVideoModal(false), []);
     const handleSaveCollage = useCallback((file: File) => setPhotos(prev => [...prev, file]), []);
+
+    const fetchDrafts = async () => {
+        setFetchingDrafts(true);
+        try {
+            const res = await api.get('/posts/all?status=draft');
+            setDrafts(res.data.posts);
+        } catch (error) {
+            console.error('Failed to fetch drafts:', error);
+            toast.error('Failed to load drafts');
+        } finally {
+            setFetchingDrafts(false);
+        }
+    };
+
+    useState(() => {
+        if (activeTab === 'drafts') fetchDrafts();
+    }); // Initial if needed
+
+    const handleTabChange = (tab: 'existing' | 'quick' | 'drafts') => {
+        setActiveTab(tab);
+        if (tab === 'drafts') fetchDrafts();
+    };
 
     // Search Logic
     const handleSearch = async (e: React.FormEvent) => {
@@ -149,7 +173,7 @@ export default function SocialStudioPage() {
                 {/* Tabs */}
                 <div className="flex bg-black/40 p-1 rounded-lg border border-white/10">
                     <button
-                        onClick={() => setActiveTab('existing')}
+                        onClick={() => handleTabChange('existing')}
                         className={`px-6 py-2 rounded-md text-sm font-medium transition-all ${activeTab === 'existing'
                             ? 'bg-brand-red text-white shadow-lg'
                             : 'text-gray-400 hover:text-white'
@@ -158,13 +182,22 @@ export default function SocialStudioPage() {
                         Search Existing Job
                     </button>
                     <button
-                        onClick={() => setActiveTab('quick')}
+                        onClick={() => handleTabChange('quick')}
                         className={`px-6 py-2 rounded-md text-sm font-medium transition-all ${activeTab === 'quick'
                             ? 'bg-brand-red text-white shadow-lg'
                             : 'text-gray-400 hover:text-white'
                             }`}
                     >
                         Quick Post
+                    </button>
+                    <button
+                        onClick={() => handleTabChange('drafts')}
+                        className={`px-6 py-2 rounded-md text-sm font-medium transition-all ${activeTab === 'drafts'
+                            ? 'bg-brand-red text-white shadow-lg'
+                            : 'text-gray-400 hover:text-white'
+                            }`}
+                    >
+                        Drafts
                     </button>
                 </div>
             </div>
@@ -230,7 +263,7 @@ export default function SocialStudioPage() {
                                 )}
                             </div>
                         </div>
-                    ) : (
+                    ) : activeTab === 'quick' ? (
                         /* Quick Post Form */
                         <div className="bg-black/60 backdrop-blur-md rounded-xl border border-white/10 p-6 space-y-4 animate-in fade-in slide-in-from-bottom-2">
                             <div>
@@ -270,6 +303,43 @@ export default function SocialStudioPage() {
                                     className="w-full bg-black/40 border border-white/10 rounded-lg p-3 text-white focus:border-brand-neon/50 outline-none h-20 resize-none"
                                     placeholder="Any special details to mention..."
                                 />
+                            </div>
+                        </div>
+                    ) : (
+                        /* Drafts List */
+                        <div className="bg-black/60 backdrop-blur-md rounded-xl border border-white/10 p-6 space-y-4 animate-in fade-in slide-in-from-bottom-2">
+                            <h3 className="text-white font-bold uppercase tracking-wider text-sm flex items-center gap-2">
+                                <FileImage className="h-4 w-4 text-brand-red" />
+                                Pending Social Drafts
+                            </h3>
+                            <div className="space-y-3 max-h-[600px] overflow-y-auto custom-scrollbar">
+                                {fetchingDrafts ? (
+                                    <div className="flex justify-center py-12"><Loader2 className="animate-spin text-brand-red h-8 w-8" /></div>
+                                ) : drafts.length > 0 ? (
+                                    drafts.map(post => (
+                                        <div
+                                            key={post.id}
+                                            onClick={() => navigate(`/dashboard/jobs/${post.jobId}/review`)}
+                                            className="p-4 rounded-xl bg-white/5 border border-white/5 hover:border-brand-red/50 hover:bg-white/10 cursor-pointer transition-all group"
+                                        >
+                                            <div className="flex justify-between items-start">
+                                                <div>
+                                                    <h4 className="text-white font-bold group-hover:text-brand-red transition-colors">{post.job?.vehicle}</h4>
+                                                    <p className="text-xs text-gray-400 capitalize">{post.platform} • {post.job?.customerName}</p>
+                                                </div>
+                                                <div className="p-2 bg-brand-red/10 rounded-lg group-hover:bg-brand-red/20 transition-colors">
+                                                    <Sparkles className="h-4 w-4 text-brand-red" />
+                                                </div>
+                                            </div>
+                                            <p className="text-sm text-gray-500 mt-2 line-clamp-2 italic">"{post.caption}"</p>
+                                        </div>
+                                    ))
+                                ) : (
+                                    <div className="text-center py-20 text-gray-600">
+                                        <FileImage className="h-12 w-12 mx-auto mb-4 opacity-10" />
+                                        <p>No draft posts found.</p>
+                                    </div>
+                                )}
                             </div>
                         </div>
                     )}
@@ -391,6 +461,6 @@ export default function SocialStudioPage() {
                     onClose={handleCloseVideo}
                 />
             </ErrorBoundary>
-        </div>
+        </div >
     );
 }

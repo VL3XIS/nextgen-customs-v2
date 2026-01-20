@@ -77,6 +77,29 @@ export const getJobPosts = async (req: AuthRequest, res: Response) => {
     }
 };
 
+export const getPosts = async (req: AuthRequest, res: Response) => {
+    try {
+        const userId = req.user?.userId;
+        const { status } = req.query;
+
+        const posts = await prisma.post.findMany({
+            where: {
+                job: { userId },
+                ...(status ? { status: status as string } : {})
+            },
+            include: {
+                job: true
+            },
+            orderBy: { generatedAt: 'desc' }
+        });
+
+        res.json({ success: true, posts });
+    } catch (error) {
+        console.error('Error fetching global posts:', error);
+        res.status(500).json({ success: false, error: 'Error fetching posts' });
+    }
+};
+
 export const regenerateJobPosts = async (req: AuthRequest, res: Response) => {
     try {
         const userId = req.user?.userId;
