@@ -29,7 +29,9 @@ export const getAnalyticsSummary = async (req: AuthRequest, res: Response) => {
                         // Status enum is ESTIMATE, APPROVED, IN_PROGRESS, PAINT, QUALITY_CHECK, COMPLETE.
                     }
                 },
-                _count: true
+                _count: {
+                    customerName: true
+                }
             }).then(groups => groups.length),
 
             // Calculate Pipeline Revenue (Sum of estimatedValue for non-complete jobs)
