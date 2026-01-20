@@ -20,8 +20,11 @@ class CalendarService {
     private calendar: any;
 
     constructor() {
-        const clientEmail = process.env.GOOGLE_CLIENT_EMAIL;
-        const privateKey = process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, '\n');
+        // Forcing Offline Mode to avoid Vercel Env Var issues
+        // const clientEmail = process.env.GOOGLE_CLIENT_EMAIL;
+        // const privateKey = process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, '\n');
+        const clientEmail = undefined;
+        const privateKey = undefined;
 
         if (clientEmail && privateKey) {
             const auth = new google.auth.JWT(clientEmail, undefined, privateKey, SCOPES);

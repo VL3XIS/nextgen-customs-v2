@@ -80,9 +80,9 @@ export const getAppointments = async (req: Request, res: Response) => {
     }
 };
 
-import { Resend } from 'resend';
-const resend = new Resend(process.env.RESEND_API_KEY);
-// const resend = { emails: { send: async () => ({}) } }; // Mock locally
+// import { Resend } from 'resend';
+// const resend = new Resend(process.env.RESEND_API_KEY);
+const resend = { emails: { send: async () => ({}) } }; // Mock locally
 import { calendarService } from '../services/calendarService';
 
 export const createAppointment = async (req: Request, res: Response) => {
