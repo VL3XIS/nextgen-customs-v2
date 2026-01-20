@@ -43,3 +43,5 @@ VITE_API_URL=https://your-backend-url.up.railway.app/api
 - **Social Studio:** Added "Reel Creator" (Beta) with Flash Cut tech.
 - **AI Engine:** "Growth Hacker" prompt engineering (v4) for Instagram/LinkedIn viral hooks.
 - **Voice Agent:** Integration ready for ElevenLabs.
+  - **Auto-Update Script:** Run `npx ts-node backend/scripts/update_agent_vercel.ts` to sync tools with your Vercel URL.
+  - **Configuration:** Managed via `elevenlabs_agent_config.json`.
