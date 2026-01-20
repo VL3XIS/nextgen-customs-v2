@@ -7,14 +7,43 @@ export default function AnalyticsPage() {
     const [stats, setStats] = useState<AnalyticsStats | null>(null);
     const [range, setRange] = useState('30days');
 
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState('');
+
     useEffect(() => {
-        // In real app, pass range to API
-        api.get('/analytics/summary').then(res => setStats(res.data));
+        setLoading(true);
+        api.get('/analytics/summary')
+            .then(res => {
+                setStats(res.data);
+                setError('');
+            })
+            .catch(err => {
+                console.error("Analytics Load Failed", err);
+                setError('Failed to load analytics data.');
+            })
+            .finally(() => setLoading(false));
     }, [range]);
 
-    if (!stats) return <div>Loading...</div>;
+    if (loading) {
+        return (
+            <div className="flex h-96 items-center justify-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-brand-red"></div>
+            </div>
+        );
+    }
 
-    const { charts, summary } = stats;
+    if (error) {
+        return (
+            <div className="text-center p-10 text-red-500 border border-red-500/20 rounded-xl bg-red-500/5">
+                <p>{error}</p>
+                <button onClick={() => window.location.reload()} className="mt-4 px-4 py-2 bg-red-500/10 hover:bg-red-500/20 rounded text-sm">Retry</button>
+            </div>
+        );
+    }
+
+    // Safe Defaults
+    const summary = stats?.summary || { totalJobs: 0, totalPosts: 0, timeSavedMinutes: 0 };
+    const charts = stats?.charts || { postsOverTime: [], byPlatform: [] };
 
     return (
         <div className="space-y-8">

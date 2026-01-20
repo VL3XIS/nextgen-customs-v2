@@ -39,6 +39,28 @@ export default function SettingsPage() {
         }
     };
 
+    const handleSeedData = async () => {
+        if (!confirm("⚠️ This will WIPE your dashboard and fill it with Mock Data. Continue?")) return;
+        setToast("Seeding data... please wait...");
+        try {
+            const res = await api.post('/dev/seed-me');
+            if (res.data.success) {
+                setToast("✅ Seeding Complete! Refreshing...");
+                setTimeout(() => window.location.reload(), 1500);
+            }
+        } catch (error: any) {
+            console.error('Seeding failed:', error);
+            const msg = error.response?.data?.error || error.message || 'Unknown Error';
+            setToast(`❌ Failed: ${msg}`);
+        }
+    };
+
+    const handleLogout = () => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        window.location.href = '/login';
+    };
+
     return (
         <div className="max-w-3xl">
             <h1 className="text-3xl font-bold text-white mb-8 font-rajdhani uppercase tracking-wider">
@@ -46,7 +68,7 @@ export default function SettingsPage() {
             </h1>
 
             {toast && (
-                <div className="fixed top-4 right-4 bg-green-500/10 border border-green-500/50 text-green-400 px-4 py-2 rounded-lg shadow-lg animate-fade-in backdrop-blur-md">
+                <div className="fixed top-4 right-4 bg-green-500/10 border border-green-500/50 text-green-400 px-4 py-2 rounded-lg shadow-lg animate-fade-in backdrop-blur-md z-50">
                     {toast}
                 </div>
             )}
@@ -56,7 +78,7 @@ export default function SettingsPage() {
                     <h2 className="text-sm font-bold text-white mb-6 border-b border-brand-red/20 pb-3 font-rajdhani uppercase tracking-wider">SHOP PROFILE</h2>
                     <form onSubmit={handleUpdateProfile} className="space-y-6">
                         <div>
-                            <label className="block text-[10px] font-bold text-gray-400 mb-2 uppercase tracking-[0.15em]">CUSTOMER NAME</label>
+                            <label className="block text-[10px] font-bold text-gray-400 mb-2 uppercase tracking-[0.15em]">SHOP NAME</label>
                             <input
                                 type="text"
                                 value={shopName}
@@ -111,6 +133,21 @@ export default function SettingsPage() {
                             </button>
                         </div>
                     </form>
+                </section>
+
+                <section className="pt-6 border-t border-white/5 grid grid-cols-2 gap-4">
+                    <button
+                        onClick={handleSeedData}
+                        className="w-full border border-yellow-500/30 bg-yellow-500/10 text-yellow-500 hover:bg-yellow-500/20 py-3 rounded-lg font-rajdhani font-bold uppercase tracking-wider transition-all"
+                    >
+                        ⚡ Reset & Seed Mock Data
+                    </button>
+                    <button
+                        onClick={handleLogout}
+                        className="w-full border border-red-900/50 bg-red-900/10 text-red-500 hover:bg-red-500/20 py-3 rounded-lg font-bold transition-all uppercase tracking-wider text-xs"
+                    >
+                        Log Out
+                    </button>
                 </section>
             </div>
         </div>

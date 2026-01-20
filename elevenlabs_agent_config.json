@@ -1,8 +1,9 @@
 {
     "agent_name": "NextGen Shop Assistant",
-    "system_prompt": "You are the bilingual (English/Spanish) front-desk receptionist for NextGen Customs, a high-end auto custom shop. Your name is 'Alex'.\n\nYOUR GOAL:\nManage the front desk autonomously. You handle Appointment Scheduling, Vehicle Status Checks, and General Inquiries. You are warm, professional, efficient, and possess high cultural competency.\n\nCORE BEHAVIORS:\n1. BILINGUAL FLUENCY: Detect language immediately. If Spanish, switch strictly to Spanish. Use 'Usted' (formal) initially unless invited to use 'Tú'. For older customers, use 'Don/Doña'.\n2. EMPATHY & ADVOCACY: You are the customer's advocate, especially regarding insurance delays. Validate frustration.\n3. TOOL FIRST: Do not guess. USE YOUR TOOLS (`check_status`, `check_availability`, `book_appointment`) to get real data.\n\n--- SCENARIO SCRIPTS & PROTOCOLS ---\n\n1. SCHEDULING APPOINTMENTS\n- Ask: \"Do you prefer morning or afternoon matches?\"\n- Action: Use `check_availability`.\n- Present Options: \"I have tomorrow, Tuesday the 21st, at 9am, or Wednesday at 10am.\"\n- Confirmation (English): \"Perfect! I'm booking you for Tuesday... You'll be working with Mike. Pull into bay 2.\"\n- Confirmation (Spanish): \"¡Perfecto! Lo estoy agendando para el martes... Va a trabajar con Mike. Estacionarse en la bahía 2.\"\n\n2. SETTING EXPECTATIONS\n- Drop-offs: \"Plan for 30 mins for inspection. Bring insurance info.\"\n- Pickups: \"Plan for 15 mins. We accept cash, card, check.\"\n- Insurance Claims: \"Bring claim number, driver's license, and photos of accident if you have them.\"\n\n3. CHECKING STATUS (The 'Happy Path')\n- Action: Use `check_status`.\n- English: \"Good news - it's currently in the paint stage... looking at pickup early next week.\"\n- Spanish: \"Buenas noticias - está en la etapa de pintura... probablemente listo para la próxima semana.\"\n\n4. DELAYS & DIFFICULT NEWS\n- English: \"I see we are waiting on a part (Front Bumper)... ordered on [Date]. Once it arrives, 3-4 days for paint. I apologize no one reached out.\"\n- Spanish: \"Veo que estamos esperando una parte... Una vez que llegue, 3-4 días más. Le pido disculpas por no haberlo contactado antes.\"\n\n5. WAITLIST & CANCELLATIONS\n- If booked: \"That specific time is booked, but I can put you on a waitlist. In the meantime, would [Time] work?\"\n- Cancellation: \"All set, that appointment is cancelled. If you need to reschedule, just give us a call.\"\n\n6. HANDLING FRUSTRATED CUSTOMERS\n- Validate: \"I completely understand your frustration.\"\n- Spanish: \"Entiendo perfectamente su frustración, y tiene toda la razón de estar molesto.\"\n- Action: \"Let me connect you with the manager.\" or \"I'm making a note for [Name] to call you.\"\n\n7. INSURANCE EXPLANATIONS (Complex)\n- English: explian 'Supplements'. \"Insurance approved initial estimate ($3.5k). We found hidden damage. We sent a supplement ($2.2k). Insurance must approve before we proceed. You DO NOT pay this.\"\n- Spanish: Explicar 'Suplemento'. \"Encontramos daño escondido. El seguro tiene que aprobar el costo adicional. Usted NO paga esto - lo cubre su seguro.\"\n\n8. UNKNOWN VEHICLE\n- \"I'm not seeing that vehicle. Let me verify spelling...\" (Try Ramirez vs Ramires)\n- If truly not found: \"Let me transfer you to the manager to investigate.\"\n\n--- END OF SCRIPTS ---\n\nRemember: You are the face of the shop. Your bilingual skills are a competitive advantage. Build trust.",
+    "system_prompt": "You are the AI engine for NextGen Customs. \n\n### CRITICAL CONTEXT\n- **CURRENT TIME**: {{current_time}}.\n- **USER**: {{user_name}} (Role: {{user_role}}).\n\n### TOOL USE PROTOCOL (CRITICAL)\n- **NEVER FAKE A BOOKING**. You CANNOT book by just sayin 'Synced'.\n- You **MUST** call the `book_appointment` tool to confirm.\n- **WAIT** for the tool to return 'success' (or 'error').\n\n### MODES\n1. **ADMIN**: Concise, professional. Use `list_active_jobs`.\n2. **CUSTOMER**: Warm, friendly. Use `check_availability` and `book_appointment`.\n",
     "tools": [
         {
+            "type": "client",
             "name": "check_availability",
             "description": "Check available appointment slots for a specific date.",
             "parameters": {
@@ -10,7 +11,7 @@
                 "properties": {
                     "date": {
                         "type": "string",
-                        "description": "Date in YYYY-MM-DD format (e.g., 2026-01-21)"
+                        "description": "YYYY-MM-DD"
                     },
                     "appointment_type": {
                         "type": "string",
@@ -18,8 +19,7 @@
                             "drop_off",
                             "consultation",
                             "pickup"
-                        ],
-                        "description": "Type of appointment"
+                        ]
                     }
                 },
                 "required": [
@@ -28,8 +28,9 @@
             }
         },
         {
+            "type": "client",
             "name": "book_appointment",
-            "description": "Book a confirmed appointment slot.",
+            "description": "Book an appointment. Requires Name, Phone, Date, Time.",
             "parameters": {
                 "type": "object",
                 "properties": {
@@ -39,55 +40,30 @@
                     "customer_phone": {
                         "type": "string"
                     },
+                    "customer_email": {
+                        "type": "string"
+                    },
                     "scheduled_date": {
                         "type": "string",
                         "description": "YYYY-MM-DD"
                     },
                     "scheduled_time": {
                         "type": "string",
-                        "description": "HH:MM (24-hour)"
+                        "description": "HH:MM"
                     },
-                    "appointment_type": {
-                        "type": "string",
-                        "enum": [
-                            "drop_off",
-                            "consultation"
-                        ]
-                    },
-                    "vehicle_info": {
-                        "type": "object",
-                        "properties": {
-                            "year": {
-                                "type": "number"
-                            },
-                            "make": {
-                                "type": "string"
-                            },
-                            "model": {
-                                "type": "string"
-                            }
-                        }
-                    },
-                    "special_notes": {
+                    "description": {
                         "type": "string"
-                    },
-                    "preferred_language": {
-                        "type": "string",
-                        "enum": [
-                            "en",
-                            "es"
-                        ]
                     }
                 },
                 "required": [
                     "customer_name",
-                    "customer_phone",
                     "scheduled_date",
                     "scheduled_time"
                 ]
             }
         },
         {
+            "type": "client",
             "name": "check_status",
             "description": "Check the status of a vehicle currently in the shop.",
             "parameters": {
@@ -98,25 +74,30 @@
                         "description": "Model or Make (e.g. 'Civic', 'F-150')"
                     },
                     "customerName": {
-                        "type": "string"
+                        "type": "string",
+                        "description": "Customer name to refine search"
                     }
                 }
             }
         },
         {
+            "type": "client",
             "name": "reschedule_appointment",
             "description": "Reschedule an existing appointment.",
             "parameters": {
                 "type": "object",
                 "properties": {
                     "appointment_id": {
-                        "type": "string"
+                        "type": "string",
+                        "description": "ID of the appointment to reschedule"
                     },
                     "new_date": {
-                        "type": "string"
+                        "type": "string",
+                        "description": "New date in YYYY-MM-DD"
                     },
                     "new_time": {
-                        "type": "string"
+                        "type": "string",
+                        "description": "New time in HH:MM"
                     }
                 },
                 "required": [
@@ -127,20 +108,88 @@
             }
         },
         {
+            "type": "client",
             "name": "cancel_appointment",
             "description": "Cancel an appointment.",
             "parameters": {
                 "type": "object",
                 "properties": {
                     "appointment_id": {
-                        "type": "string"
+                        "type": "string",
+                        "description": "ID of the appointment to cancel"
                     },
                     "cancellation_reason": {
-                        "type": "string"
+                        "type": "string",
+                        "description": "Reason for cancellation"
                     }
                 },
                 "required": [
                     "appointment_id"
+                ]
+            }
+        },
+        {
+            "type": "client",
+            "name": "list_active_jobs",
+            "description": "List all active jobs in the shop. Can filter by status.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "filter": {
+                        "type": "string",
+                        "description": "Filter by status: all, in_progress, waiting_parts, ready_pickup"
+                    }
+                }
+            }
+        },
+        {
+            "type": "client",
+            "name": "analyze_revenue",
+            "description": "Analyze revenue for a specific time period.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "time_period": {
+                        "type": "string",
+                        "description": "today, week, month, quarter, year"
+                    }
+                },
+                "required": [
+                    "time_period"
+                ]
+            }
+        },
+        {
+            "type": "client",
+            "name": "search_customer_history",
+            "description": "Search for a customer's service history.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "customer_identifier": {
+                        "type": "string",
+                        "description": "Name or phone number"
+                    }
+                },
+                "required": [
+                    "customer_identifier"
+                ]
+            }
+        },
+        {
+            "type": "client",
+            "name": "generate_report",
+            "description": "Generate a business report.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "report_type": {
+                        "type": "string",
+                        "description": "daily, financial, staff"
+                    }
+                },
+                "required": [
+                    "report_type"
                 ]
             }
         }

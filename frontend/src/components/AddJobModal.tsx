@@ -114,7 +114,7 @@ export default function AddJobModal({ isOpen, onClose, onJobAdded, initialData }
                             type="text"
                             value={formData.customerName}
                             onChange={(e) => setFormData({ ...formData, customerName: e.target.value })}
-                            className="input-neon w-full px-4 py-2"
+                            className="w-full bg-black/50 border border-white/10 rounded-lg py-2.5 px-4 text-white placeholder-gray-500 focus:border-brand-neon focus:outline-none"
                             placeholder="John Doe"
                         />
                     </div>
@@ -125,7 +125,7 @@ export default function AddJobModal({ isOpen, onClose, onJobAdded, initialData }
                             type="email"
                             value={formData.customerEmail}
                             onChange={(e) => setFormData({ ...formData, customerEmail: e.target.value })}
-                            className="input-neon w-full px-4 py-2"
+                            className="w-full bg-black/50 border border-white/10 rounded-lg py-2.5 px-4 text-white placeholder-gray-500 focus:border-brand-neon focus:outline-none"
                             placeholder="john@example.com"
                         />
                     </div>
@@ -138,7 +138,7 @@ export default function AddJobModal({ isOpen, onClose, onJobAdded, initialData }
                             step="0.01"
                             value={formData.estimatedValue}
                             onChange={(e) => setFormData({ ...formData, estimatedValue: e.target.value })}
-                            className="input-neon w-full px-4 py-2"
+                            className="w-full bg-black/50 border border-white/10 rounded-lg py-2.5 px-4 text-white placeholder-gray-500 focus:border-brand-neon focus:outline-none"
                             placeholder="0.00"
                         />
                     </div>
@@ -150,7 +150,7 @@ export default function AddJobModal({ isOpen, onClose, onJobAdded, initialData }
                             type="text"
                             value={formData.vehicle}
                             onChange={(e) => setFormData({ ...formData, vehicle: e.target.value })}
-                            className="input-neon w-full px-4 py-2"
+                            className="w-full bg-black/50 border border-white/10 rounded-lg py-2.5 px-4 text-white placeholder-gray-500 focus:border-brand-neon focus:outline-none"
                             placeholder="2024 Toyota Camry"
                         />
                     </div>
@@ -161,7 +161,7 @@ export default function AddJobModal({ isOpen, onClose, onJobAdded, initialData }
                             required
                             value={formData.services}
                             onChange={(e) => setFormData({ ...formData, services: e.target.value })}
-                            className="input-neon w-full px-4 py-2 h-24 resize-none"
+                            className="w-full bg-black/50 border border-white/10 rounded-lg py-2.5 px-4 text-white placeholder-gray-500 focus:border-brand-neon focus:outline-none h-24 resize-none"
                             placeholder="Bumper repair, full detail..."
                         />
                     </div>
@@ -171,7 +171,7 @@ export default function AddJobModal({ isOpen, onClose, onJobAdded, initialData }
                         <textarea
                             value={formData.notes}
                             onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                            className="input-neon w-full px-4 py-2 h-20 resize-none"
+                            className="w-full bg-black/50 border border-white/10 rounded-lg py-2.5 px-4 text-white placeholder-gray-500 focus:border-brand-neon focus:outline-none h-20 resize-none"
                             placeholder="Insurance claim #..."
                         />
                     </div>

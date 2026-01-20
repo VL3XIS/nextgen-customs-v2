@@ -86,6 +86,7 @@ export const login = async (req: Request, res: Response) => {
         });
     } catch (error) {
         console.error('Login error:', error);
+        require('fs').appendFileSync('error.log', `Login Error: ${JSON.stringify(error, Object.getOwnPropertyNames(error))} \n`);
         res.status(500).json({ success: false, error: 'Server error during login' });
     }
 };

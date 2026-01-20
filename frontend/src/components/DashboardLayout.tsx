@@ -1,99 +1,31 @@
-// ... imports ...
-import { Link, useLocation, Outlet, useNavigate } from 'react-router-dom';
-import { Toaster } from 'sonner';
-import { LayoutDashboard, PlusCircle, History, BarChart2, Settings, LogOut, Menu, Briefcase, User as UserIcon, Share2, Calendar } from 'lucide-react';
 import { useState } from 'react';
-import { cn } from '../utils/cn';
+import { Outlet, useLocation } from 'react-router-dom';
+import { Toaster } from 'sonner';
+import { Menu, User as UserIcon } from 'lucide-react';
+import Sidebar from './Sidebar';
 import VoiceWidget from './VoiceWidget';
 
 export default function DashboardLayout() {
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const location = useLocation();
-    const navigate = useNavigate();
 
-    const handleLogout = () => {
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
-        navigate('/login');
+    // Map paths to readable titles
+    const getPageTitle = (path: string) => {
+        if (path.includes('/dashboard/jobs')) return 'Active Jobs';
+        if (path.includes('/dashboard/new-job')) return 'Job Intake';
+        if (path.includes('/dashboard/schedule')) return 'Bay Schedule';
+        if (path.includes('/dashboard/social-studio')) return 'Social Studio';
+        if (path.includes('/dashboard/history')) return 'Job History';
+        if (path.includes('/dashboard/analytics')) return 'Analytics';
+        if (path.includes('/dashboard/settings')) return 'Settings';
+        return 'Command Center';
     };
-
-    const navItems = [
-        { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard' },
-        { icon: Briefcase, label: 'Jobs', path: '/dashboard/jobs' },
-        { icon: PlusCircle, label: 'Job Intake', path: '/dashboard/new-job' },
-        { icon: Calendar, label: 'Schedule', path: '/dashboard/schedule' },
-        { icon: Share2, label: 'Social Studio', path: '/dashboard/social-studio' },
-        { icon: History, label: 'Job History', path: '/dashboard/history' },
-        { icon: BarChart2, label: 'Analytics', path: '/dashboard/analytics' },
-        { icon: Settings, label: 'Settings', path: '/dashboard/settings' },
-    ];
 
     return (
         <div className="min-h-screen flex relative">
             <Toaster position="top-right" theme="dark" closeButton richColors />
-            {/* Mobile Sidebar Overlay */}
-            {sidebarOpen && (
-                <div
-                    className="fixed inset-0 bg-black/80 backdrop-blur-sm z-40 lg:hidden"
-                    onClick={() => setSidebarOpen(false)}
-                />
-            )}
 
-            {/* Sidebar with Glass Effect */}
-            <aside className={cn(
-                "fixed lg:static inset-y-0 left-0 z-50 w-72 bg-black/60 backdrop-blur-xl border-r border-white/5 text-white transform transition-transform duration-300 ease-in-out lg:transform-none flex flex-col shadow-[4px_0_24px_rgba(0,0,0,0.4)]",
-                sidebarOpen ? "translate-x-0" : "-translate-x-full"
-            )}>
-                <div className="p-6 border-b border-white/5 flex flex-col items-center justify-center relative overflow-hidden bg-white/[0.02]">
-                    <div className="flex flex-col items-center z-10 w-full">
-                        <img
-                            src="/logo-full.png"
-                            alt="Next Gen Customs"
-                            className="w-full h-auto max-w-[220px] object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.1)]"
-                        />
-                    </div>
-                </div>
-
-                <nav className="flex-1 px-4 py-8 space-y-2 overflow-y-auto custom-scrollbar">
-                    {navItems.map((item) => {
-                        const Icon = item.icon;
-                        const isActive = location.pathname === item.path;
-
-                        return (
-                            <Link
-                                key={item.path}
-                                to={item.path}
-                                className={cn(
-                                    "flex items-center space-x-4 px-4 py-3.5 rounded-r-xl rounded-l-md transition-all duration-300 group relative overflow-hidden",
-                                    isActive
-                                        ? "bg-gradient-to-r from-red-600/20 to-transparent text-white border-l-4 border-red-600 shadow-[inset_10px_0_20px_-10px_rgba(220,38,38,0.3)]"
-                                        : "text-zinc-400 hover:text-white hover:bg-white/5 border-l-4 border-transparent"
-                                )}
-                                onClick={() => setSidebarOpen(false)}
-                            >
-                                <Icon className={cn(
-                                    "h-5 w-5 relative z-10 transition-transform duration-300",
-                                    isActive ? "text-red-500 drop-shadow-[0_0_8px_rgba(220,38,38,0.5)]" : "group-hover:text-white group-hover:scale-110"
-                                )} />
-                                <span className={cn(
-                                    "font-rajdhani font-medium tracking-wide relative z-10 text-[15px] uppercase",
-                                    isActive ? "text-white neon-text-glow" : "group-hover:text-white"
-                                )}>{item.label}</span>
-                            </Link>
-                        );
-                    })}
-                </nav>
-
-                <div className="p-6 border-t border-white/5 bg-black/40 backdrop-blur-lg">
-                    <button
-                        onClick={handleLogout}
-                        className="flex items-center space-x-3 px-4 py-3 w-full text-left text-zinc-400 hover:text-red-400 hover:bg-red-500/10 rounded-xl transition-all duration-300 group border border-transparent hover:border-red-500/20"
-                    >
-                        <LogOut className="h-5 w-5 group-hover:-translate-x-1 transition-transform" />
-                        <span className="font-rajdhani font-bold uppercase tracking-wider text-sm">Logout</span>
-                    </button>
-                </div>
-            </aside>
+            <Sidebar isOpen={sidebarOpen} setIsOpen={setSidebarOpen} />
 
             {/* Main Content Area - Carbon Fiber BG */}
             <div className="flex-1 flex flex-col min-h-screen transition-all duration-300 carbon-bg">
@@ -106,10 +38,10 @@ export default function DashboardLayout() {
                         <Menu className="h-6 w-6" />
                     </button>
 
-                    {/* Page Title / Breadcrumb (Optional) */}
+                    {/* Page Title */}
                     <div className="hidden lg:block">
-                        <h1 className="text-xl font-display font-bold text-white tracking-wide">
-                            {navItems.find(i => i.path === location.pathname)?.label || 'Portal'}
+                        <h1 className="text-xl font-display font-bold text-white tracking-wide uppercase">
+                            {getPageTitle(location.pathname)}
                         </h1>
                     </div>
 

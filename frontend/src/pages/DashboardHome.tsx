@@ -17,6 +17,7 @@ import api from '../services/api';
 import { DashboardSkeleton } from '../components/GlassSkeleton';
 import { Zap, ArrowUpRight, TrendingUp, Users, Activity, DollarSign } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { GlassCard } from '../components/GlassCard';
 import type { AnalyticsStats } from '../types';
 import { motion } from 'framer-motion';
 
@@ -235,31 +236,32 @@ export default function DashboardHome() {
                     <motion.div
                         key={i}
                         variants={itemVariants as any}
-                        className="glass-panel p-6 relative overflow-hidden group hover:-translate-y-1 transition-transform duration-300"
                     >
-                        {/* Background Accents */}
-                        <div className="absolute -right-6 -top-6 w-24 h-24 bg-gradient-to-br from-white/10 to-transparent rounded-full blur-xl group-hover:bg-brand-red/20 transition-colors duration-500" />
+                        <GlassCard className="p-6 h-full group hover:-translate-y-1 transition-transform duration-300" hoverEffect>
+                            {/* Background Accents */}
+                            <div className="absolute -right-6 -top-6 w-24 h-24 bg-gradient-to-br from-white/10 to-transparent rounded-full blur-xl group-hover:bg-brand-red/20 transition-colors duration-500" />
 
-                        <div className="relative z-10 flex flex-col h-full justify-between">
-                            <div className="flex justify-between items-start mb-4">
-                                <div className={`p-2 rounded-lg bg-white/5 border border-white/10 ${stat.color} group-hover:text-white group-hover:bg-brand-red group-hover:border-brand-red transition-all duration-300`}>
-                                    <stat.icon className="h-5 w-5" />
+                            <div className="relative z-10 flex flex-col h-full justify-between">
+                                <div className="flex justify-between items-start mb-4">
+                                    <div className={`p-2 rounded-lg bg-white/5 border border-white/10 ${stat.color} group-hover:text-white group-hover:bg-brand-red group-hover:border-brand-red transition-all duration-300`}>
+                                        <stat.icon className="h-5 w-5" />
+                                    </div>
+                                    <span className="text-[10px] font-mono text-brand-neon bg-brand-neon/10 px-2 py-1 rounded border border-brand-neon/20 flex items-center gap-1">
+                                        <ArrowUpRight className="h-3 w-3" />
+                                        {stat.trend}
+                                    </span>
                                 </div>
-                                <span className="text-[10px] font-mono text-brand-neon bg-brand-neon/10 px-2 py-1 rounded border border-brand-neon/20 flex items-center gap-1">
-                                    <ArrowUpRight className="h-3 w-3" />
-                                    {stat.trend}
-                                </span>
-                            </div>
 
-                            <div>
-                                <div className="text-3xl md:text-4xl font-bold text-white font-rajdhani mb-1 tracking-tight group-hover:text-brand-red transition-colors duration-300">
-                                    {stat.value}
-                                </div>
-                                <div className="text-xs font-bold uppercase tracking-wider text-gray-500 group-hover:text-gray-300 transition-colors">
-                                    {stat.label}
+                                <div>
+                                    <div className="text-3xl md:text-4xl font-bold text-white font-rajdhani mb-1 tracking-tight group-hover:text-brand-red transition-colors duration-300">
+                                        {stat.value}
+                                    </div>
+                                    <div className="text-xs font-bold uppercase tracking-wider text-gray-500 group-hover:text-gray-300 transition-colors">
+                                        {stat.label}
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        </GlassCard>
                     </motion.div>
                 ))}
             </div>
@@ -270,64 +272,67 @@ export default function DashboardHome() {
                 {/* Main Activity Chart */}
                 <motion.div
                     variants={itemVariants as any}
-                    className="glass-panel p-6 lg:col-span-2 flex flex-col min-h-[400px]"
+                    className="lg:col-span-2"
                 >
-                    <div className="flex justify-between items-center mb-8">
-                        <div>
-                            <h3 className="text-xl font-bold text-white font-rajdhani uppercase tracking-wider flex items-center gap-2">
-                                <Activity className="h-5 w-5 text-brand-red" />
-                                Content Velocity
-                            </h3>
-                            <p className="text-xs text-gray-500 mt-1">AI Generation Frequency (Last 7 Days)</p>
+                    <GlassCard className="p-6 flex flex-col min-h-[400px]">
+                        <div className="flex justify-between items-center mb-8">
+                            <div>
+                                <h3 className="text-xl font-bold text-white font-rajdhani uppercase tracking-wider flex items-center gap-2">
+                                    <Activity className="h-5 w-5 text-brand-red" />
+                                    Content Velocity
+                                </h3>
+                                <p className="text-xs text-gray-500 mt-1">AI Generation Frequency (Last 7 Days)</p>
+                            </div>
+                            <div className="flex gap-2">
+                                {['7D', '1M', '3M'].map((period) => (
+                                    <button key={period} className={`px-3 py-1 rounded text-xs font-bold font-mono transition-colors ${period === '7D' ? 'bg-brand-red text-white' : 'bg-black/40 text-gray-500 hover:text-white'}`}>
+                                        {period}
+                                    </button>
+                                ))}
+                            </div>
                         </div>
-                        <div className="flex gap-2">
-                            {['7D', '1M', '3M'].map((period) => (
-                                <button key={period} className={`px-3 py-1 rounded text-xs font-bold font-mono transition-colors ${period === '7D' ? 'bg-brand-red text-white' : 'bg-black/40 text-gray-500 hover:text-white'}`}>
-                                    {period}
-                                </button>
-                            ))}
+                        <div className="flex-1 w-full h-full relative">
+                            <Line options={chartOptions} data={lineChartData} />
                         </div>
-                    </div>
-                    <div className="flex-1 w-full h-full relative">
-                        <Line options={chartOptions} data={lineChartData} />
-                    </div>
+                    </GlassCard>
                 </motion.div>
 
                 {/* Platform Distribution */}
                 <motion.div
                     variants={itemVariants as any}
-                    className="glass-panel p-6 flex flex-col min-h-[400px]"
                 >
-                    <div className="mb-6">
-                        <h3 className="text-xl font-bold text-white font-rajdhani uppercase tracking-wider mb-1">Target Distribution</h3>
-                        <p className="text-xs text-gray-500">Platform Share Analysis</p>
-                    </div>
+                    <GlassCard className="p-6 flex flex-col min-h-[400px]">
+                        <div className="mb-6">
+                            <h3 className="text-xl font-bold text-white font-rajdhani uppercase tracking-wider mb-1">Target Distribution</h3>
+                            <p className="text-xs text-gray-500">Platform Share Analysis</p>
+                        </div>
 
-                    <div className="flex-1 flex items-center justify-center relative">
-                        <Pie options={{
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            plugins: {
-                                legend: {
-                                    position: 'bottom',
-                                    labels: {
-                                        color: '#9CA3AF',
-                                        usePointStyle: true,
-                                        pointStyle: 'rectRounded',
-                                        boxWidth: 10,
-                                        padding: 20,
-                                        font: { family: 'Rajdhani', size: 12, weight: 'bold' }
+                        <div className="flex-1 flex items-center justify-center relative">
+                            <Pie options={{
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                plugins: {
+                                    legend: {
+                                        position: 'bottom',
+                                        labels: {
+                                            color: '#9CA3AF',
+                                            usePointStyle: true,
+                                            pointStyle: 'rectRounded',
+                                            boxWidth: 10,
+                                            padding: 20,
+                                            font: { family: 'Rajdhani', size: 12, weight: 'bold' }
+                                        }
                                     }
                                 }
-                            }
-                        }} data={pieChartData} />
+                            }} data={pieChartData} />
 
-                        {/* Center Hologram Element */}
-                        <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-30">
-                            <div className="w-32 h-32 rounded-full border border-white/10 animate-pulse"></div>
-                            <div className="absolute w-24 h-24 rounded-full border border-brand-red/20 animate-spin-slow"></div>
+                            {/* Center Hologram Element */}
+                            <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-30">
+                                <div className="w-32 h-32 rounded-full border border-white/10 animate-pulse"></div>
+                                <div className="absolute w-24 h-24 rounded-full border border-brand-red/20 animate-spin-slow"></div>
+                            </div>
                         </div>
-                    </div>
+                    </GlassCard>
                 </motion.div>
             </div>
         </motion.div>
