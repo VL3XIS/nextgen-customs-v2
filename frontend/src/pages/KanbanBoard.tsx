@@ -13,6 +13,8 @@ const COLUMNS = [
     { id: 'APPROVED', title: 'APPROVED' },
     { id: 'IN_PROGRESS', title: 'IN PROGRESS' },
     { id: 'PAINT', title: 'PAINT' },
+    { id: 'QUALITY_CHECK', title: 'QUALITY CHECK' },
+    { id: 'COMPLETE', title: 'COMPLETE' },
 ];
 
 function Column({ id, title, jobs }: { id: string, title: string, jobs: Job[] }) {
