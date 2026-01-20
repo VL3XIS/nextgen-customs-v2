@@ -84,9 +84,14 @@ export const login = async (req: Request, res: Response) => {
                 shopName: user.shopName,
             },
         });
-    } catch (error) {
+    } catch (error: any) {
         console.error('Login error:', error);
-        res.status(500).json({ success: false, error: 'Server error during login' });
+        res.status(500).json({
+            success: false,
+            error: 'Server error during login',
+            details: error.message || 'Unknown error',
+            code: error.code // Prisma error codes are very helpful
+        });
     }
 };
 
