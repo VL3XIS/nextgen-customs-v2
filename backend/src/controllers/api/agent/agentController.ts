@@ -9,7 +9,7 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 console.log('Controller: Resend Initialized.');
 
 // ------------------------------------------------------------------
-// HELPER: Generate Time Slots
+// HELPERS
 // ------------------------------------------------------------------
 const generateTimeSlots = (dateStr: string, durationMinutes: number = 30) => {
     const slots = [];
@@ -88,13 +88,7 @@ import * as path from 'path';
 
 export const bookAppointment = async (req: Request, res: Response) => {
     try {
-        const logPath = path.join(__dirname, '../../../../backend_debug.log');
-        const logEntry = `[${new Date().toISOString()}] PAYLOAD: ${JSON.stringify(req.body)}\n`;
-        try {
-            fs.appendFileSync(logPath, logEntry);
-        } catch (e) { console.error("Log failed", e); }
-
-        console.log('Agent: Book Appointment', req.body);
+        console.log('Agent: Book Appointment Payload:', req.body);
         const {
             customer_name,
             customer_phone,
@@ -102,6 +96,12 @@ export const bookAppointment = async (req: Request, res: Response) => {
             scheduled_date,
             scheduled_time,
             appointment_type,
+            // ALIASES FOR ROBUSTNESS
+            date,
+            time,
+            name,
+            phone,
+            email,
             // FLATTENED PARAMS SUPPORT
             vehicle_year,
             vehicle_make,
@@ -111,19 +111,25 @@ export const bookAppointment = async (req: Request, res: Response) => {
             special_notes
         } = req.body;
 
-        console.log("Agent Booking Payload:", req.body); // LOG THE PAYLOAD
+        const safeDate = scheduled_date || date;
+        const safeTime = scheduled_time || time;
+        const safeName = customer_name || name || 'Voice Customer';
+        const safePhone = customer_phone || phone || 'Not Provided';
+        const safeEmail = customer_email || email || 'alexisruiz1040@gmail.com';
+
+        console.log("Agent Booking Payload (Processed):", { safeDate, safeTime, safeName });
 
         // 1. Validate Required Fields (Prevent Crash)
-        if (!scheduled_date || !scheduled_time) {
-            console.error("Missing Date/Time");
+        if (!safeDate || !safeTime) {
+            console.error("Missing Date/Time", { safeDate, safeTime });
             return res.json({ success: false, message: "Missing Date or Time. Please ask the customer again." });
         }
 
         // 2. PARSE DATE (Robust)
-        let isoDateStr = scheduled_date;
-        if (!scheduled_date.includes('-')) {
-            // Handle "January 21, 2026"
-            const d = new Date(scheduled_date);
+        let isoDateStr = safeDate;
+        if (!safeDate.includes('-')) {
+            // Handle "January 21, 2026" or "tomorrow"
+            const d = new Date(safeDate);
             if (!isNaN(d.getTime())) {
                 isoDateStr = d.toISOString().split('T')[0];
             }
@@ -135,12 +141,13 @@ export const bookAppointment = async (req: Request, res: Response) => {
         }
 
         // 3. PARSE TIME (Handle AM/PM)
-        let timeStr = scheduled_time.toLowerCase().replace(/\s/g, ''); // "10:00pm"
+        let timeStr = String(safeTime).toLowerCase().replace(/\s/g, ''); // "10:00pm"
         let [hours, minutes] = timeStr.replace(/am|pm/, '').split(':').map(Number);
 
         if (timeStr.includes('pm') && hours < 12) hours += 12;
         if (timeStr.includes('am') && hours === 12) hours = 0;
         if (isNaN(minutes)) minutes = 0;
+        if (isNaN(hours)) hours = 9; // Default to 9am if garbage received
 
         const validTime = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`; // "14:00"
         const isoDateTime = new Date(`${isoDateStr}T${validTime}:00`);
@@ -170,9 +177,9 @@ export const bookAppointment = async (req: Request, res: Response) => {
 
         const newAppt = await prisma.appointment.create({
             data: {
-                customerName: customer_name || 'Voice Customer',
-                customerPhone: customer_phone || '555-0000',
-                customerEmail: customer_email || 'alexisruiz1040@gmail.com',
+                customerName: safeName,
+                customerPhone: safePhone,
+                customerEmail: safeEmail,
                 date: isoDateTime,
                 appointmentType: safeType,
                 vehicleModel: safeVehicle,
@@ -191,11 +198,11 @@ export const bookAppointment = async (req: Request, res: Response) => {
                 await resend.emails.send({
                     from: 'NextGen Customs <onboarding@resend.dev>',
                     to: ['alexisruiz1040@gmail.com'], // Demo override
-                    subject: `Appointment Confirmed: ${scheduled_date} @ ${scheduled_time}`,
+                    subject: `Appointment Confirmed: ${safeDate} @ ${safeTime}`,
                     html: `
                         <h1>Appointment Confirmed</h1>
-                        <p>Hi ${customer_name},</p>
-                        <p>You are booked for a <strong>${appointment_type}</strong> on <strong>${scheduled_date} at ${scheduled_time}</strong>.</p>
+                        <p>Hi ${safeName},</p>
+                        <p>You are booked for a <strong>${safeType}</strong> on <strong>${safeDate} at ${safeTime}</strong>.</p>
                         <p>Thank you for choosing NextGen Customs!</p>
                     `
                 });

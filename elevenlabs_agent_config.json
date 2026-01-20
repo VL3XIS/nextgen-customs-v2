@@ -1,11 +1,11 @@
 {
     "agent_name": "NextGen Shop Assistant",
-    "system_prompt": "You are the AI engine for NextGen Customs. \n\n### CRITICAL CONTEXT\n- **CURRENT TIME**: {{current_time}}.\n- **USER**: {{user_name}} (Role: {{user_role}}).\n\n### TOOL USE PROTOCOL (CRITICAL)\n- **NEVER FAKE A BOOKING**. You CANNOT book by just sayin 'Synced'.\n- You **MUST** call the `book_appointment` tool to confirm.\n- **WAIT** for the tool to return 'success' (or 'error').\n\n### MODES\n1. **ADMIN**: Concise, professional. Use `list_active_jobs`.\n2. **CUSTOMER**: Warm, friendly. Use `check_availability` and `book_appointment`.\n",
+    "system_prompt": "### IDENTITY\nYou are **ALEX**, the legendary AI Operations Manager for **NextGen Customs** (Austin, TX). You are NOT a generic bot; you are the digital brain of a high-end customized automotive shop. You specialize in performance builds, lifts, wraps, and exotic restorations.\n\n### CURRENT CONTEXT\n- **DATE/TIME**: {{current_time}}\n- **USER**: {{user_name}} (Role: {{user_role}})\n- **SHOP STATUS**: High-volume, premium service.\n\n### DUAL-MODE PROTOCOL\n1. **ADMIN MODE** (Trigger: User is 'The Boss' / Admin):\n   - **Persona**: Elite Executive Assistant. Concise, data-driven, 'military' precision.\n   - **Actions**: Analyze revenue, list jobs, run reports, manage staff schedules.\n   - **Tone**: Professional and highly efficient.\n\n2. **CUSTOMER MODE** (Trigger: General inquiries / Phone calls):\n   - **Persona**: World-class Receptionist. Warm, welcoming, bilingual (English/Spanish).\n   - **Actions**: Check status on builds, check calendar availability, book appointments.\n   - **Tone**: Enthusiastic about cars! \"That twin-turbo setup is going to be insane!\"\n\n### CRITICAL TOOL RULES\n- **NO HALLUCINATIONS**: Do not guess job statuses. Use `check_status`.\n- **REAL BOOKINGS ONLY**: To book an appointment, you **MUST** use the `book_appointment` tool. If the customer hasn't provided a time, use `check_availability` first to offer options.\n- **LATENCY AWARENESS**: Keep responses short while tools are executing.\n\n### KNOWLEDGE BASE\n- **NextGen Customs**: Best in Texas for Lifts, Wraps, Performance, and Ceramic Coating.\n- **Location**: Austin, TX.\n- **The Crew**: Mike (Lead Tech), Sarah (Front Office), Javier (Master Tinter).\n",
     "tools": [
         {
             "type": "client",
             "name": "check_availability",
-            "description": "Check available appointment slots for a specific date.",
+            "description": "Check available appointment slots for a specific date. Always offer specific times to the customer.",
             "parameters": {
                 "type": "object",
                 "properties": {
@@ -30,7 +30,7 @@
         {
             "type": "client",
             "name": "book_appointment",
-            "description": "Book an appointment. Requires Name, Phone, Date, Time.",
+            "description": "Book an appointment. Requires Name, Phone, Date (YYYY-MM-DD), and Time (HH:MM).",
             "parameters": {
                 "type": "object",
                 "properties": {
@@ -49,9 +49,12 @@
                     },
                     "scheduled_time": {
                         "type": "string",
-                        "description": "HH:MM"
+                        "description": "HH:MM (24h or with AM/PM)"
                     },
-                    "description": {
+                    "vehicle_model": {
+                        "type": "string"
+                    },
+                    "special_notes": {
                         "type": "string"
                     }
                 },
@@ -65,79 +68,34 @@
         {
             "type": "client",
             "name": "check_status",
-            "description": "Check the status of a vehicle currently in the shop.",
+            "description": "Check the status of a vehicle or job. Can search by name or vehicle model.",
             "parameters": {
                 "type": "object",
                 "properties": {
                     "vehicle": {
-                        "type": "string",
-                        "description": "Model or Make (e.g. 'Civic', 'F-150')"
+                        "type": "string"
                     },
                     "customerName": {
-                        "type": "string",
-                        "description": "Customer name to refine search"
+                        "type": "string"
                     }
                 }
             }
         },
         {
             "type": "client",
-            "name": "reschedule_appointment",
-            "description": "Reschedule an existing appointment.",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "appointment_id": {
-                        "type": "string",
-                        "description": "ID of the appointment to reschedule"
-                    },
-                    "new_date": {
-                        "type": "string",
-                        "description": "New date in YYYY-MM-DD"
-                    },
-                    "new_time": {
-                        "type": "string",
-                        "description": "New time in HH:MM"
-                    }
-                },
-                "required": [
-                    "appointment_id",
-                    "new_date",
-                    "new_time"
-                ]
-            }
-        },
-        {
-            "type": "client",
-            "name": "cancel_appointment",
-            "description": "Cancel an appointment.",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "appointment_id": {
-                        "type": "string",
-                        "description": "ID of the appointment to cancel"
-                    },
-                    "cancellation_reason": {
-                        "type": "string",
-                        "description": "Reason for cancellation"
-                    }
-                },
-                "required": [
-                    "appointment_id"
-                ]
-            }
-        },
-        {
-            "type": "client",
             "name": "list_active_jobs",
-            "description": "List all active jobs in the shop. Can filter by status.",
+            "description": "List all currently active jobs in the shop.",
             "parameters": {
                 "type": "object",
                 "properties": {
                     "filter": {
                         "type": "string",
-                        "description": "Filter by status: all, in_progress, waiting_parts, ready_pickup"
+                        "enum": [
+                            "all",
+                            "in_progress",
+                            "waiting_parts",
+                            "ready_pickup"
+                        ]
                     }
                 }
             }
@@ -145,13 +103,18 @@
         {
             "type": "client",
             "name": "analyze_revenue",
-            "description": "Analyze revenue for a specific time period.",
+            "description": "Get revenue data and performance metrics.",
             "parameters": {
                 "type": "object",
                 "properties": {
                     "time_period": {
                         "type": "string",
-                        "description": "today, week, month, quarter, year"
+                        "enum": [
+                            "today",
+                            "week",
+                            "month",
+                            "year"
+                        ]
                     }
                 },
                 "required": [
@@ -162,7 +125,7 @@
         {
             "type": "client",
             "name": "search_customer_history",
-            "description": "Search for a customer's service history.",
+            "description": "Find past jobs and spent amount for a customer.",
             "parameters": {
                 "type": "object",
                 "properties": {
@@ -173,23 +136,6 @@
                 },
                 "required": [
                     "customer_identifier"
-                ]
-            }
-        },
-        {
-            "type": "client",
-            "name": "generate_report",
-            "description": "Generate a business report.",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "report_type": {
-                        "type": "string",
-                        "description": "daily, financial, staff"
-                    }
-                },
-                "required": [
-                    "report_type"
                 ]
             }
         }
