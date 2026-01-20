@@ -30,14 +30,16 @@ export default function AddAppointmentModal({ isOpen, onClose, onSuccess, presel
         setError(null);
 
         try {
+            // Create a proper ISO string that includes the user's local timezone
+            const localDateTime = new Date(`${formData.date}T${formData.time}:00`);
+
             await api.post('/appointments', {
                 customer_name: formData.customerName,
                 customer_phone: formData.customerPhone,
-                customer_email: formData.customerEmail, // Pass email to backend
-                scheduled_date: formData.date,
-                scheduled_time: formData.time,
+                customer_email: formData.customerEmail,
+                full_date_iso: localDateTime.toISOString(), // Send the full UTC point in time
                 appointment_type: formData.type,
-                vehicle_info: { model: formData.vehicleModel }, // Adaptation for backend expectations
+                vehicle_info: { model: formData.vehicleModel },
                 special_notes: formData.notes
             });
             onSuccess();

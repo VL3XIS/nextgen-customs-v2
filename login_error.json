@@ -1,0 +1,1 @@
+{"success":false,"error":"Server error during login","details":"\nInvalid `prisma.user.findUnique()` invocation:\n\n\nDatabase `postgres&pgbouncer=true` does not exist on the database server at `aws-0-us-west-2.pooler.supabase.com:6543`."}

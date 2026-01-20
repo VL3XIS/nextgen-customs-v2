@@ -56,7 +56,7 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
                             <div className="h-10 w-10 bg-brand-red rounded-lg flex items-center justify-center font-bold text-xl">N</div>
                         ) : (
                             <img
-                                src="/logo-full.png"
+                                src="/nextgen-logo-premium.png"
                                 alt="Next Gen Customs"
                                 className="w-full h-auto max-w-[220px] object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.1)]"
                             />

@@ -27,9 +27,9 @@ export default function LoginPage() {
             <div className="bg-black/60 backdrop-blur-md rounded-2xl shadow-2xl p-8 w-full max-w-md border border-brand-red/30">
                 <div className="flex justify-center mb-6">
                     <img
-                        src="/logo.svg"
+                        src="/nextgen-logo-premium.png"
                         alt="Next Gen Customs"
-                        className="w-full h-auto max-w-[280px] object-contain filter drop-shadow-[0_0_15px_rgba(220,38,38,0.4)]"
+                        className="w-full h-auto max-w-[320px] object-contain filter drop-shadow-[0_0_20px_rgba(220,38,38,0.5)]"
                     />
                 </div>
                 <p className="text-center text-gray-400 mb-8 text-sm uppercase tracking-wider font-rajdhani">Sign in to your dashboard</p>

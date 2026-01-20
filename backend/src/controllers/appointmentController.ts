@@ -31,9 +31,10 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 export const createAppointment = async (req: Request, res: Response) => {
     try {
-        const { customer_name, customer_phone, customer_email, scheduled_date, scheduled_time, appointment_type, vehicle_info, special_notes } = req.body;
+        const { customer_name, customer_phone, customer_email, scheduled_date, scheduled_time, full_date_iso, appointment_type, vehicle_info, special_notes } = req.body;
 
-        const isoDate = new Date(`${scheduled_date}T${scheduled_time}:00`);
+        // Use full_date_iso if available (frontend fix), otherwise fallback to the old method
+        const isoDate = full_date_iso ? new Date(full_date_iso) : new Date(`${scheduled_date}T${scheduled_time}:00`);
 
         const newAppt = await prisma.appointment.create({
             data: {
