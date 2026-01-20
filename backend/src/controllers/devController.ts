@@ -25,7 +25,12 @@ export const seedMe = async (req: AuthRequest, res: Response) => {
         const jobs = [];
         for (let i = 0; i < 12; i++) {
             const date = new Date();
-            date.setDate(date.getDate() - Math.floor(Math.random() * 45)); // Past 45 days
+            // Ensure first 5 jobs are in the last 7 days for the chart
+            if (i < 5) {
+                date.setDate(date.getDate() - i);
+            } else {
+                date.setDate(date.getDate() - Math.floor(Math.random() * 45));
+            }
 
             const job = await prisma.job.create({
                 data: {
@@ -34,7 +39,7 @@ export const seedMe = async (req: AuthRequest, res: Response) => {
                     vehicle: vehicles[Math.floor(Math.random() * vehicles.length)],
                     services: services[Math.floor(Math.random() * services.length)],
                     status: i < 5 ? 'COMPLETE' : (i < 8 ? 'IN_PROGRESS' : 'ESTIMATE'),
-                    estimatedValue: Math.floor(Math.random() * 5000) + 800,
+                    estimatedValue: Math.floor(Math.random() * 5000) + 1200,
                     createdAt: date,
                     updatedAt: date
                 }
